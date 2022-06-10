@@ -1,0 +1,17 @@
+Package: bayesfam
+Type: Package
+Title: brmse Custom Families for Bayesim
+Version: 0.1.0.9000
+Authors@R:
+    c(person("Maximilian", "Scholz", email = "research.scholz@mailbox.org",
+             role = c("aut", "cre")))
+Maintainer: Maximilian Scholz <research.scholz@mailbox.org>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports:
+    brms,
+    stats
+RoxygenNote: 7.2.0
