@@ -1,27 +1,25 @@
-#' Title
+#' Softplus density distribution in median parametrization.
 #'
-#' @param x
-#' @param mu
-#' @param sigma
-#' @param log
+#' @param x Value space of the distribution, x > 0
+#' @param mu Median parameter, mu is already log-transformed, mu unbound
+#' @param sigma Sigma shape parameter, sigma >= 0
+#' @param log Bool argument, if true, returns the logarithmic density
 #'
-#' @return
+#' @return Normal distribution density with logit link function
 #' @export
 #'
-#' @examples
+#' @examples x <- seq(from = 0.01, to = 10, length.out = 1000)
+#' plot(x, dsoftplusnormal(x, mu = 1, sigma = 2), type = "l")
 dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
   # check the arguments
   if (isTRUE(any(x <= 0))) {
     stop("softplusnormal is only defined for x > 0")
   }
-  if (isTRUE(mu <= 0)) {
-    stop("softplusnormal is only defined for mu > 0")
-  }
   if (isTRUE(sigma <= 0)) {
     stop("softplusnormal is only defined for sigma > 0")
   }
   logpdf <-
-    -(log(sigma) + 0.5 * (log(2) - log(pi))) +
+    -(log(sigma) + 0.5 * log(2 * pi)) +
     x - log(exp(x) - 1) +
     -0.5 * ((log(exp(x) - 1) - mu) / sigma)^2
   if (log) {
@@ -31,21 +29,19 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
   }
 }
 
-#' Title
+#' Softplus RNG-function in median parametrization.
 #'
-#' @param n
-#' @param mu
-#' @param sigma
+#' @param n Number of draws
+#' @param mu Median paramameter, mu unbound, mu already log transformed
+#' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @return
+#' @returns n Softplussy ditributed samples
+#'
 #' @export
 #'
-#' @examples
+#' @examples hist(rsoftplusnormal(100, 1, 2))
 rsoftplusnormal <- function(n, mu, sigma) {
   # check the arguments
-  if (isTRUE(mu <= 0)) {
-    stop("softplusnormal is only defined for mu > 0")
-  }
   if (isTRUE(sigma <= 0)) {
     stop("softplusnormal is only defined for sigma > 0")
   }
@@ -54,15 +50,12 @@ rsoftplusnormal <- function(n, mu, sigma) {
   )
 }
 
-#' Title
+#' Log-Likelihood vignette for the Softplus distribution, in Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i Indices
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#'
-#' @examples
+#' @return log_likelihood of the Softplus distribution, given some BRMS data.
 log_lik_softplusnormal <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -70,45 +63,53 @@ log_lik_softplusnormal <- function(i, prep) {
   return(dsoftplusnormal(y, mu, sigma, log = TRUE))
 }
 
-#' Title
+#' Posterior-predict vignette for the Softplus distribution, with Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i Indices
+#' @param prep BRMS data
 #' @param ...
 #'
-#' @return
-#'
-#'
-#' @examples
+#' @return The posterior prediction of the Softplus distribution, given some BRMS data.
 posterior_predict_softplusnormal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   return(rsoftplusnormal(prep$ndraws, mu, sigma))
 }
 
-#' Title
+#' Posterior expected value prediction vignette for Softplus distribution.
 #'
-#' @param prep
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#'
-#' @examples
+#' @return Mean of Posterior
 posterior_epred_softplusnormal <- function(prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  sigma <- brms::get_dpar(prep, "sigma", i = i)
-  return(-0.5 * erf((0.707107 * (mu - log(1 + exp(x)))) / sigma))
+  #   mu <- brms::get_dpar(prep, "mu")
+  #   sigma <- brms::get_dpar(prep, "sigma")
+  #   return(-0.5 * erf((0.707107 * (mu - log(1 + exp(x)))) / sigma))
+  # }
+  stop("No implementation of posterior_epred for the softplus-normal
+       available!")
 }
 
-#' Title
+#' Custom BRMS family Softplus in median parametrization.
 #'
-#' @param link
-#' @param link_sigma
+#' @param link Link function argument (as string) for Median argument. Left as identity!
+#' @param link_sigma Link function argument (as string) for Shape argument
 #'
-#' @return
+#' @return Softplus BRMS model-object
 #' @export
 #'
-#' @examples
+#' @examples # Running the example might take a while and may make RStudio unresponsive.
+#' # Just relax and grab a cup of coffe or tea in the meantime.
+#' a <- rnorm(1000)
+#' data <- list(a = a, y = rsoftplusnormal(1000, 0.5 * a + 1, 2))
+#' # BBmisc::surpressAll necassary to keep test output clean
+#' BBmisc::suppressAll({
+#'   fit1 <- brms::brm(y ~ 1 + a,
+#'     data = data, family = softplusnormal(),
+#'     stanvars = softplusnormal()$stanvars, backend = "cmdstanr", cores = 4
+#'   )
+#' })
+#' plot(fit1)
 softplusnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")
   family <- brms::custom_family(
@@ -125,7 +126,7 @@ softplusnormal <- function(link = "identity", link_sigma = "log") {
   family$stanvars <- stanvars <- brms::stanvar(
     scode = "
       real softplusnormal_lpdf(real y, real mu, real sigma) {
-      return -(log(sigma) + 0.5 * (log(2) - log(pi()))) +
+      return -(log(sigma) + 0.5 * log(2 * pi())) +
               y - log(exp(y) - 1) +
               -0.5 * ((log(exp(y) - 1) - mu)/sigma)^2;
       }

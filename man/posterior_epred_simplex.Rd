@@ -2,13 +2,16 @@
 % Please edit documentation in R/simplex.R
 \name{posterior_epred_simplex}
 \alias{posterior_epred_simplex}
-\title{Title}
+\title{Posterior expected value prediction of the Simplex implementation.}
 \usage{
 posterior_epred_simplex(prep)
 }
 \arguments{
-\item{prep}{}
+\item{prep}{BRMS data}
+}
+\value{
+Recover the given mean of data prep
 }
 \description{
-Title
+Posterior expected value prediction of the Simplex implementation.
 }

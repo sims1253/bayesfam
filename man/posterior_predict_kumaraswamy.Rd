@@ -2,13 +2,20 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{posterior_predict_kumaraswamy}
 \alias{posterior_predict_kumaraswamy}
-\title{Title}
+\title{Posterior prediction vignette for the Kumaraswamy distribution, in Median parametrization.}
 \usage{
 posterior_predict_kumaraswamy(i, prep, ...)
 }
 \arguments{
+\item{i}{BRMS indices}
+
+\item{prep}{BRMS data}
+
 \item{...}{}
 }
+\value{
+Posterior prediction of Kumaraswamy, given data in prep
+}
 \description{
-Title
+Posterior prediction vignette for the Kumaraswamy distribution, in Median parametrization.
 }

@@ -1,35 +1,36 @@
-#' Probability density function for the Beta-Prime distribution (aka. inverse Beta)
+#' Probability density function for the beta prime distribution (aka. inverse Beta)
 #'
 #' @source Bases on Bourguignon, M., Santos-Neto, M., & de Castro, M. (2018).
-#' A new regression model for positive data (https://arxiv.org/abs/1804.07734)
+#' A new regression model for positive data (\url{https://arxiv.org/abs/1804.07734})
 #'
-#' @details The beta-prime distribution has density
-#' \deqn{f(y) = y^{(\mu(\Phi+1)-1)} (1+y)^{(-(\mu(\Phi+1)+\Phi+2))} / beta(\mu(1+\Phi), \Phi +2)}
+#' @details The beta prime distribution has density
+#' \deqn{f(y) = \frac{y^{(\mu(\Phi+1)-1)} (1+y)^{(-(\mu(\Phi+1)+\Phi+2))}} {\Beta(\mu(1+\Phi), \Phi +2)}}
+#' @details With the usual beta prime parameters
+#' \deqn{\beta = \Phi + 2, \alpha = \mu(\Phi + 1)}
 #'
 #' @param x Value, x > 0.
 #' @param mu Mean, mu > 0.
 #' @param phi Precision, phi > 0.
 #' @param log Optional argument. If true, returns the log density.
 #'
-#' @return density of the pdf given x, mu and phi.
+#' @return Density of the pdf given x, mu and phi.
 #' @export
 #'
-#' @examples x <- seq(from = 0, to = 100, length.out = 1000)
-#' y <- dbetaprime(x, mu = 4, phi = 2)
-#' plot(x, y, type = "l", ylab = "Density", main = "dbetaprime(mu=4, phi=2)")
+#' @examples x <- seq(from = 0.1, to = 20, length.out = 1000)
+#' plot(x, dbetaprime(x, mu = 4, phi = 2), type = "l")
 dbetaprime <- function(x, mu, phi, log = FALSE) {
   # check the arguments
   if (isTRUE(any(x <= 0))) {
-    stop("betaprime is only defined for x > 0")
+    stop("beta prime is only defined for x > 0")
   }
-  if (isTRUE(phi <= 0)) {
-    stop("betaprime is only defined for phi > 0")
+  if (isTRUE(any(phi <= 0))) {
+    stop("beta prime is only defined for phi > 0")
   }
-  if (isTRUE(mu <= 0)) {
-    stop("betaprime is only defined for mu > 0")
+  if (isTRUE(any(mu <= 0))) {
+    stop("beta prime is only defined for mu > 0")
   }
 
-  # calculate the second argument for beta-prime, given mu
+  # calculate the second argument for beta prime, given mu
   beta <- phi + 2
   alpha <- mu * (phi + 1)
 
@@ -45,31 +46,30 @@ dbetaprime <- function(x, mu, phi, log = FALSE) {
   }
 }
 
-#' Title
+#' Quantile function of the beta prime distribution
 #'
 #' @param p Probabilities, for which to calculate the quantiles
 #' @param mu Mean, mu > 0.
 #' @param phi Precision, phi > 0.
 #'
-#' @return Quantiles of the beta-prime distribution, given p, mu and phi
+#' @return Quantiles of the beta prime distribution
 #' @export
 #'
 #' @examples x <- seq(from = 0, to = 1, length.out = 100)
-#  y = bayesim::qbetaprime(x, mu = 1, phi = 2)
-#  plot(x, y, type="l", ylab = "Quantile", main = "left-leaning Beta-Prime(mu=1,phi=2)"))
+#' plot(x, qbetaprime(x, mu = 1, phi = 2), type = "l")
 qbetaprime <- function(p, mu, phi) {
   # check the arguments
   if (isTRUE(any(p < 0 | p > 1))) {
     stop("p has to be in an interval of [0, 1]")
   }
   if (isTRUE(phi <= 0)) {
-    stop("betaprime is only defined for phi > 0")
+    stop("beta prime is only defined for phi > 0")
   }
   if (isTRUE(mu <= 0)) {
-    stop("betaprime is only defined for mu > 0")
+    stop("beta prime is only defined for mu > 0")
   }
 
-  # calculate argument alpha of phi/betaprime
+  # calculate argument alpha of phi/beta prime
   qb <- qbeta(p, mu * (phi + 1), phi + 2)
 
   # now calculate the qbetaprime using log rules log(qbeta) - log(1 - qbeta)
@@ -77,36 +77,34 @@ qbetaprime <- function(p, mu, phi) {
   return(exp(lqbp))
 }
 
-#' Title
+#' RNG for the beta prime distribution
 #'
-#' @param n Number of beta-prime samples.
+#' @param n Number of samples.
 #' @param mu Mean, mu > 0.
 #' @param phi Precision, phi > 0.
 #'
-#' @return Random numbers from the beta-prime distribution.
+#' @return Random numbers from the beta prime distribution.
 #' @export
 #'
-#' @examples y <- bayesim::rbetaprime(100, mu = 1, phi = 2)
-#  hist(y, main = c(paste("Mean:", mean(y)), " for RNG of left-leaning Beta-Prime(mu=1,phi=2)"))
+#' @examples hist(rbetaprime(100, mu = 1, phi = 2))
 rbetaprime <- function(n, mu, phi) {
   # check the arguments
+  # if ()
   if (isTRUE(phi <= 0)) {
-    stop("betaprime is only defined for phi > 0")
+    stop("beta prime is only defined for phi > 0")
   }
   if (isTRUE(mu <= 0)) {
-    stop("betaprime is only defined for mu > 0")
+    stop("beta prime is only defined for mu > 0")
   }
   return(qbetaprime(runif(n, min = 0, max = 1), mu, phi))
 }
 
-#' Title
+#' Log-Likelihood of the beta prime distribution
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
 #'
-#' @return Log-Likelihood of betaprime given data in prep
-#'
-#' @examples
+#' @return Log-Likelihood of beta prime given data in prep
 log_lik_betaprime <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   phi <- brms::get_dpar(prep, "phi", i = i)
@@ -115,49 +113,48 @@ log_lik_betaprime <- function(i, prep) {
 }
 
 
-#' Title
+#' posterior_predict for the beta prime distribution
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
 #' @param ...
 #'
-#' @return Posterior prediction of beta-prime, given data in prep
-#'
-#' @examples
+#' @return Draws from the Posterior Predictive Distribution
 posterior_predict_betaprime <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   phi <- brms::get_dpar(prep, "phi", i = i)
   return(rbetaprime(prep$ndraws, mu, phi))
 }
 
-#' Title
+#' posterior_epred for the beta prime distribution
 #'
 #' @param prep BRMS data
 #'
-#' @return Recover the given mean of data prep
-#'
-#' @examples
+#' @return Expected Values of the Posterior Predictive Distribution
 posterior_epred_betaprime <- function(prep) {
   return(brms::get_dpar(prep, "mu"))
 }
 
 
-#' Title
+#' Beta prime brms custom family
 #'
 #' @param link Link function for function
-#' @param link_beta Link function for beta argument
+#' @param link_phi Link function for beta argument
 #'
-#' @return BRMS beta-prime distribution family
+#' @return brms beta prime distribution family
 #' @export
 #'
-#' @examples data <- list(a = a, y = bayesim::rbetaprime(
-#'   n,
-#'   exp(0.5 * rnorm(1000) + 1), 2
-#' ))
-#' fit1 <- brm(y ~ 1 + a,
-#'   data = data, family = bayesim::betaprime(),
-#'   stanvars = bayesim::betaprime()$stanvars, backend = "cmdstan"
-#' )
+#' @examples # Running the example might take a while and may make RStudio unresponsive.
+#' # Just relax and grab a cup of coffe or tea in the meantime.
+#' a <- rnorm(n = 1000)
+#' data <- list(a = a, y = rbetaprime(n = 1000, mu = exp(0.5 * a + 1), phi = 2))
+#' # BBmisc::surpressAll necassary to keep the test output clean
+#' BBmisc::suppressAll({
+#'   fit1 <- brms::brm(y ~ 1 + a,
+#'     data = data, family = betaprime(),
+#'     stanvars = betaprime()$stanvars, backend = "cmdstanr", cores = 4
+#'   )
+#' })
 #' plot(fit1)
 betaprime <- function(link = "log", link_phi = "log") {
   family <- brms::custom_family(
@@ -178,7 +175,7 @@ betaprime <- function(link = "log", link_phi = "log") {
         real alpha = mu * (phi + 1);
         return  (alpha-1) * log(y) +
                 (-(alpha + beta)) * log1p(y) -
-                log(beta(alpha, beta));
+                lbeta(alpha, beta);
       }
 
       real betaprime_rng(real mu, real phi) {

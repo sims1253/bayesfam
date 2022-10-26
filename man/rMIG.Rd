@@ -2,13 +2,24 @@
 % Please edit documentation in R/simplex.R
 \name{rMIG}
 \alias{rMIG}
-\title{Title}
+\title{RNG for a mixture of inverse gaussian distributions}
 \usage{
 rMIG(epsilon, Tau, mu)
 }
 \arguments{
-\item{mu}{}
+\item{epsilon}{epsilon parameters of the mixture parts}
+
+\item{Tau}{tau parameters of the mixture parts}
+
+\item{mu}{mu parameters of the mixture parts}
+}
+\value{
+a single sample for the specified mixture
 }
 \description{
-Title
+Based on code from simplexreg
+Peng Zhang, Zhenguo Qiu, Chengchun Shi (2016). simplexreg: An R
+Package for Regression Analysis of Proportional Data Using the
+Simplex Distribution. Journal of Statistical Software, 71(11), 1-21.
+doi:10.18637/jss.v071.i11
 }

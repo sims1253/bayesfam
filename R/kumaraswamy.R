@@ -1,14 +1,18 @@
-#' Title
+#' Kumaraswamy density function in median parametrisation.
 #'
-#' @param x
-#' @param mu
-#' @param p
-#' @param log
+#' @param x value space, x e (0, 1)
+#' @param mu Median parameter of pdf, mu e (0, 1)
+#' @param p shape parameter, p > 0
+#' @param log if true, returns log(pdf). Normally FALSE.
 #'
-#' @return
+#' @details \deqn{q(\mu, p) = -\frac{log(2)}{log(1-\mu^p)}}
+#' @details \deqn{f(y | \mu, p) = pqx^{p-1}(1-x^p)^{q-1}}
+#'
+#' @return f(x | mu, p)
 #' @export
 #'
-#' @examples
+#' @examples x <- seq(from = 0.01, to = 0.99, length.out = 1000)
+#' plot(x, dkumaraswamy(x, mu = 0.5, p = 2), type = "l")
 dkumaraswamy <- function(x, mu, p, log = FALSE) {
   if (isTRUE(any(x <= 0 | x >= 1))) {
     stop("x must be in (0,1).")
@@ -34,18 +38,18 @@ dkumaraswamy <- function(x, mu, p, log = FALSE) {
   }
 }
 
-#' Title
+#' Kumaraswamy RNG function in Median parametrisations.
 #'
-#' @param n
-#' @param mu
-#' @param p
+#' @param n Number of samples to draw, as a natural number scalar.
+#' @param mu Median parameter, mu e (0, 1)
+#' @param p Phi shape parameter, Phi > 0
 #'
-#' @return
+#' @return n samples in Kumaraswamy distribution.
 #' @export
 #'
-#' @examples
+#' @examples hist(rkumaraswamy(10000, mu = 0.5, p = 4))
 rkumaraswamy <- function(n, mu, p) {
-  if (isTRUE(any(mu < 0 | mu > 1))) {
+  if (isTRUE(any(mu <= 0 | mu >= 1))) {
     stop("The mean must be in (0,1).")
   }
   mu[which(mu > 0.999999)] <- 0.999999
@@ -57,18 +61,22 @@ rkumaraswamy <- function(n, mu, p) {
   return(
     (1 - (1 - runif(n, min = 0, max = 1))^(1 / q))^(1 / p)
   )
+  # TODO: Kumaraswamy BRMS does not like RNG values at the boundary.
+  # maybe one might also clip them in the RNG return already?
+  # (Instead of clipping them before feeding the BRMS)
 }
 
-#' Title
+#' Quantile function of the Kumaraswamy distribution in Median parametrisation.
 #'
-#' @param u
-#' @param mu
-#' @param p
+#' @param u Quantile to be calculated, u e (0, 1)
+#' @param mu Median parameter, mu e (0, 1)
+#' @param p Phi shape parameter, p > 0
 #'
-#' @return
+#' @return q(u | mu, p)
 #' @export
 #'
-#' @examples
+#' @examples u <- seq(from = 0.01, to = 0.09, length.out = 1000)
+#' plot(u, qkumaraswamy(u, mu = 0.5, p = 2), type = "l")
 qkumaraswamy <- function(u, mu = 0.5, p = 1) {
   if (isTRUE(any(u <= 0 | u >= 1))) {
     stop("u must be in (0,1).")
@@ -87,16 +95,17 @@ qkumaraswamy <- function(u, mu = 0.5, p = 1) {
   )
 }
 
-#' Title
+#' Kumaraswamy CDF in median parametrisation
 #'
-#' @param x
-#' @param mu
-#' @param p
+#' @param x CDF of x over lower tail, x e (0, 1)
+#' @param mu Median parameter, mu e (0, 1)
+#' @param p shape parameter, p > 0
 #'
-#' @return
+#' @return p(x | mu, p)
 #' @export
 #'
-#' @examples
+#' @examples x <- seq(from = 0.01, to = 0.99, length.out = 1000)
+#' plot(x, pkumaraswamy(x, mu = 0.5, p = 1), type = "l")
 pkumaraswamy <- function(x, mu = 0.5, p = 1) {
   if (isTRUE(any(x <= 0 | x >= 1))) {
     stop("x must be in (0,1).")
@@ -111,14 +120,12 @@ pkumaraswamy <- function(x, mu = 0.5, p = 1) {
   return(1 + (x^p - 1)^q)
 }
 
-#' Title
+#' Log-Likelihood vignette for the Kumaraswamy distribution, in Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i BRMS indices
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#' @examples
+#' @return Log-Likelihood of Kumaraswamy given data in prep
 log_lik_kumaraswamy <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   p <- brms::get_dpar(prep, "p", i = i)
@@ -126,28 +133,24 @@ log_lik_kumaraswamy <- function(i, prep) {
   return(dkumaraswamy(y, mu, p, log = TRUE))
 }
 
-#' Title
+#' Posterior prediction vignette for the Kumaraswamy distribution, in Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i BRMS indices
+#' @param prep BRMS data
 #' @param ...
 #'
-#' @return
-#'
-#' @examples
+#' @return Posterior prediction of Kumaraswamy, given data in prep
 posterior_predict_kumaraswamy <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   p <- brms::get_dpar(prep, "p", i = i)
   return(rkumaraswamy(prep$ndraws, mu, p))
 }
 
-#' Title
+#' Posterior expected value prediction of the Kuramaswamy implementation.
 #'
-#' @param prep
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#' @examples
+#' @return Recover the given mean of data prep
 posterior_epred_kumaraswamy <- function(prep) {
   mu <- brms::get_dpar(prep, "mu")
   p <- brms::get_dpar(prep, "p")
@@ -155,15 +158,26 @@ posterior_epred_kumaraswamy <- function(prep) {
   return(q * beta((1 + 1 / p), q))
 }
 
-#' Title
+#' Kumaraswamy BRMS-implementation in median parametrization.
 #'
-#' @param link
-#' @param link_p
+#' @param link Link function for function
+#' @param link_p Link function for p argument
 #'
-#' @return
+#' @return BRMS Beta-Custom distribution family
 #' @export
 #'
-#' @examples
+#' @examples # Running the example might take a while and may make RStudio unresponsive.
+#' # Just relax and grab a cup of coffe or tea in the meantime.
+#' a <- rnorm(1000)
+#' data <- list(a = a, y = rkumaraswamy(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
+#' # BBmisc::surpressAll necassary to keep the test output clean
+#' BBmisc::suppressAll({
+#'   fit1 <- brms::brm(y ~ 1 + a,
+#'     data = data, family = kumaraswamy(),
+#'     stanvars = kumaraswamy()$stanvars, backend = "cmdstanr", cores = 4
+#'   )
+#' })
+#' plot(fit1)
 kumaraswamy <- function(link = "logit", link_p = "log") {
   family <- brms::custom_family(
     "kumaraswamy",

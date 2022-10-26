@@ -1,14 +1,17 @@
-#' Title
+#' Simplex density function in mean parametrisation.
 #'
-#' @param x
-#' @param mu
-#' @param sigma
-#' @param log
+#' @param x value space, x e (0, 1)
+#' @param mu Median parameter of pdf, mu e (0, 1)
+#' @param sigma shape parameter, sigma unbound
+#' @param log if true, returns log(pdf). Normally FALSE.
 #'
-#' @return
+#' @details \deqn{f(y) = (2 \pi \sigma^2(y(1-y))^3)^{-\frac{1}{2}} exp(-(\frac{y-\mu}{\mu(1-\mu)})^2 \frac{1}{2y(1-y)\sigma^2} )}
+#'
+#' @return f(x | mu, sigma)
 #' @export
 #'
-#' @examples
+#' @examples x <- seq(from = 0.01, to = 0.99, length.out = 1000)
+#' plot(x, dsimplex(x, mu = 0.7, sigma = 2), type = "l")
 dsimplex <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(x <= 0 | x >= 1))) {
     stop("x must be in (0,1).")
@@ -39,14 +42,18 @@ dsimplex <- function(x, mu, sigma, log = FALSE) {
 }
 
 
-#' Title
+#' RNG for the inverse gaussian distribution
 #'
-#' @param epsilon
-#' @param Tau
+#' Based on code from simplexreg
+#' Peng Zhang, Zhenguo Qiu, Chengchun Shi (2016). simplexreg: An R
+#' Package for Regression Analysis of Proportional Data Using the
+#' Simplex Distribution. Journal of Statistical Software, 71(11), 1-21.
+#' doi:10.18637/jss.v071.i11
 #'
-#' @return
+#' @param epsilon epsilon parameter of the inverse gaussian distribution
+#' @param Tau tau parameter of the inverse gaussian distribution
 #'
-#' @examples
+#' @return a single sample from the specified inverse gaussian
 rIG <-
   function(epsilon, Tau) {
     ## generating random number from inverse-gaussian dist'n
@@ -62,15 +69,19 @@ rIG <-
   }
 
 
-#' Title
+#' RNG for a mixture of inverse gaussian distributions
 #'
-#' @param epsilon
-#' @param Tau
-#' @param mu
+#' Based on code from simplexreg
+#' Peng Zhang, Zhenguo Qiu, Chengchun Shi (2016). simplexreg: An R
+#' Package for Regression Analysis of Proportional Data Using the
+#' Simplex Distribution. Journal of Statistical Software, 71(11), 1-21.
+#' doi:10.18637/jss.v071.i11
 #'
-#' @return
+#' @param epsilon epsilon parameters of the mixture parts
+#' @param Tau tau parameters of the mixture parts
+#' @param mu mu parameters of the mixture parts
 #'
-#' @examples
+#' @return a single sample for the specified mixture
 rMIG <-
   function(epsilon, Tau, mu) {
     ## generating random number from inverse-gaussian mixture dist'n
@@ -86,21 +97,27 @@ rMIG <-
   }
 
 
-#' Title
+#' Simplex RNG function in Median parametrisations.
 #'
-#' @param n
-#' @param mu
-#' @param sigma
+#' Based on code from simplexreg
+#' Peng Zhang, Zhenguo Qiu, Chengchun Shi (2016). simplexreg: An R
+#' Package for Regression Analysis of Proportional Data Using the
+#' Simplex Distribution. Journal of Statistical Software, 71(11), 1-21.
+#' doi:10.18637/jss.v071.i11
 #'
-#' @return
+#' @param n Number of samples to draw, as a natural number scalar.
+#' @param mu Mean parameter, mu e (0, 1)
+#' @param sigma shape parameter, Sigma unbound
+#'
+#' @return n samples in Simplex distribution.
 #' @export
 #'
-#' @examples
+#' @examples hist(rsimplex(10000, mu = 0.7, sigma = 2))
 rsimplex <-
   function(n, mu, sigma) {
     ## generating random number from simplex dist'n
     ## by transformation from inverse-gaussian mixture dist'n
-    if (any(mu < 0 | mu > 1)) {
+    if (any(mu <= 0 | mu >= 1)) {
       stop("The mean must be in (0,1).")
     }
     mu[which(mu > 0.999999)] <- 0.999999
@@ -126,15 +143,13 @@ rsimplex <-
   }
 
 
-#' Title
+#' Posterior prediction vignette for the Simplex distribution, in Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i BRMS indices
+#' @param prep BRMS data
 #' @param ...
 #'
-#' @return
-#'
-#' @examples
+#' @return Posterior prediction of Simplex, given data in prep
 posterior_predict_simplex <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -142,14 +157,12 @@ posterior_predict_simplex <- function(i, prep, ...) {
 }
 
 
-#' Title
+#' Log-Likelihood vignette for the Simplex distribution, in Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i BRMS indices
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#' @examples
+#' @return Log-Likelihood of Simplex given data in prep
 log_lik_simplex <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -158,27 +171,36 @@ log_lik_simplex <- function(i, prep) {
 }
 
 
-#' Title
+#' Posterior expected value prediction of the Simplex implementation.
 #'
-#' @param prep
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#' @examples
+#' @return Recover the given mean of data prep
 posterior_epred_simplex <- function(prep) {
   return(brms::get_dpar(prep, "mu"))
 }
 
 
-#' Title
+#' Simplex BRMS-implementation in median parametrization.
 #'
-#' @param link
-#' @param link_sigma
+#' @param link Link function for function
+#' @param link_sigma Link function for sigma argument
 #'
-#' @return
+#' @return BRMS Beta-Custom distribution family
 #' @export
 #'
-#' @examples
+#' @examples # Running the example might take a while and may make RStudio unresponsive.
+#' # Just relax and grab a cup of coffe or tea in the meantime.
+#' a <- rnorm(1000)
+#' data <- list(a = a, y = rsimplex(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
+#' # BBmisc::surpressAll necassary to keep test output clean
+#' BBmisc::suppressAll({
+#'   fit1 <- brms::brm(y ~ 1 + a,
+#'     data = data, family = simplex(),
+#'     stanvars = simplex()$stanvars, backend = "cmdstanr", cores = 4
+#'   )
+#' })
+#' plot(fit1)
 simplex <- function(link = "logit", link_sigma = "identity") {
   family <- brms::custom_family(
     "simplex",

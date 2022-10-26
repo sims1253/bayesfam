@@ -5,11 +5,13 @@
 #' @param alpha Alpha parameter of pdf, alpha > 1
 #' @param log Optional log argument, if true, return log(pdf)
 #'
+#' @details \deqn{f(y | \mu, \alpha) = \frac{\alpha}{\mu(\alpha-1)} (1 + \frac{y}{\mu(\alpha-1)})^{-\alpha-1}}
+#'
 #' @return PDF of Lomax Distribution
 #' @export
 #'
-#' @examples x <- seq(from = 0, to = 10, length.out = n)
-#' plot(x, bayesim::dlomax(x, mu = 2, alpha = 2), type = "l", ylab = "Density", main = "high starting Lomax(mu=2, eta=2)")
+#' @examples x <- seq(from = 0, to = 10, length.out = 100)
+#' plot(x, dlomax(x, mu = 1, alpha = 2), type = "l")
 dlomax <- function(x, mu, alpha, log = FALSE) {
   # check arguments
   if (isTRUE(any(x < 0))) {
@@ -43,7 +45,7 @@ dlomax <- function(x, mu, alpha, log = FALSE) {
 #' @export
 #'
 #' @examples x <- seq(from = 0, to = 1, length.out = 100)
-#' plot(x, bayesim::qgompertz(x, mu = 2, eta = 0.1), type = "l", ylab = "Quantile", main = "apex-after-origin Gompertz(mu=2, eta=0.1)")
+#' plot(x, qlomax(x, mu = 1, alpha = 2), type = "l")
 qlomax <- function(p, mu, alpha) {
   # check arguments
   if (isTRUE(any(p < 0))) {
@@ -69,8 +71,7 @@ qlomax <- function(p, mu, alpha) {
 #' @return A Lomax distributed RNG vector of size n
 #' @export
 #'
-#' @examples y <- bayesim::rlomax(n, mu = 2, eta = 2)
-#' hist(log(y), main = c(paste("Median:", mean(y)), " for RNG of high starting Lomax(mu=2, eta=0.1)"))
+#' @examples hist(log(rlomax(1000, mu = 1, alpha = 2)))
 rlomax <- function(n, mu, alpha) {
   # check arguments
   if (isTRUE(mu <= 0)) {
@@ -88,11 +89,9 @@ rlomax <- function(n, mu, alpha) {
 #' @param prep BRMS data
 #'
 #' @return Log-Likelihood of Lomax given data in prep
-#'
-#' @examples
 log_lik_lomax <- function(i, prep) {
-  mu <- get_dpar(prep, "mu", i = i)
-  alpha <- get_dpar(prep, "alpha", i = i)
+  mu <- brms::get_dpar(prep, "mu", i = i)
+  alpha <- brms::get_dpar(prep, "alpha", i = i)
   y <- prep$data$Y[i]
   return(dlomax(y, mu, alpha, log = TRUE))
 }
@@ -104,11 +103,9 @@ log_lik_lomax <- function(i, prep) {
 #' @param ...
 #'
 #' @return Posterior prediction of Lomax, given data in prep
-#'
-#' @examples
 posterior_predict_lomax <- function(i, prep, ...) {
-  mu <- get_dpar(prep, "mu", i = i)
-  alpha <- get_dpar(prep, "alpha", i = i)
+  mu <- brms::get_dpar(prep, "mu", i = i)
+  alpha <- brms::get_dpar(prep, "alpha", i = i)
   return(rgompertz(prep$ndraws, mu, alpha))
 }
 
@@ -117,10 +114,8 @@ posterior_predict_lomax <- function(i, prep, ...) {
 #' @param prep BRMS data
 #'
 #' @return Recover the given mean of data prep
-#'
-#' @examples
 posterior_epred_lomax <- function(prep) {
-  mu <- get_dpar(prep, "mu")
+  mu <- brms::get_dpar(prep, "mu")
   return(mu)
 }
 
@@ -132,11 +127,17 @@ posterior_epred_lomax <- function(prep) {
 #' @return BRMS Lomax distribution family
 #' @export
 #'
-#' @examples data <- list(a = a, y = bayesim::rlomax(n, exp(0.5 * a + 1), 2))
-#' fit1 <- brm(y ~ 1 + a,
-#'   data = data, family = bayesim::lomax(),
-#'   stanvars = bayesim::lomax()$stanvars, backend = "cmdstan"
-#' )
+#' @examples # Running the example might take a while and may make RStudio unresponsive.
+#' # Just relax and grab a cup of coffe or tea in the meantime.
+#' a <- rnorm(1000)
+#' data <- list(a = a, y = rlomax(1000, exp(0.5 * a + 1), 2))
+#' # BBmisc::surpressAll necassary to keep the test output clean
+#' BBmisc::suppressAll({
+#'   fit1 <- brms::brm(y ~ 1 + a,
+#'     data = data, family = lomax(),
+#'     stanvars = lomax()$stanvars, backend = "cmdstanr", cores = 4
+#'   )
+#' })
 #' plot(fit1)
 lomax <- function(link = "log", link_alpha = "log1p") {
   family <- brms::custom_family(

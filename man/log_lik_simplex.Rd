@@ -2,13 +2,18 @@
 % Please edit documentation in R/simplex.R
 \name{log_lik_simplex}
 \alias{log_lik_simplex}
-\title{Title}
+\title{Log-Likelihood vignette for the Simplex distribution, in Median parametrization.}
 \usage{
 log_lik_simplex(i, prep)
 }
 \arguments{
-\item{prep}{}
+\item{i}{BRMS indices}
+
+\item{prep}{BRMS data}
+}
+\value{
+Log-Likelihood of Simplex given data in prep
 }
 \description{
-Title
+Log-Likelihood vignette for the Simplex distribution, in Median parametrization.
 }

@@ -2,10 +2,10 @@
 % Please edit documentation in R/beta_prime.R
 \name{dbetaprime}
 \alias{dbetaprime}
-\title{Probability density function for the Beta-Prime distribution (aka. inverse Beta)}
+\title{Probability density function for the beta prime distribution (aka. inverse Beta)}
 \source{
 Bases on Bourguignon, M., Santos-Neto, M., & de Castro, M. (2018).
-A new regression model for positive data (https://arxiv.org/abs/1804.07734)
+A new regression model for positive data (\url{https://arxiv.org/abs/1804.07734})
 }
 \usage{
 dbetaprime(x, mu, phi, log = FALSE)
@@ -20,17 +20,19 @@ dbetaprime(x, mu, phi, log = FALSE)
 \item{log}{Optional argument. If true, returns the log density.}
 }
 \value{
-density of the pdf given x, mu and phi.
+Density of the pdf given x, mu and phi.
 }
 \description{
-Probability density function for the Beta-Prime distribution (aka. inverse Beta)
+Probability density function for the beta prime distribution (aka. inverse Beta)
 }
 \details{
-The beta-prime distribution has density
-\deqn{f(y) = y^{(\mu(\Phi+1)-1)} (1+y)^{(-(\mu(\Phi+1)+\Phi+2))} / beta(\mu(1+\Phi), \Phi +2)}
+The beta prime distribution has density
+\deqn{f(y) = \frac{y^{(\mu(\Phi+1)-1)} (1+y)^{(-(\mu(\Phi+1)+\Phi+2))}} {\Beta(\mu(1+\Phi), \Phi +2)}}
+
+With the usual beta prime parameters
+\deqn{\beta = \Phi + 2, \alpha = \mu(\Phi + 1)}
 }
 \examples{
-x <- seq(from = 0, to = 100, length.out = 1000)
-y <- dbetaprime(x, mu = 4, phi = 2)
-plot(x, y, type = "l", ylab = "Density", main = "dbetaprime(mu=4, phi=2)")
+x <- seq(from = 0.1, to = 20, length.out = 1000)
+plot(x, dbetaprime(x, mu = 4, phi = 2), type = "l")
 }

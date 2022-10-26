@@ -2,13 +2,18 @@
 % Please edit documentation in R/cloglognormal.R
 \name{log_lik_cloglognormal}
 \alias{log_lik_cloglognormal}
-\title{Title}
+\title{Log-Likelihood vignette for the Chauchitnormal distribution, with Median parametrization.}
 \usage{
 log_lik_cloglognormal(i, prep)
 }
 \arguments{
-\item{prep}{}
+\item{i}{indices}
+
+\item{prep}{BRMS data}
+}
+\value{
+log_lik
 }
 \description{
-Title
+Log-Likelihood vignette for the Chauchitnormal distribution, with Median parametrization.
 }

@@ -1,14 +1,15 @@
-#' Title
+#' Logitnormal density distribution in median parametrization.
 #'
-#' @param x
-#' @param mu
-#' @param sigma
-#' @param log
+#' @param x Value space of the distribution, x e (0, 1)
+#' @param mu Median parameter, mu is already logit-transformed, mu unbound
+#' @param sigma Sigma shape parameter, sigma >= 0
+#' @param log Bool argument, if true, returns the logarithmic density
 #'
-#' @return
+#' @return Normal distribution density with logit link function
 #' @export
 #'
-#' @examples
+#' @examples x <- seq(from = 0.01, to = 0.99, length.out = 1000)
+#' plot(x, dlogitnormal(x, mu = 0.5, sigma = 2), type = "l")
 dlogitnormal <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(x <= 0 | x >= 1))) {
     stop("x must be in (0,1).")
@@ -16,9 +17,10 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(sigma < 0))) {
     stop("sigma must be above or equal to 0.")
   }
-  logpdf <- (-(log(sigma) + 0.5 * (log(2) + log(pi)))) +
+  logpdf <-
+    -(log(sigma) + 0.5 * (log(2 * pi))) +
     (-(log(x) + log1p(-x))) +
-    (-(logit(x) - mu)^2) / (2 * (sigma^2))
+    (-(logit(x) - mu)^2 / (2 * sigma^2))
   if (log) {
     return(logpdf)
   } else {
@@ -26,16 +28,17 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
   }
 }
 
-#' Title
+#' Logitnormal RNG-function in median parametrization.
 #'
-#' @param n
-#' @param mu
-#' @param sigma
+#' @param n Number of draws
+#' @param mu Median paramameter, mu unbound, mu already logit transformed
+#' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @return
+#' @returns n Logitnormally ditributed samples
+#'
 #' @export
 #'
-#' @examples
+#' @examples hist(rlogitnormal(100, 0.5, 2))
 rlogitnormal <- function(n, mu, sigma) {
   if (isTRUE(any(sigma < 0))) {
     stop("P must be above or equal to 0.")
@@ -45,15 +48,12 @@ rlogitnormal <- function(n, mu, sigma) {
   )
 }
 
-#' Title
+#' Log-Likelihood vignette for the Logitnormal distribution, in Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i Indices
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#'
-#' @examples
+#' @return log_likelihood of the Logitnormal distribution, given some BRMS data.
 log_lik_logitnormal <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -61,45 +61,50 @@ log_lik_logitnormal <- function(i, prep) {
   return(dlogitnormal(y, mu, sigma, log = TRUE))
 }
 
-#' Title
+#' Posterior-predict vignette for the Logitnormal distribution, with Median parametrization.
 #'
-#' @param i
-#' @param prep
+#' @param i Indices
+#' @param prep BRMS data
 #' @param ...
 #'
-#' @return
-#'
-#'
-#' @examples
+#' @return The posterior prediction of the Logitnormal distribution, given some BRMS data.
 posterior_predict_logitnormal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   return(rlogitnormal(prep$ndraws, mu, sigma))
 }
 
-#' Title
+#' Posterior expected value prediction vignette for Logitnormal distribution.
 #'
-#' @param prep
+#' @param prep BRMS data
 #'
-#' @return
-#'
-#'
-#' @examples
+#' @return Mean of Posterior
 posterior_epred_logitnormal <- function(prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  sigma <- brms::get_dpar(prep, "sigma", i = i)
+  mu <- brms::get_dpar(prep, "mu")
+  sigma <- brms::get_dpar(prep, "sigma")
   return(exp(mu + sigma^2 / 2))
 }
 
-#' Title
+#' Custom BRMS family Logit-Normal in median parametrization.
 #'
-#' @param link
-#' @param link_sigma
+#' @param link Link function argument (as string) for Median argument. Left as identity!
+#' @param link_sigma Link function argument (as string) for Shape argument
 #'
-#' @return
+#' @return Logitnormal BRMS model-object
 #' @export
 #'
-#' @examples
+#' @examples # Running the example might take a while and may make RStudio unresponsive.
+#' # Just relax and grab a cup of coffe or tea in the meantime.
+#' a <- rnorm(1000)
+#' data <- list(a = a, y = rlogitnormal(1000, 0.5 * a + 1, 2))
+#' # BBmisc::surpressAll necassary to keep the test output clean
+#' BBmisc::suppressAll({
+#'   fit1 <- brms::brm(y ~ 1 + a,
+#'     data = data, family = logitnormal(),
+#'     stanvars = logitnormal()$stanvars, backend = "cmdstanr", cores = 4
+#'   )
+#' })
+#' plot(fit1)
 logitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")
   family <- brms::custom_family(
@@ -116,9 +121,9 @@ logitnormal <- function(link = "identity", link_sigma = "log") {
   family$stanvars <- stanvars <- brms::stanvar(
     scode = "
       real logitnormal_lpdf(real y, real mu, real sigma) {
-        return (-(log(sigma) + 0.5 * (log(2) + log(pi())))) +
-               (-(log(y) + log1m(y))) +
-               (-(logistic_lccdf(y| 0, 1) - mu)^2) / (2 * (sigma^2));
+        return -(log(sigma) + 0.5 * (log(2*pi()))) +
+              -(log(y) + log1m(y)) +
+              -((log(y) - log1m(y)) - mu)^2 / (2 * sigma^2);
       }
 
       real logitnormal_rng(real mu, real sigma) {

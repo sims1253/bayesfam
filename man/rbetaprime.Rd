@@ -2,23 +2,23 @@
 % Please edit documentation in R/beta_prime.R
 \name{rbetaprime}
 \alias{rbetaprime}
-\title{Title}
+\title{RNG for the beta prime distribution}
 \usage{
 rbetaprime(n, mu, phi)
 }
 \arguments{
-\item{n}{Number of beta-prime samples.}
+\item{n}{Number of samples.}
 
 \item{mu}{Mean, mu > 0.}
 
 \item{phi}{Precision, phi > 0.}
 }
 \value{
-Random numbers from the beta-prime distribution.
+Random numbers from the beta prime distribution.
 }
 \description{
-Title
+RNG for the beta prime distribution
 }
 \examples{
-y <- bayesim::rbetaprime(100, mu = 1, phi = 2)
+hist(rbetaprime(100, mu = 1, phi = 2))
 }

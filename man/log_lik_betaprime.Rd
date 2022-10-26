@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta_prime.R
 \name{log_lik_betaprime}
 \alias{log_lik_betaprime}
-\title{Title}
+\title{Log-Likelihood of the beta prime distribution}
 \usage{
 log_lik_betaprime(i, prep)
 }
@@ -12,8 +12,8 @@ log_lik_betaprime(i, prep)
 \item{prep}{BRMS data}
 }
 \value{
-Log-Likelihood of betaprime given data in prep
+Log-Likelihood of beta prime given data in prep
 }
 \description{
-Title
+Log-Likelihood of the beta prime distribution
 }

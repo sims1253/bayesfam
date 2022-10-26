@@ -2,13 +2,20 @@
 % Please edit documentation in R/cauchitnormal.R
 \name{posterior_predict_cauchitnormal}
 \alias{posterior_predict_cauchitnormal}
-\title{Title}
+\title{Posterior-predict vignette for the Chauchitnormal Distribution}
 \usage{
 posterior_predict_cauchitnormal(i, prep, ...)
 }
 \arguments{
+\item{i}{Indices}
+
+\item{prep}{BRMS data}
+
 \item{...}{}
 }
+\value{
+The posterior prediction of the Cauchitnormal Distribution, given some BRMS data.
+}
 \description{
-Title
+Posterior-predict vignette for the Chauchitnormal Distribution
 }

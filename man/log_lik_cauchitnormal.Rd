@@ -2,13 +2,18 @@
 % Please edit documentation in R/cauchitnormal.R
 \name{log_lik_cauchitnormal}
 \alias{log_lik_cauchitnormal}
-\title{Title}
+\title{Log-Likelihood vignette for the Chauchitnormal Distribution}
 \usage{
 log_lik_cauchitnormal(i, prep)
 }
 \arguments{
-\item{prep}{}
+\item{i}{Indices}
+
+\item{prep}{BRMS data}
+}
+\value{
+log_likelihood of the Cauchitnormal Distribution, given some BRMS data.
 }
 \description{
-Title
+Log-Likelihood vignette for the Chauchitnormal Distribution
 }

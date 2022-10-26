@@ -2,13 +2,26 @@
 % Please edit documentation in R/lognormal.R
 \name{dlognormal}
 \alias{dlognormal}
-\title{Title}
+\title{Lognormal density distribution in median parametrization.}
 \usage{
 dlognormal(x, mu, sigma, log = FALSE)
 }
 \arguments{
-\item{log}{}
+\item{x}{Value space of the distribution, x > 0}
+
+\item{mu}{Median parameter, mu is already log-transformed, mu unbound}
+
+\item{sigma}{Sigma shape parameter, sigma >= 0}
+
+\item{log}{Bool argument, if true, returns the logarithmic density}
+}
+\value{
+Normal distribution density with logit link function
 }
 \description{
-Title
+Lognormal density distribution in median parametrization.
+}
+\examples{
+x <- seq(from = 0.1, to = 10, length.out = 100)
+plot(x, dlognormal(x, mu = 1, sigma = 0.5), type = "l")
 }

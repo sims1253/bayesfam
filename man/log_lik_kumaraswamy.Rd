@@ -2,13 +2,18 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{log_lik_kumaraswamy}
 \alias{log_lik_kumaraswamy}
-\title{Title}
+\title{Log-Likelihood vignette for the Kumaraswamy distribution, in Median parametrization.}
 \usage{
 log_lik_kumaraswamy(i, prep)
 }
 \arguments{
-\item{prep}{}
+\item{i}{BRMS indices}
+
+\item{prep}{BRMS data}
+}
+\value{
+Log-Likelihood of Kumaraswamy given data in prep
 }
 \description{
-Title
+Log-Likelihood vignette for the Kumaraswamy distribution, in Median parametrization.
 }

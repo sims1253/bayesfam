@@ -2,13 +2,24 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{pkumaraswamy}
 \alias{pkumaraswamy}
-\title{Title}
+\title{Kumaraswamy CDF in median parametrisation}
 \usage{
 pkumaraswamy(x, mu = 0.5, p = 1)
 }
 \arguments{
-\item{p}{}
+\item{x}{CDF of x over lower tail, x e (0, 1)}
+
+\item{mu}{Median parameter, mu e (0, 1)}
+
+\item{p}{shape parameter, p > 0}
+}
+\value{
+p(x | mu, p)
 }
 \description{
-Title
+Kumaraswamy CDF in median parametrisation
+}
+\examples{
+x <- seq(from = 0.01, to = 0.99, length.out = 1000)
+plot(x, pkumaraswamy(x, mu = 0.5, p = 1), type = "l")
 }
