@@ -1,6 +1,6 @@
 # bayesfam
 
-This is a collection of custom brms families initially written for our [simulation study ](https://arxiv.org/abs/2210.06927).
+This is a collection of custom brms families initially written for our [simulation study ](https://arxiv.org/abs/2210.06927) and [bayesim](https://github.com/sims1253/bayesim), our simulation framework.
 
 They can be used like any other brms family. The only thing to remember is to explicitly hand brm the `stanvar`
 value that is part of the custom family object.
