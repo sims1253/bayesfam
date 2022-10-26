@@ -2,29 +2,32 @@
 % Please edit documentation in R/beta_prime.R
 \name{betaprime}
 \alias{betaprime}
-\title{Title}
+\title{Beta prime brms custom family}
 \usage{
 betaprime(link = "log", link_phi = "log")
 }
 \arguments{
 \item{link}{Link function for function}
 
-\item{link_beta}{Link function for beta argument}
+\item{link_phi}{Link function for beta argument}
 }
 \value{
-BRMS beta-prime distribution family
+brms beta prime distribution family
 }
 \description{
-Title
+Beta prime brms custom family
 }
 \examples{
-data <- list(a = a, y = bayesim::rbetaprime(
-  n,
-  exp(0.5 * rnorm(1000) + 1), 2
-))
-fit1 <- brm(y ~ 1 + a,
-  data = data, family = bayesim::betaprime(),
-  stanvars = bayesim::betaprime()$stanvars, backend = "cmdstan"
-)
+# Running the example might take a while and may make RStudio unresponsive.
+# Just relax and grab a cup of coffe or tea in the meantime.
+a <- rnorm(n = 1000)
+data <- list(a = a, y = rbetaprime(n = 1000, mu = exp(0.5 * a + 1), phi = 2))
+# BBmisc::surpressAll necassary to keep the test output clean
+BBmisc::suppressAll({
+  fit1 <- brms::brm(y ~ 1 + a,
+    data = data, family = betaprime(),
+    stanvars = betaprime()$stanvars, backend = "cmdstanr", cores = 4
+  )
+})
 plot(fit1)
 }

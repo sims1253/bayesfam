@@ -11,7 +11,7 @@ posterior_epred_gompertz(prep)
 \item{prep}{BRMS data}
 }
 \value{
-Recover the given mean of data prep
+Nothing
 }
 \description{
 Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.

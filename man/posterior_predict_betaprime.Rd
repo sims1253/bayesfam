@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta_prime.R
 \name{posterior_predict_betaprime}
 \alias{posterior_predict_betaprime}
-\title{Title}
+\title{posterior_predict for the beta prime distribution}
 \usage{
 posterior_predict_betaprime(i, prep, ...)
 }
@@ -14,8 +14,8 @@ posterior_predict_betaprime(i, prep, ...)
 \item{...}{}
 }
 \value{
-Posterior prediction of beta-prime, given data in prep
+Draws from the Posterior Predictive Distribution
 }
 \description{
-Title
+posterior_predict for the beta prime distribution
 }

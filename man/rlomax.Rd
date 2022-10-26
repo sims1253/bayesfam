@@ -20,6 +20,5 @@ A Lomax distributed RNG vector of size n
 RNG function for the Lomax distribution, with Mean parametrization.
 }
 \examples{
-y <- bayesim::rlomax(n, mu = 2, eta = 2)
-hist(log(y), main = c(paste("Median:", mean(y)), " for RNG of high starting Lomax(mu=2, eta=0.1)"))
+hist(log(rlomax(1000, mu = 1, alpha = 2)))
 }

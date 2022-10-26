@@ -2,13 +2,16 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{posterior_epred_kumaraswamy}
 \alias{posterior_epred_kumaraswamy}
-\title{Title}
+\title{Posterior expected value prediction of the Kuramaswamy implementation.}
 \usage{
 posterior_epred_kumaraswamy(prep)
 }
 \arguments{
-\item{prep}{}
+\item{prep}{BRMS data}
+}
+\value{
+Recover the given mean of data prep
 }
 \description{
-Title
+Posterior expected value prediction of the Kuramaswamy implementation.
 }

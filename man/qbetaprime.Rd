@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta_prime.R
 \name{qbetaprime}
 \alias{qbetaprime}
-\title{Title}
+\title{Quantile function of the beta prime distribution}
 \usage{
 qbetaprime(p, mu, phi)
 }
@@ -14,11 +14,12 @@ qbetaprime(p, mu, phi)
 \item{phi}{Precision, phi > 0.}
 }
 \value{
-Quantiles of the beta-prime distribution, given p, mu and phi
+Quantiles of the beta prime distribution
 }
 \description{
-Title
+Quantile function of the beta prime distribution
 }
 \examples{
 x <- seq(from = 0, to = 1, length.out = 100)
+plot(x, qbetaprime(x, mu = 1, phi = 2), type = "l")
 }

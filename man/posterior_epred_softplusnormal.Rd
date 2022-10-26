@@ -2,13 +2,16 @@
 % Please edit documentation in R/softplusnormal.R
 \name{posterior_epred_softplusnormal}
 \alias{posterior_epred_softplusnormal}
-\title{Title}
+\title{Posterior expected value prediction vignette for Softplus distribution.}
 \usage{
 posterior_epred_softplusnormal(prep)
 }
 \arguments{
-\item{prep}{}
+\item{prep}{BRMS data}
+}
+\value{
+Mean of Posterior
 }
 \description{
-Title
+Posterior expected value prediction vignette for Softplus distribution.
 }

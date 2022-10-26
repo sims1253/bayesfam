@@ -2,13 +2,24 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{qkumaraswamy}
 \alias{qkumaraswamy}
-\title{Title}
+\title{Quantile function of the Kumaraswamy distribution in Median parametrisation.}
 \usage{
 qkumaraswamy(u, mu = 0.5, p = 1)
 }
 \arguments{
-\item{p}{}
+\item{u}{Quantile to be calculated, u e (0, 1)}
+
+\item{mu}{Median parameter, mu e (0, 1)}
+
+\item{p}{Phi shape parameter, p > 0}
+}
+\value{
+q(u | mu, p)
 }
 \description{
-Title
+Quantile function of the Kumaraswamy distribution in Median parametrisation.
+}
+\examples{
+u <- seq(from = 0.01, to = 0.09, length.out = 1000)
+plot(u, qkumaraswamy(u, mu = 0.5, p = 2), type = "l")
 }

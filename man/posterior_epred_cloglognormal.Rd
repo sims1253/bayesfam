@@ -2,13 +2,16 @@
 % Please edit documentation in R/cloglognormal.R
 \name{posterior_epred_cloglognormal}
 \alias{posterior_epred_cloglognormal}
-\title{Title}
+\title{Posterior expected value prediction. Mean undefined for CLogLog-Normal}
 \usage{
 posterior_epred_cloglognormal(prep)
 }
 \arguments{
-\item{prep}{}
+\item{prep}{BRMS data}
+}
+\value{
+Nothing
 }
 \description{
-Title
+Posterior expected value prediction. Mean undefined for CLogLog-Normal
 }

@@ -2,13 +2,20 @@
 % Please edit documentation in R/cloglognormal.R
 \name{posterior_predict_cloglognormal}
 \alias{posterior_predict_cloglognormal}
-\title{Title}
+\title{Posterior-predict vignette for the Chauchitnormal distribution, with Median parametrization.}
 \usage{
 posterior_predict_cloglognormal(i, prep, ...)
 }
 \arguments{
+\item{i}{Indices}
+
+\item{prep}{BRMS data}
+
 \item{...}{}
 }
+\value{
+Posterior prediction of the data
+}
 \description{
-Title
+Posterior-predict vignette for the Chauchitnormal distribution, with Median parametrization.
 }

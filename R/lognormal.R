@@ -1,14 +1,15 @@
-#' Title
+#' Lognormal density distribution in median parametrization.
 #'
-#' @param x
-#' @param mu
-#' @param sigma
-#' @param log
+#' @param x Value space of the distribution, x > 0
+#' @param mu Median parameter, mu is already log-transformed, mu unbound
+#' @param sigma Sigma shape parameter, sigma >= 0
+#' @param log Bool argument, if true, returns the logarithmic density
 #'
-#' @return
+#' @return Normal distribution density with logit link function
 #' @export
 #'
-#' @examples
+#' @examples x <- seq(from = 0.1, to = 10, length.out = 100)
+#' plot(x, dlognormal(x, mu = 1, sigma = 0.5), type = "l")
 dlognormal <- function(x, mu, sigma, log = FALSE) {
   # check the arguments
   if (isTRUE(any(x <= 0))) {
@@ -18,7 +19,8 @@ dlognormal <- function(x, mu, sigma, log = FALSE) {
     stop("lognormal is only defined for sigma > 0")
   }
   logpdf <-
-    -(log(x) + log(sigma) + 0.5 * (log(2) + log(pi))) +
+    -(log(sigma) + 0.5 * (log(2 * pi))) +
+    -log(x) +
     (-(log(x) - mu)^2 / (2 * sigma^2))
   if (log) {
     return(logpdf)
@@ -27,16 +29,17 @@ dlognormal <- function(x, mu, sigma, log = FALSE) {
   }
 }
 
-#' Title
+#' Lognormal RNG-function in median parametrization.
 #'
-#' @param n
-#' @param mu
-#' @param sigma
+#' @param n Number of draws
+#' @param mu Median paramameter, mu unbound, mu already log transformed
+#' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @return
+#' @returns n Lognormally ditributed samples
+#'
 #' @export
 #'
-#' @examples
+#' @examples hist(rlognormal(100, 1, 0.5))
 rlognormal <- function(n, mu, sigma) {
   # check the arguments
   if (isTRUE(sigma <= 0)) {
@@ -45,87 +48,4 @@ rlognormal <- function(n, mu, sigma) {
   return(
     exp(rnorm(n, mu, sigma))
   )
-}
-
-#' Title
-#'
-#' @param i
-#' @param prep
-#'
-#' @return
-#'
-#'
-#' @examples
-log_lik_lognormal <- function(i, prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  sigma <- brms::get_dpar(prep, "sigma", i = i)
-  y <- prep$data$Y[i]
-  return(dlognormal(y, mu, sigma, log = TRUE))
-}
-
-#' Title
-#'
-#' @param i
-#' @param prep
-#' @param ...
-#'
-#' @return
-#'
-#'
-#' @examples
-posterior_predict_lognormal <- function(i, prep, ...) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  sigma <- brms::get_dpar(prep, "sigma", i = i)
-  return(rlognormal(prep$ndraws, mu, sigma))
-}
-
-#' Title
-#'
-#' @param prep
-#'
-#' @return
-#'
-#'
-#' @examples
-posterior_epred_lognormal <- function(prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  sigma <- brms::get_dpar(prep, "sigma", i = i)
-  return(exp(mu + sigma^2 / 2))
-}
-
-#' Title
-#'
-#' @param link
-#' @param link_sigma
-#'
-#' @return
-#' @export
-#'
-#' @examples
-lognormal <- function(link = "identity", link_sigma = "log") {
-  stopifnot(link == "identity")
-  family <- brms::custom_family(
-    "lognormal",
-    dpars = c("mu", "sigma"),
-    links = c(link, link_sigma),
-    lb = c(0, 0),
-    ub = c(NA, NA),
-    type = "real",
-    log_lik = log_lik_lognormal,
-    posterior_predict = posterior_predict_lognormal,
-    posterior_epred = posterior_epred_lognormal
-  )
-  family$stanvars <- stanvars <- brms::stanvar(
-    scode = "
-      real lognormal_lpdf(real y, real mu, real sigma) {
-        return -(log(y) + log(sigma) + 0.5 * (log(2) + log(pi()))) +
-                (-(log(y) - mu)^2 / (2 * sigma^2));
-      }
-
-      real lognormal_rng(real mu, real sigma) {
-        return exp(normal_rng(mu, sigma));
-      }",
-    block = "functions"
-  )
-  return(family)
 }

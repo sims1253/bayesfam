@@ -21,5 +21,5 @@ Quantile function for the Lomax distribution, with Mean parametrization.
 }
 \examples{
 x <- seq(from = 0, to = 1, length.out = 100)
-plot(x, bayesim::qgompertz(x, mu = 2, eta = 0.1), type = "l", ylab = "Quantile", main = "apex-after-origin Gompertz(mu=2, eta=0.1)")
+plot(x, qlomax(x, mu = 1, alpha = 2), type = "l")
 }

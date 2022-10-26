@@ -2,13 +2,22 @@
 % Please edit documentation in R/simplex.R
 \name{rIG}
 \alias{rIG}
-\title{Title}
+\title{RNG for the inverse gaussian distribution}
 \usage{
 rIG(epsilon, Tau)
 }
 \arguments{
-\item{Tau}{}
+\item{epsilon}{epsilon parameter of the inverse gaussian distribution}
+
+\item{Tau}{tau parameter of the inverse gaussian distribution}
+}
+\value{
+a single sample from the specified inverse gaussian
 }
 \description{
-Title
+Based on code from simplexreg
+Peng Zhang, Zhenguo Qiu, Chengchun Shi (2016). simplexreg: An R
+Package for Regression Analysis of Proportional Data Using the
+Simplex Distribution. Journal of Statistical Software, 71(11), 1-21.
+doi:10.18637/jss.v071.i11
 }

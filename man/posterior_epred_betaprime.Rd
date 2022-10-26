@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta_prime.R
 \name{posterior_epred_betaprime}
 \alias{posterior_epred_betaprime}
-\title{Title}
+\title{posterior_epred for the beta prime distribution}
 \usage{
 posterior_epred_betaprime(prep)
 }
@@ -10,8 +10,8 @@ posterior_epred_betaprime(prep)
 \item{prep}{BRMS data}
 }
 \value{
-Recover the given mean of data prep
+Expected Values of the Posterior Predictive Distribution
 }
 \description{
-Title
+posterior_epred for the beta prime distribution
 }

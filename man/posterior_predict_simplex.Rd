@@ -2,13 +2,20 @@
 % Please edit documentation in R/simplex.R
 \name{posterior_predict_simplex}
 \alias{posterior_predict_simplex}
-\title{Title}
+\title{Posterior prediction vignette for the Simplex distribution, in Median parametrization.}
 \usage{
 posterior_predict_simplex(i, prep, ...)
 }
 \arguments{
+\item{i}{BRMS indices}
+
+\item{prep}{BRMS data}
+
 \item{...}{}
 }
+\value{
+Posterior prediction of Simplex, given data in prep
+}
 \description{
-Title
+Posterior prediction vignette for the Simplex distribution, in Median parametrization.
 }

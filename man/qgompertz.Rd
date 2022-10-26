@@ -4,14 +4,14 @@
 \alias{qgompertz}
 \title{Quantile function for the Gompertz distribution, with Median parametrization.}
 \usage{
-qgompertz(p, mu, b)
+qgompertz(p, mu, beta)
 }
 \arguments{
 \item{p}{Quantile to be calculated}
 
-\item{mu}{Median argument of Gompertz}
+\item{mu}{Median parameter}
 
-\item{eta}{Eta argument of Gompertz}
+\item{beta}{Scale parameter}
 }
 \value{
 Inverse of CDF, calculates a value, given a probability p
@@ -20,6 +20,6 @@ Inverse of CDF, calculates a value, given a probability p
 Quantile function for the Gompertz distribution, with Median parametrization.
 }
 \examples{
-x <- seq(from = 0, to = 1, length.out = 100)
-plot(x, bayesim::qgompertz(x, mu = 2, eta = 0.1), type = "l", ylab = "Quantile", main = "apex-after-origin Gompertz(mu=2, eta=0.1)")
+x <- seq(from = 0.01, to = 0.99, length.out = 100)
+plot(x, qgompertz(x, mu = 10, beta = 1), type = "l")
 }

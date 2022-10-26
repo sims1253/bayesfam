@@ -2,13 +2,18 @@
 % Please edit documentation in R/softplusnormal.R
 \name{log_lik_softplusnormal}
 \alias{log_lik_softplusnormal}
-\title{Title}
+\title{Log-Likelihood vignette for the Softplus distribution, in Median parametrization.}
 \usage{
 log_lik_softplusnormal(i, prep)
 }
 \arguments{
-\item{prep}{}
+\item{i}{Indices}
+
+\item{prep}{BRMS data}
+}
+\value{
+log_likelihood of the Softplus distribution, given some BRMS data.
 }
 \description{
-Title
+Log-Likelihood vignette for the Softplus distribution, in Median parametrization.
 }

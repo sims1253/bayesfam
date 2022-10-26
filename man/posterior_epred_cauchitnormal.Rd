@@ -2,13 +2,16 @@
 % Please edit documentation in R/cauchitnormal.R
 \name{posterior_epred_cauchitnormal}
 \alias{posterior_epred_cauchitnormal}
-\title{Title}
+\title{Posterior expected value prediction. Mean undefined for Cauchitnormal.}
 \usage{
 posterior_epred_cauchitnormal(prep)
 }
 \arguments{
-\item{prep}{}
+\item{prep}{BRMS data}
+}
+\value{
+Nothing
 }
 \description{
-Title
+Posterior expected value prediction. Mean undefined for Cauchitnormal.
 }
