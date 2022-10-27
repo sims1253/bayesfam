@@ -1,7 +1,7 @@
 Package: bayesfam
 Type: Package
 Title: brms Custom Families
-Version: 0.2.0
+Version: 0.2.1
 Date: 2022-10-26
 Authors@R:
     c(person("Maximilian", "Scholz", email = "research.scholz@mailbox.org",
