@@ -211,43 +211,52 @@ test_rng <- function(rng_fun,
 #'
 #' @param rng_fun RNG function under test
 #' @param metric_mu Metric to be used on RNG data (usually mean or median)
-#' @param n Sample size for rng test.
+#' @param n_samples Default=c(10, 10000), sample sizes for rng test, len >= 2. Gets sorted in routine.
 #' @param mu_list Metric data used as RNG argument and to be compared to (usually mean or median)
 #' @param aux_list Auxiliary parameter value list.
 #' @param mu_link Default=identity, optional link-function argument, for example
+#' @param allowed_failures Default=0.05 marks, that 5 percent of all test cases are allowed
+#' to fail for the whole test to still succeed.
 #'
 #'
 #' @return Success or failure with message
 #'
-#' @examples library(testthat)
+#' @examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
-#' bayesfam:::test_rng_asym(
+#' result <- bayesfam:::test_rng_asym(
 #'   rng_fun = rbetaprime,
 #'   metric_mu = mean,
-#'   n = 10000,
 #'   mu_list = mu_list,
-#'   aux_par = phis,
-#'   relative = TRUE
+#'   aux_list = phis,
 #' )
+#' print(result)
 test_rng_asym <- function(rng_fun,
                           metric_mu,
-                          n,
+                          n_samples = c(10, 10000),
                           mu_list,
                           aux_list,
-                          mu_link = identity) {
-  exponents <- seq(1, floor(log10(n)), by = 2)
+                          mu_link = identity,
+                          allowed_failures = 0.05) {
+
+  len_n <- length(n_samples)
+  if(len_n < 2 || !isNat_len(n_samples, len = len_n)) {
+    stop("n_samples to be a vector of at least two positive integer entries")
+  }
+
+  n <- sort(n_samples)
+
+  num_failures <- 0
 
   # Generate a list of mus per mu, aux combination for growing sample sizes
   for (mu in mu_list) {
     for (aux in aux_list) {
-      loop_mu_list <- vector(mode = "numeric", length = length(exponents))
-      for (i in seq_along(exponents)) {
-        loop_n <- 10^exponents[i]
+      loop_mu_list <- vector(mode = "numeric", length = len_n)
+      for (i in seq_along(n)) {
         loop_mu_list[i] <- mu_link(
           metric_mu(
             rng_fun(
-              loop_n,
+              n[i],
               mu = mu, aux
             )
           )
@@ -258,19 +267,36 @@ test_rng_asym <- function(rng_fun,
         abs(loop_mu_list - mu),
         sort(abs(loop_mu_list - mu), decreasing = TRUE)
       )) {
-        testthat::fail(paste(
-          "The RNG did not approach the true location parameter asymptotically \n",
-          abs(loop_mu_list - mu),
-          "\n vs \n",
-          sort(abs(loop_mu_list - mu), decreasing = TRUE),
-          "\n",
-          mu, aux, exponents
-        ))
+        num_failures <- num_failures + 1
+        # testthat::fail(paste(
+        #   "The RNG did not approach the true location parameter asymptotically\n",
+        #   "actual", toString(abs(loop_mu_list - mu)),"\n",
+        #   "vs\n",
+        #   "expected", toString(sort(abs(loop_mu_list - mu), decreasing = TRUE)), "\n",
+        #   "with arguments mu", mu, "aux", aux, "exponents", toString(exponents)
+        # ))
       }
     }
   }
-  testthat::succeed()
+
+  num_tests <- length(mu_list) * length(aux_list)
+  allowed_failures_abs <- ceiling(num_tests * allowed_failures)
+  if(num_failures <= allowed_failures_abs) {
+    # print(paste(
+    #   "Number of allowed failures in asymp test was violated\n",
+    #   "Allowed were", allowed_failures_abs, "of", num_tests, "to fail\n",
+    #   "only", num_failures, "number of tests did fail, so succeess"))
+    testthat::succeed()
+  }
+  else {
+    testthat::fail(paste(
+      "Number of allowed failures in asymp test was violated\n",
+      "Allowed were", allowed_failures_abs, "of", num_tests, "to fail\n",
+      "but actually", num_failures, "number of tests did fail"))
+  }
 }
+
+
 
 #' Tests if an RNG can recover the true quantiles within a margin of error
 #'
@@ -564,7 +590,7 @@ test_brms_quantile <- function(posterior_data, name, reference, thresh, debug = 
     }
     bounds <- c(thresh, 1 - thresh)
   } else if (isNum_len(thresh, 2)) {
-    if (isFALSE(thresh[1] <= tresh[2])) {
+    if (isFALSE(thresh[1] <= thresh[2])) {
       stop("If a 2 entry vector is used for the bounds, the first entry is the lower bound")
     }
     bounds <- thresh
