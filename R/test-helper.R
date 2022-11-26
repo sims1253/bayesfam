@@ -13,7 +13,7 @@
 #' @param note optional parameter used for debugging.
 #' @param relative bool argument, if set will take the normale difference with euler metric. Default = FALSE
 #' @param debug bool argument, if set will printout the difference, in case of failure. Default = FALSE
-#' Used internally, tlo calculate acceptable amount of deviances. Calculated absolute value will be floored.
+#' Used internally, too calculate acceptable amount of deviances. Calculated absolute value will be floored.
 #'
 #' @md
 #' @details For vector/scalar combinations, allowed are (r has to always be a scalar!):
@@ -30,8 +30,8 @@
 #'
 #' @examples library(testthat)
 #' library(bayesfam)
-#' bayesfam:::expect_eps(1, 1.1, 0.2) # should pass
-#' expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3))
+#' print(bayesfam:::expect_eps(1, 1.1, 0.2)) # should pass
+#' print(expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3)))
 #' # should fail (2/3 were wrong, but only 1/3 was allowed)
 expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = FALSE) {
   # then check, that r is only a scalar. Also check, that r is in range [0, 1)
@@ -108,7 +108,7 @@ expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = 
 #'
 #' @return Vector of normalized differences
 #'
-#' @examples bayesfam:::normale_difference(c(1, 1, 1, 1, 1), c(-1, 0, 1, 2, 3))
+#' @examples print(bayesfam:::normale_difference(c(1, 1, 1, 1, 1), c(-1, 0, 1, 2, 3)))
 normale_difference <- function(va, vb) {
   if (!lenEqual(list(va, vb), scalars_allowed = TRUE, type_check = is.numeric)) {
     stop("In normale_difference function, both vector va and vb have to be numeric and of same len (or scalar)")
@@ -143,10 +143,11 @@ normale_difference <- function(va, vb) {
 #' eps <- 1e-6
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
-#' bayesfam:::test_rng(
+#' result <- bayesfam:::test_rng(
 #'   rng_fun = rbetaprime, metric_mu = mean, n = 10000, mu_list = mu_list,
 #'   aux_list = phis, mu_eps = 0.2, p_acceptable_failures = 0.05
 #' )
+#' print(result)
 test_rng <- function(rng_fun,
                      metric_mu,
                      n,
@@ -224,13 +225,13 @@ test_rng <- function(rng_fun,
 #' @examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
-#' result <- bayesfam:::test_rng_asym(
+#' # if working as expected, this test should not print any errors
+#' bayesfam:::test_rng_asym(
 #'   rng_fun = rbetaprime,
 #'   metric_mu = mean,
 #'   mu_list = mu_list,
 #'   aux_list = phis,
 #' )
-#' print(result)
 test_rng_asym <- function(rng_fun,
                           metric_mu,
                           n_samples = c(10, 10000),
@@ -316,13 +317,21 @@ test_rng_asym <- function(rng_fun,
 #'
 #' @return Nothing actually, just wraps the test
 #'
-#' @examples library(testthat)
+#' #@example eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
-#' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
-#' bayesfam:::test_rng(
-#'   rng_fun = rbetaprime, metric_mu = mean, n = 10000, mu_list = mu_list,
-#'   aux_par = phis, mu_eps = 0.2, p_acceptable_failures = 0.05
-#' )
+#' phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
+#' # if working as expected, this test should not print any errors
+#' bayesfam:::test_rng_quantiles(
+#'    rng_fun = rbetaprime,
+#'    quantile_fun = qbetaprime,
+#'    n = 10000,
+#'    mu_list = mu_list,
+#'    aux_list = phi_list,
+#'    eps = 0.1,
+#'    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+#'    p_acceptable_failures = 0.1,
+#'    relative = TRUE
+#'    )
 test_rng_quantiles <- function(rng_fun,
                                quantile_fun,
                                n,
@@ -563,8 +572,7 @@ construct_brms <- function(n_data_sampels,
 #'
 #' @return Single boolean succeess, fail or error
 #'
-#' @examples
-#' fit <- bayesfam:::construct_brms(1000, 0.5, 2.0, identity, betaprime, rbetaprime)
+#' @examples fit <- bayesfam:::construct_brms(1000, 0.5, 2.0, identity, betaprime, rbetaprime)
 #' result <- bayesfam:::test_brms_quantile(fit, "b_Intercept", log(0.5), 0.025)
 #' print(result)
 #' plot(fit)

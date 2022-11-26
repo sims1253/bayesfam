@@ -46,9 +46,9 @@ test_that("test-custom-beta", {
     n = 50 * n,
     mu_list = mu_list,
     aux_list = phi_list,
-    eps = accepted_rng_error * 2.5,
+    eps = accepted_rng_error * 3,
     quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
-    p_acceptable_failures = accepred_rng_failures,
+    p_acceptable_failures = accepred_rng_failures * 2,
     relative = TRUE
   )
 

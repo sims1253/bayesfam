@@ -19,5 +19,5 @@ Vector of normalized differences
 Uses euler metric for denominator. I like it, that is why. :D
 }
 \examples{
-bayesfam:::normale_difference(c(1, 1, 1, 1, 1), c(-1, 0, 1, 2, 3))
+print(bayesfam:::normale_difference(c(1, 1, 1, 1, 1), c(-1, 0, 1, 2, 3)))
 }
