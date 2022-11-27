@@ -2,7 +2,7 @@
 % Please edit documentation in R/test-helper.R
 \name{construct_brms}
 \alias{construct_brms}
-\title{Construct BRMS family for simple linear y ~ 1 + a model.}
+\title{Construct BRMS family for simple linear y ~ 1 model.}
 \usage{
 construct_brms(
   n_data_sampels,
@@ -44,10 +44,17 @@ Only exceptions will be printed. For testing reasons, to not spam the test-windo
 BRMS model for the specified family.
 }
 \description{
-Construct BRMS family for simple linear y ~ 1 + a model.
+Construct BRMS family for simple linear y ~ 1 model.
 }
 \examples{
-library(testthat)
-posterior_fit <- bayesfam:::construct_brms(1000, 0.5, 2.0, identity, betaprime, rbetaprime)
+posterior_fit <- bayesfam:::construct_brms(
+  n_data_sampels = 1000,
+  intercept = 5.0,
+  aux_par = 2.0,
+  rng_link = identity,
+  family = betaprime,
+  rng = rbetaprime
+)
 plot(posterior_fit)
+print("compare b_Intercept to log(intercept) in case of betaprime. log(5) = 1.61")
 }

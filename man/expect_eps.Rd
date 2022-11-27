@@ -48,9 +48,7 @@ For vector/scalar combinations, allowed are (r has to always be a scalar!):
 }
 }
 \examples{
-library(testthat)
-library(bayesfam)
 print(bayesfam:::expect_eps(1, 1.1, 0.2)) # should pass
-print(expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3)))
+# print(expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3)))
 # should fail (2/3 were wrong, but only 1/3 was allowed)
 }

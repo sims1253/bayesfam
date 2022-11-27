@@ -28,10 +28,8 @@
 #'
 #' @return success or failure with message
 #'
-#' @examples library(testthat)
-#' library(bayesfam)
-#' print(bayesfam:::expect_eps(1, 1.1, 0.2)) # should pass
-#' print(expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3)))
+#' @examples print(bayesfam:::expect_eps(1, 1.1, 0.2)) # should pass
+#' # print(expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3)))
 #' # should fail (2/3 were wrong, but only 1/3 was allowed)
 expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = FALSE) {
   # then check, that r is only a scalar. Also check, that r is in range [0, 1)
@@ -226,12 +224,13 @@ test_rng <- function(rng_fun,
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
-#' bayesfam:::test_rng_asym(
+#' result <- bayesfam:::test_rng_asym(
 #'   rng_fun = rbetaprime,
 #'   metric_mu = mean,
 #'   mu_list = mu_list,
 #'   aux_list = phis,
 #' )
+#' print(result)
 test_rng_asym <- function(rng_fun,
                           metric_mu,
                           n_samples = c(10, 10000),
@@ -316,8 +315,7 @@ test_rng_asym <- function(rng_fun,
 #' @param relative True if the error should be relative to the mu_list
 #'
 #' @return Nothing actually, just wraps the test
-#'
-#' #@example eps <- 0.001
+#' @examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
@@ -331,7 +329,8 @@ test_rng_asym <- function(rng_fun,
 #'    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
 #'    p_acceptable_failures = 0.1,
 #'    relative = TRUE
-#'    )
+#' )
+#' print("If no error was printed, then the test succeeded.")
 test_rng_quantiles <- function(rng_fun,
                                quantile_fun,
                                n,
@@ -361,7 +360,7 @@ test_rng_quantiles <- function(rng_fun,
   }
 }
 
-#' BRMS family expect recovery. Tries linear baysian model y ~ 1 + a.
+#' BRMS family expect recovery. Tries linear baysian model y ~ 1.
 #' Checking of the arguments done in construct_brms.
 #'
 #' @param n_data_sampels How many samples per chain. Positive integer scalar. Default = 1000.
@@ -458,7 +457,7 @@ expect_brms_family <- function(n_data_sampels = 1000,
   }
 }
 
-#' Construct BRMS family for simple linear y ~ 1 + a model.
+#' Construct BRMS family for simple linear y ~ 1 model.
 #'
 #' @param n_data_sampels How many samples per chain. Positive integer scalar.
 #' @param intercept Intercept data argument, real scalar.
@@ -477,9 +476,16 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #'
 #' @return BRMS model for the specified family.
 #'
-#' @examples library(testthat)
-#' posterior_fit <- bayesfam:::construct_brms(1000, 0.5, 2.0, identity, betaprime, rbetaprime)
+#' @examples posterior_fit <- bayesfam:::construct_brms(
+#'   n_data_sampels = 1000,
+#'   intercept = 5.0,
+#'   aux_par = 2.0,
+#'   rng_link = identity,
+#'   family = betaprime,
+#'   rng = rbetaprime
+#' )
 #' plot(posterior_fit)
+#' print("compare b_Intercept to log(intercept) in case of betaprime. log(5) = 1.61")
 construct_brms <- function(n_data_sampels,
                            intercept,
                            aux_par,
@@ -539,7 +545,8 @@ construct_brms <- function(n_data_sampels,
         cores = 1,
         silent = 2,
         refresh = 0,
-        init = 0.1
+        init = 0.1,
+        backend = "cmdstanr"
       )
     })
   } else {
@@ -553,7 +560,8 @@ construct_brms <- function(n_data_sampels,
       cores = 1,
       silent = 2,
       refresh = 0,
-      init = 0.1
+      init = 0.1,
+      backend = "cmdstanr"
     )
   }
 
@@ -563,7 +571,7 @@ construct_brms <- function(n_data_sampels,
 #' Check, that data of the posterior is close enough to the reference data.
 #'
 #' @param posterior_data Data fitted and drawn, a BRMS object, which is a list in R terms
-#' @param name Name of the variable to check, as single string
+#' @param arg_name Name of the argument variable to check, as single string
 #' @param reference Reference value to check against, single real scalar
 #' @param thresh real scalar or 2-length vector of quantile bounds.
 #' For scalar constructs bound as [tresh, 1-thresh]
@@ -572,16 +580,25 @@ construct_brms <- function(n_data_sampels,
 #'
 #' @return Single boolean succeess, fail or error
 #'
-#' @examples fit <- bayesfam:::construct_brms(1000, 0.5, 2.0, identity, betaprime, rbetaprime)
-#' result <- bayesfam:::test_brms_quantile(fit, "b_Intercept", log(0.5), 0.025)
+#' @examples fit <- bayesfam:::construct_brms(
+#'   n_data_sampels = 1000,
+#'   intercept = 5.0,
+#'   aux_par = 2.0,
+#'   rng_link = identity,
+#'   family = betaprime,
+#'   rng = rbetaprime
+#' )
+#' result <- bayesfam:::test_brms_quantile(
+#'   posterior_data = fit, arg_name = "phi", 2.0, 0.025)
 #' print(result)
 #' plot(fit)
-test_brms_quantile <- function(posterior_data, name, reference, thresh, debug = FALSE) {
+#' print("compare b_Intercept to log(intercept) in case of betaprime. log(5) = 1.61")
+test_brms_quantile <- function(posterior_data, arg_name, reference, thresh, debug = FALSE) {
   if (!is.list(posterior_data)) {
     stop("The posterior_data frame has to be BRMS data, which itself is in R of type list")
   }
-  if (!isSingleString(name)) {
-    stop("The variable name argument has to be a single string")
+  if (!isSingleString(arg_name)) {
+    stop("The variable arg_name argument has to be a single string")
   }
   if (!isNum_len(reference)) {
     stop("The reference data has to be a single real scalar")
@@ -608,12 +625,12 @@ test_brms_quantile <- function(posterior_data, name, reference, thresh, debug = 
 
   calculated <- tryCatch(
     {
-      posterior::extract_variable_matrix(posterior_data, variable = name)
+      posterior::extract_variable_matrix(posterior_data, variable = arg_name)
     },
     error = function(e) {
-      # if the extract fails, most probably cause is a wrong variable name string
+      # if the extract fails, most probably cause is a wrong variable arg_name string
       # instead of giving an unreadable error, throw clear warning and return false
-      warning(paste0("In test_brms_quantile, the variable extraction of ", name, " failed.
+      warning(paste0("In test_brms_quantile, the variable extraction of ", arg_name, " failed.
                    Most probable cause, the variable-string was written wrong or did not exist somehow.
                    Return FALSE in this case."))
       # warning(paste0("Original error was: ", e))
@@ -721,7 +738,7 @@ isLogic_len <- function(logic, len = 1) {
 #' @return Is a string and only one string
 #' @export
 #'
-#' @examples isSingleString("abc") # should be TRUE
+#' @examples bayesfam:::isSingleString("abc") # should be TRUE
 #' bayesfam:::isSingleString(c("abc", "def")) # should be FALSE, not a single string
 isSingleString <- function(input) {
   value <- all(!is.na(input)) && is.character(input) && length(input) == 1
@@ -740,7 +757,7 @@ isSingleString <- function(input) {
 #' @return boolean, given the arguments above
 #'
 #' @examples va <- c(1, 2, 3)
-#' vb <- c(NA, 5, 6)
+#' vb <- c(4, 5, 6)
 #' vc <- c(7, 8)
 #' bayesfam:::lenEqual(list(va, vb))
 #' bayesfam:::lenEqual(list(va, vc))

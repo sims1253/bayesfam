@@ -2,7 +2,7 @@
 % Please edit documentation in R/test-helper.R
 \name{expect_brms_family}
 \alias{expect_brms_family}
-\title{BRMS family expect recovery. Tries linear baysian model y ~ 1 + a.
+\title{BRMS family expect recovery. Tries linear baysian model y ~ 1.
 Checking of the arguments done in construct_brms.}
 \usage{
 expect_brms_family(
@@ -60,7 +60,7 @@ Note: Will supress everything, besides errors (so tests stay clean).}
 None
 }
 \description{
-BRMS family expect recovery. Tries linear baysian model y ~ 1 + a.
+BRMS family expect recovery. Tries linear baysian model y ~ 1.
 Checking of the arguments done in construct_brms.
 }
 \examples{

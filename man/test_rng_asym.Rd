@@ -41,10 +41,11 @@ eps <- 0.001
 mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 phis <- seq(from = 2 + eps, to = 20, length.out = 10)
 # if working as expected, this test should not print any errors
-bayesfam:::test_rng_asym(
+result <- bayesfam:::test_rng_asym(
   rng_fun = rbetaprime,
   metric_mu = mean,
   mu_list = mu_list,
   aux_list = phis,
 )
+print(result)
 }
