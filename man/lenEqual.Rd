@@ -30,7 +30,7 @@ Length and data check function
 }
 \examples{
 va <- c(1, 2, 3)
-vb <- c(NA, 5, 6)
+vb <- c(4, 5, 6)
 vc <- c(7, 8)
 bayesfam:::lenEqual(list(va, vb))
 bayesfam:::lenEqual(list(va, vc))
