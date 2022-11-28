@@ -16,7 +16,7 @@ expect_eps(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = FALSE)
 
 \item{eps}{numeric scalar or vector, setting the max differences, eps > 0}
 
-\item{r}{optional numeric scalar (r = 0 in defualt), relative number of values, that may have an difference > eps.}
+\item{r}{optional numeric scalar (r = 0 in default), relative number of values, that may have an difference > eps.}
 
 \item{relative}{bool argument, if set will take the normale difference with euler metric. Default = FALSE}
 

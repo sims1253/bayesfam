@@ -3,7 +3,7 @@
 #' @param x Value space of the function, x e (0, 1)
 #' @param mu Median parameter, mu is already Cloglog-transformed, mu unbound
 #' @param sigma Shape parameter, sigma >= 0
-#' @param log optional argument. If true, returns logarathmic probability. Default = FALSE
+#' @param log optional argument. If true, returns logarithmic probability. Default = FALSE
 #'
 #' @return Normal Distribution density with Cloglog link function
 #' @export
@@ -73,7 +73,7 @@ posterior_predict_cloglognormal <- function(i, prep, ...) {
   return(rcloglognormal(prep$ndraws, mu, sigma))
 }
 
-#' Posterior expected value prediction. Mean undefined for CLogLog-Normal
+#' Posterior expected value prediction. Mean undefined for Cloglog-Normal
 #'
 #' @param prep BRMS data
 #'
@@ -84,7 +84,7 @@ posterior_epred_cloglognormal <- function(prep) {
         distribution, posterior_epred is currently not supported.")
 }
 
-#' Custom BRMS family CLogLog-Normal in median parametrization.
+#' Custom BRMS family Cloglog-Normal in median parametrization.
 #'
 #' @param link Link function argument (as string) for Median argument. Left as identity!
 #' @param link_sigma Link function argument (as string) for Shape argument

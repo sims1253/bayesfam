@@ -2,7 +2,7 @@
 % Please edit documentation in R/cloglognormal.R
 \name{cloglognormal}
 \alias{cloglognormal}
-\title{Custom BRMS family CLogLog-Normal in median parametrization.}
+\title{Custom BRMS family Cloglog-Normal in median parametrization.}
 \usage{
 cloglognormal(link = "identity", link_sigma = "log")
 }
@@ -15,7 +15,7 @@ cloglognormal(link = "identity", link_sigma = "log")
 Cloglog BRMS model-object
 }
 \description{
-Custom BRMS family CLogLog-Normal in median parametrization.
+Custom BRMS family Cloglog-Normal in median parametrization.
 }
 \examples{
 # Running the example might take a while and may make RStudio unresponsive.

@@ -14,13 +14,13 @@ test_brms_quantile(posterior_data, arg_name, reference, thresh, debug = FALSE)
 \item{reference}{Reference value to check against, single real scalar}
 
 \item{thresh}{real scalar or 2-length vector of quantile bounds.
-For scalar constructs bound as [tresh, 1-thresh]
+For scalar constructs bound as [thresh, 1-thresh]
 thresh has to be inside the Unit-Interval.}
 
-\item{debug}{True for verbouse output of test results.}
+\item{debug}{True for verbose output of test results.}
 }
 \value{
-Single boolean succeess, fail or error
+Single boolean success, fail or error
 }
 \description{
 Check, that data of the posterior is close enough to the reference data.

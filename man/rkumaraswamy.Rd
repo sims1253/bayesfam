@@ -2,7 +2,7 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{rkumaraswamy}
 \alias{rkumaraswamy}
-\title{Kumaraswamy RNG function in Median parametrisations.}
+\title{Kumaraswamy RNG function in Median parametrization.}
 \usage{
 rkumaraswamy(n, mu, p)
 }
@@ -17,7 +17,7 @@ rkumaraswamy(n, mu, p)
 n samples in Kumaraswamy distribution.
 }
 \description{
-Kumaraswamy RNG function in Median parametrisations.
+Kumaraswamy RNG function in Median parametrization.
 }
 \examples{
 hist(rkumaraswamy(10000, mu = 0.5, p = 4))

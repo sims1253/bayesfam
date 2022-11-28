@@ -20,7 +20,7 @@ test_rng_quantiles(
 \arguments{
 \item{rng_fun}{RNG function under test}
 
-\item{quantile_fun}{Quantile funktion related to the rng under test.}
+\item{quantile_fun}{Quantile function related to the rng under test.}
 
 \item{n}{Sample size for the rng test.}
 

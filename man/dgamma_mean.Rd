@@ -13,7 +13,7 @@ dgamma_mean(x, mu, a, log = FALSE)
 
 \item{a}{Shape parameter, a > 0.}
 
-\item{log}{optional argument. If true, returns logarathmic probability. Default = FALSE}
+\item{log}{optional argument. If true, returns logarithmic probability. Default = FALSE}
 }
 \value{
 f(x | mu, k)
@@ -22,7 +22,7 @@ f(x | mu, k)
 Mean parameterization of the gamma pdf.
 }
 \details{
-Define rate constante rho as:
+Define rate constant rho as:
 \deqn{\rho(\alpha, \mu) = \frac{\alpha}{\mu}}
 
 The Frechet distribution density is defined as

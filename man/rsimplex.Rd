@@ -2,7 +2,7 @@
 % Please edit documentation in R/simplex.R
 \name{rsimplex}
 \alias{rsimplex}
-\title{Simplex RNG function in Median parametrisations.}
+\title{Simplex RNG function in Median parametrization.}
 \usage{
 rsimplex(n, mu, sigma)
 }

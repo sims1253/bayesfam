@@ -32,10 +32,10 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
 #' Softplus RNG-function in median parametrization.
 #'
 #' @param n Number of draws
-#' @param mu Median paramameter, mu unbound, mu already log transformed
+#' @param mu Median parameter, mu unbound, mu already log transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @returns n Softplussy ditributed samples
+#' @returns n Softplus distributed samples
 #'
 #' @export
 #'

@@ -9,7 +9,7 @@
 #' @param a numeric scalar or vector a to be compared
 #' @param b numeric scalar or vector b to be compared
 #' @param eps numeric scalar or vector, setting the max differences, eps > 0
-#' @param r optional numeric scalar (r = 0 in defualt), relative number of values, that may have an difference > eps.
+#' @param r optional numeric scalar (r = 0 in default), relative number of values, that may have an difference > eps.
 #' @param note optional parameter used for debugging.
 #' @param relative bool argument, if set will take the normale difference with euler metric. Default = FALSE
 #' @param debug bool argument, if set will printout the difference, in case of failure. Default = FALSE
@@ -301,7 +301,7 @@ test_rng_asym <- function(rng_fun,
 #' Tests if an RNG can recover the true quantiles within a margin of error
 #'
 #' @param rng_fun RNG function under test
-#' @param quantile_fun Quantile funktion related to the rng under test.
+#' @param quantile_fun Quantile function related to the rng under test.
 #' @param n Sample size for the rng test.
 #' @param mu_list Metric data used as RNG argument and to be compared to
 #'                (usually mean or median)
@@ -367,23 +367,23 @@ test_rng_quantiles <- function(rng_fun,
 #' @param intercept Intercept for data generating RNG.
 #' @param ref_intercept Reference intercept to compare model against. If NULL (default) uses the given intercept.
 #' @param aux_par Auxiliary parameter of each distribution.
-#' @param rng_link Link function pointer used for data generation. Mainly for transformed normals.
+#' @param rng_link Link function pointer used for data generation. Mainly for transformed normal distributions.
 #' @param parameter_link Link function pointer for the latent parameters. Used to transform for comparison with ref_intercept
 #' @param family BRMS family under test.
 #' @param rng function pointer of bespoke RNG for the family to be tested.
 #' @param aux_name BRMS string of aux_par argument name. Single string.
 #' @param seed Seed argument, so that input data is always the same in each test.
-#' BRMS test does not test RNG and is not guarateed to fit on all data. Positive Integer scalar, Default = 1337.
+#' BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1337.
 #' Seed is stored before test and restored after it finished. If wants not to use a seed set to NA.
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
-#' If so, set a two entry real vector c(lower, uppper). If one of them is NA, the data will not be capped for that boundary.
+#' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 #' Default = Null, will be in R terms "invisible" and will not cap any input data.
 #' @param thresh Acceptable threshold for quantiles of recovered arguments.
 #' Scalar or 2-entry real vector within (0, 1).
-#' Vector is used as is, scalar will be interpreted as c(tresh, 1-thresh).
+#' Vector is used as is, scalar will be interpreted as c(thresh, 1-thresh).
 #' Default = 0.05
 #' @param debug Scalar Boolean argument, whether debug info is printed or not. Default = False.
-#' Note: Will supress everything, besides errors (so tests stay clean).
+#' Note: Will suppress everything, besides errors (so tests stay clean).
 #'
 #' @return None
 #'
@@ -466,12 +466,12 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #' @param family BRMS family under test.
 #' @param rng function pointer of bespoke RNG for the family to be tested.
 #' @param seed Seed argument, so that input data is always the same in each test.
-#' BRMS test does not test RNG and is not guarateed to fit on all data.
+#' BRMS test does not test RNG and is not guaranteed to fit on all data.
 #' Positive Integer scalar, Default = NA will do nothing. Seed is stored before and restored after.
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
-#' If so, set a two entry real vector c(lower, uppper). If one of them is NA, the data will not be capped for that boundary.
+#' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 #' Default = Null, will be in R terms "invisible" and will not cap any input data.
-#' @param suppress_output Scalar Boolean argument. Default = TRUE supresses all prints.
+#' @param suppress_output Scalar Boolean argument. Default = TRUE suppresses all prints.
 #' Only exceptions will be printed. For testing reasons, to not spam the test-window.
 #'
 #' @return BRMS model for the specified family.
@@ -574,11 +574,11 @@ construct_brms <- function(n_data_sampels,
 #' @param arg_name Name of the argument variable to check, as single string
 #' @param reference Reference value to check against, single real scalar
 #' @param thresh real scalar or 2-length vector of quantile bounds.
-#' For scalar constructs bound as [tresh, 1-thresh]
+#' For scalar constructs bound as [thresh, 1-thresh]
 #' thresh has to be inside the Unit-Interval.
-#' @param debug True for verbouse output of test results.
+#' @param debug True for verbose output of test results.
 #'
-#' @return Single boolean succeess, fail or error
+#' @return Single boolean success, fail or error
 #'
 #' @examples fit <- bayesfam:::construct_brms(
 #'   n_data_sampels = 1000,
@@ -692,10 +692,10 @@ isInt_len <- function(int, len = 1) {
   # this did prevent errors (from "r" %% 1 == 0) at the least
 
   # But I would prefer only checking numerics,
-  # given logical AND may not necassarily follow this behaviour!
+  # given logical AND may not necessarily follow this behavior!
 }
 
-#' Natural number vector check. Natural in informatic sense (n >= 0).
+#' Natural number vector check n >= 0.
 #'
 #' @param int Integer vector to be checked
 #' @param len Length of vector, default argument is 1
@@ -786,8 +786,8 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
       return(FALSE)
     }
     if (!na_allowed && any(is.na(vector))) {
-      # if NAs are dissallowed and the input contains any NAs, the function returns FALSE immediatly.
-      warning("NAs dissallowed, but at least one entry in the vectors was a NA! Return FALSE immediatly.")
+      # if NAs are disallowed and the input contains any NAs, the function returns FALSE immediatly.
+      warning("NAs disallowed, but at least one entry in the vectors was a NA! Return FALSE immediatly.")
       return(FALSE)
     }
   }

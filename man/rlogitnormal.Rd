@@ -9,12 +9,12 @@ rlogitnormal(n, mu, sigma)
 \arguments{
 \item{n}{Number of draws}
 
-\item{mu}{Median paramameter, mu unbound, mu already logit transformed}
+\item{mu}{Median parameter, mu unbound, mu already logit transformed}
 
 \item{sigma}{Sigma shape parameter, sigma > 0}
 }
 \value{
-n Logitnormally ditributed samples
+n Logitnormal distributed samples
 }
 \description{
 Logitnormal RNG-function in median parametrization.

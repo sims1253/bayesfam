@@ -38,7 +38,7 @@ dkumaraswamy <- function(x, mu, p, log = FALSE) {
   }
 }
 
-#' Kumaraswamy RNG function in Median parametrisations.
+#' Kumaraswamy RNG function in Median parametrization.
 #'
 #' @param n Number of samples to draw, as a natural number scalar.
 #' @param mu Median parameter, mu e (0, 1)
@@ -146,7 +146,7 @@ posterior_predict_kumaraswamy <- function(i, prep, ...) {
   return(rkumaraswamy(prep$ndraws, mu, p))
 }
 
-#' Posterior expected value prediction of the Kuramaswamy implementation.
+#' Posterior expected value prediction of the Kumaraswamy implementation.
 #'
 #' @param prep BRMS data
 #'

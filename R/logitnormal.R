@@ -31,10 +31,10 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
 #' Logitnormal RNG-function in median parametrization.
 #'
 #' @param n Number of draws
-#' @param mu Median paramameter, mu unbound, mu already logit transformed
+#' @param mu Median parameter, mu unbound, mu already logit transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @returns n Logitnormally ditributed samples
+#' @returns n Logitnormal distributed samples
 #'
 #' @export
 #'

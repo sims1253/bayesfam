@@ -2,7 +2,7 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{posterior_epred_kumaraswamy}
 \alias{posterior_epred_kumaraswamy}
-\title{Posterior expected value prediction of the Kuramaswamy implementation.}
+\title{Posterior expected value prediction of the Kumaraswamy implementation.}
 \usage{
 posterior_epred_kumaraswamy(prep)
 }
@@ -13,5 +13,5 @@ posterior_epred_kumaraswamy(prep)
 Recover the given mean of data prep
 }
 \description{
-Posterior expected value prediction of the Kuramaswamy implementation.
+Posterior expected value prediction of the Kumaraswamy implementation.
 }

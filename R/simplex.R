@@ -97,7 +97,7 @@ rMIG <-
   }
 
 
-#' Simplex RNG function in Median parametrisations.
+#' Simplex RNG function in Median parametrization.
 #'
 #' Based on code from simplexreg
 #' Peng Zhang, Zhenguo Qiu, Chengchun Shi (2016). simplexreg: An R

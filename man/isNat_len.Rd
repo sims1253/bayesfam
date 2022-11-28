@@ -2,7 +2,7 @@
 % Please edit documentation in R/test-helper.R
 \name{isNat_len}
 \alias{isNat_len}
-\title{Natural number vector check. Natural in informatic sense (n >= 0).}
+\title{Natural number vector check n >= 0.}
 \usage{
 isNat_len(int, len = 1)
 }
@@ -15,7 +15,7 @@ isNat_len(int, len = 1)
 Boolean, whether int was Integer >= 0 and of correct size
 }
 \description{
-Natural number vector check. Natural in informatic sense (n >= 0).
+Natural number vector check n >= 0.
 }
 \examples{
 bayesfam:::isNat_len(c(1, 2), 2) # should be TRUE

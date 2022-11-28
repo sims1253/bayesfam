@@ -31,10 +31,10 @@ dcauchitnormal <- function(x, mu, sigma, log = FALSE) {
 #' Cauchitnormal RNG-function
 #'
 #' @param n Number of draws
-#' @param mu Median paramameter, mu unbound, mu already cauchit transformed
+#' @param mu Median parameter, mu unbound, mu already cauchit transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @returns n chauchitnormally ditributed samples
+#' @returns n chauchitnormal distributed samples
 #'
 #' @export
 #'
@@ -48,7 +48,7 @@ rcauchitnormal <- function(n, mu, sigma) {
   )
 }
 
-#' Log-Likelihood vignette for the Chauchitnormal Distribution
+#' Log-Likelihood vignette for the Cauchitnormal Distribution
 #'
 #' @param i Indices
 #' @param prep BRMS data
@@ -61,7 +61,7 @@ log_lik_cauchitnormal <- function(i, prep) {
   return(dcauchitnormal(y, mu, sigma, log = TRUE))
 }
 
-#' Posterior-predict vignette for the Chauchitnormal Distribution
+#' Posterior-predict vignette for the Cauchitnormal Distribution
 #'
 #' @param i Indices
 #' @param prep BRMS data

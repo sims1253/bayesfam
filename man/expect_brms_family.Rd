@@ -30,7 +30,7 @@ expect_brms_family(
 
 \item{aux_par}{Auxiliary parameter of each distribution.}
 
-\item{rng_link}{Link function pointer used for data generation. Mainly for transformed normals.}
+\item{rng_link}{Link function pointer used for data generation. Mainly for transformed normal distributions.}
 
 \item{parameter_link}{Link function pointer for the latent parameters. Used to transform for comparison with ref_intercept}
 
@@ -41,20 +41,20 @@ expect_brms_family(
 \item{aux_name}{BRMS string of aux_par argument name. Single string.}
 
 \item{seed}{Seed argument, so that input data is always the same in each test.
-BRMS test does not test RNG and is not guarateed to fit on all data. Positive Integer scalar, Default = 1337.
+BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1337.
 Seed is stored before test and restored after it finished. If wants not to use a seed set to NA.}
 
 \item{data_threshold}{Usually unused. But in rare cases, data too close at the boundary may cause trouble.
-If so, set a two entry real vector c(lower, uppper). If one of them is NA, the data will not be capped for that boundary.
+If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 Default = Null, will be in R terms "invisible" and will not cap any input data.}
 
 \item{thresh}{Acceptable threshold for quantiles of recovered arguments.
 Scalar or 2-entry real vector within (0, 1).
-Vector is used as is, scalar will be interpreted as c(tresh, 1-thresh).
+Vector is used as is, scalar will be interpreted as c(thresh, 1-thresh).
 Default = 0.05}
 
 \item{debug}{Scalar Boolean argument, whether debug info is printed or not. Default = False.
-Note: Will supress everything, besides errors (so tests stay clean).}
+Note: Will suppress everything, besides errors (so tests stay clean).}
 }
 \value{
 None
