@@ -26,7 +26,7 @@ data <- list(a = a, y = rlomax(1000, exp(0.5 * a + 1), 2))
 BBmisc::suppressAll({
   fit1 <- brms::brm(y ~ 1 + a,
     data = data, family = lomax(),
-    stanvars = lomax()$stanvars, backend = "cmdstanr", cores = 4
+    stanvars = lomax()$stanvars
   )
 })
 plot(fit1)

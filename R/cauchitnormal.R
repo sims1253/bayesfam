@@ -101,7 +101,7 @@ posterior_epred_cauchitnormal <- function(prep) {
 #' BBmisc::suppressAll({
 #'   fit1 <- brms::brm(y ~ 1 + a,
 #'     data = data, family = cauchitnormal(),
-#'     stanvars = cauchitnormal()$stanvars, backend = "cmdstanr", cores = 4
+#'     stanvars = cauchitnormal()$stanvars
 #'   )
 #' })
 #' plot(fit1)

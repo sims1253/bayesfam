@@ -137,7 +137,7 @@ normale_difference <- function(va, vb) {
 #'
 #' @return Nothing actually, just wraps the test
 #'
-#' @examples library(testthat)
+#' #@examples library(testthat)
 #' eps <- 1e-6
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
@@ -220,7 +220,7 @@ test_rng <- function(rng_fun,
 #'
 #' @return Success or failure with message
 #'
-#' @examples eps <- 0.001
+#' #@examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
@@ -315,7 +315,7 @@ test_rng_asym <- function(rng_fun,
 #' @param relative True if the error should be relative to the mu_list
 #'
 #' @return Nothing actually, just wraps the test
-#' @examples eps <- 0.001
+#' #@examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
@@ -373,7 +373,7 @@ test_rng_quantiles <- function(rng_fun,
 #' @param rng function pointer of bespoke RNG for the family to be tested.
 #' @param aux_name BRMS string of aux_par argument name. Single string.
 #' @param seed Seed argument, so that input data is always the same in each test.
-#' BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1337.
+#' BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.
 #' Seed is stored before test and restored after it finished. If wants not to use a seed set to NA.
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 #' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
@@ -535,20 +535,21 @@ construct_brms <- function(n_data_sampels,
 
   if (isTRUE(suppress_output)) {
     # if printout suppression is wished, use suppressAll as wrapper
-    BBmisc::suppressAll({
+
+    # testing to repair segfaults caused by this function (or functions caling this)...
+
+    #BBmisc::suppressAll({
       posterior_fit <- brms::brm(
         y ~ 1,
         data = data,
         family = family(),
         stanvars = family()$stanvars,
-        chains = 2,
-        cores = 1,
+#        chains = 2,
         silent = 2,
         refresh = 0,
-        init = 0.1,
-        backend = "cmdstanr"
+        init = 0.1
       )
-    })
+    #})
   } else {
     # and if not, do nothing special
     posterior_fit <- brms::brm(
@@ -556,12 +557,10 @@ construct_brms <- function(n_data_sampels,
       data = data,
       family = family(),
       stanvars = family()$stanvars,
-      chains = 2,
-      cores = 1,
+#      chains = 2,
       silent = 2,
       refresh = 0,
-      init = 0.1,
-      backend = "cmdstanr"
+      init = 0.1
     )
   }
 
@@ -719,7 +718,8 @@ isNat_len <- function(int, len = 1) {
 #' @export
 #'
 #' @examples bayesfam:::isLogic_len(c(TRUE, FALSE), 2) # should be TRUE
-#' bayesfam:::isLogic_len(TRUE, FALSE) # should be FALSE, wrong length
+#' bayesfam:::isLogic_len(0, len = 1) # should be FALSE, 0 and 1 are numeric,
+#' # not boolean (unlike in C)
 isLogic_len <- function(logic, len = 1) {
   if (any(is.function(logic))) {
     # other comparable functions threw warnings for function-ptr.

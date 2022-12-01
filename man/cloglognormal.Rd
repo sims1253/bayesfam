@@ -27,7 +27,7 @@ cloglog_data <- limit_data(cloglog_data, c(1e-12, 1 - 1e-12))
 BBmisc::suppressAll({
   fit1 <- brms::brm(y ~ 1,
     data = list(y = cloglog_data), family = cloglognormal(),
-    stanvars = cloglognormal()$stanvars, backend = "cmdstanr", cores = 4
+    stanvars = cloglognormal()$stanvars
   )
 })
 plot(fit1)

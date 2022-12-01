@@ -101,7 +101,7 @@ posterior_epred_cloglognormal <- function(prep) {
 #' BBmisc::suppressAll({
 #'   fit1 <- brms::brm(y ~ 1,
 #'     data = list(y = cloglog_data), family = cloglognormal(),
-#'     stanvars = cloglognormal()$stanvars, backend = "cmdstanr", cores = 4
+#'     stanvars = cloglognormal()$stanvars
 #'   )
 #' })
 #' plot(fit1)

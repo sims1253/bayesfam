@@ -197,7 +197,7 @@ posterior_epred_simplex <- function(prep) {
 #' BBmisc::suppressAll({
 #'   fit1 <- brms::brm(y ~ 1 + a,
 #'     data = data, family = simplex(),
-#'     stanvars = simplex()$stanvars, backend = "cmdstanr", cores = 4
+#'     stanvars = simplex()$stanvars
 #'   )
 #' })
 #' plot(fit1)

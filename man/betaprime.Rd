@@ -23,11 +23,10 @@ Beta prime brms custom family
 a <- rnorm(n = 1000)
 data <- list(a = a, y = rbetaprime(n = 1000, mu = exp(0.5 * a + 1), phi = 2))
 # BBmisc::surpressAll necassary to keep the test output clean
-BBmisc::suppressAll({
-  fit1 <- brms::brm(y ~ 1 + a,
-    data = data, family = betaprime(),
-    stanvars = betaprime()$stanvars, backend = "cmdstanr", cores = 4
-  )
-})
+fit1 <- brms::brm(y ~ 1 + a,
+ data = data, family = betaprime(), stanvars = betaprime()$stanvars,
+ silent = 2, refresh = 0
+)
+print(fit1)
 plot(fit1)
 }

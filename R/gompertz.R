@@ -138,7 +138,7 @@ posterior_epred_gompertz <- function(prep) {
 #' BBmisc::suppressAll({
 #'   fit1 <- brms::brm(y ~ 1 + a,
 #'     data = data, family = gompertz(),
-#'     stanvars = gompertz()$stanvars, backend = "cmdstanr", cores = 4
+#'     stanvars = gompertz()$stanvars
 #'   )
 #' })
 #' plot(fit1)

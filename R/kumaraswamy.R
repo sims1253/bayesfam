@@ -174,7 +174,7 @@ posterior_epred_kumaraswamy <- function(prep) {
 #' BBmisc::suppressAll({
 #'   fit1 <- brms::brm(y ~ 1 + a,
 #'     data = data, family = kumaraswamy(),
-#'     stanvars = kumaraswamy()$stanvars, backend = "cmdstanr", cores = 4
+#'     stanvars = kumaraswamy()$stanvars
 #'   )
 #' })
 #' plot(fit1)

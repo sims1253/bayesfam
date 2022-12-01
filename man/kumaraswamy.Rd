@@ -26,7 +26,7 @@ data <- list(a = a, y = rkumaraswamy(1000, brms::inv_logit_scaled(0.5 * a + 1), 
 BBmisc::suppressAll({
   fit1 <- brms::brm(y ~ 1 + a,
     data = data, family = kumaraswamy(),
-    stanvars = kumaraswamy()$stanvars, backend = "cmdstanr", cores = 4
+    stanvars = kumaraswamy()$stanvars
   )
 })
 plot(fit1)

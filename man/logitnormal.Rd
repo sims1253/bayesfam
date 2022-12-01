@@ -26,7 +26,7 @@ data <- list(a = a, y = rlogitnormal(1000, 0.5 * a + 1, 2))
 BBmisc::suppressAll({
   fit1 <- brms::brm(y ~ 1 + a,
     data = data, family = logitnormal(),
-    stanvars = logitnormal()$stanvars, backend = "cmdstanr", cores = 4
+    stanvars = logitnormal()$stanvars
   )
 })
 plot(fit1)

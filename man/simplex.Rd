@@ -26,7 +26,7 @@ data <- list(a = a, y = rsimplex(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
 BBmisc::suppressAll({
   fit1 <- brms::brm(y ~ 1 + a,
     data = data, family = simplex(),
-    stanvars = simplex()$stanvars, backend = "cmdstanr", cores = 4
+    stanvars = simplex()$stanvars
   )
 })
 plot(fit1)

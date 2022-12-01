@@ -106,7 +106,7 @@ posterior_epred_softplusnormal <- function(prep) {
 #' BBmisc::suppressAll({
 #'   fit1 <- brms::brm(y ~ 1 + a,
 #'     data = data, family = softplusnormal(),
-#'     stanvars = softplusnormal()$stanvars, backend = "cmdstanr", cores = 4
+#'     stanvars = softplusnormal()$stanvars
 #'   )
 #' })
 #' plot(fit1)
