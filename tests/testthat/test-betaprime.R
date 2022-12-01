@@ -8,7 +8,7 @@ test_that("custom-betaprime", {
   mu_list <- seq(from = eps, to = 100, length.out = n_small)
   phi_list <- seq(from = eps, to = 50, length.out = n_small)
   accepted_relative_error <- 1e-6
-  accepted_rng_error <- 0.075
+  accepted_rng_error <- 0.085
   accepred_rng_failures <- 0.1
 
   # Check lengths

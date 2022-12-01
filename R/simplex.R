@@ -193,13 +193,10 @@ posterior_epred_simplex <- function(prep) {
 #' # Just relax and grab a cup of coffe or tea in the meantime.
 #' a <- rnorm(1000)
 #' data <- list(a = a, y = rsimplex(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
-#' # BBmisc::surpressAll necassary to keep test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = simplex(),
-#'     stanvars = simplex()$stanvars
-#'   )
-#' })
+#' # refresh = 0 supresses chain updates
+#' fit1 <- brms::brm(y ~ 1 + a, data = data,
+#'  family = simplex(), stanvars = simplex()$stanvars,
+#'  refresh = 0)
 #' plot(fit1)
 simplex <- function(link = "logit", link_sigma = "identity") {
   family <- brms::custom_family(

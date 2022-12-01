@@ -20,8 +20,9 @@ Suggests:
     rmutil,
     extraDistr,
     BBmisc,
+    RcppParallel,
     posterior (>= 1.3.1)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 NeedsCompilation: no
 URL: https://github.com/sims1253/bayesfam
 BugReports: https://github.com/sims1253/bayesfam/issues

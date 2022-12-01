@@ -425,7 +425,7 @@ expect_brms_family <- function(n_data_sampels = 1000,
     family,
     rng,
     seed = seed,
-    suppress_output = !debug,
+    #suppress_output = !debug,
     data_threshold = data_threshold
   )
 
@@ -471,8 +471,8 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 #' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 #' Default = Null, will be in R terms "invisible" and will not cap any input data.
-#' @param suppress_output Scalar Boolean argument. Default = TRUE suppresses all prints.
-#' Only exceptions will be printed. For testing reasons, to not spam the test-window.
+#' #@param suppress_output Scalar Boolean argument. Default = TRUE suppresses all prints.
+#' #Only exceptions will be printed. For testing reasons, to not spam the test-window.
 #'
 #' @return BRMS model for the specified family.
 #'
@@ -492,9 +492,10 @@ construct_brms <- function(n_data_sampels,
                            rng_link,
                            family,
                            rng,
+                           #suppress_output = TRUE,
                            seed = NULL,
-                           data_threshold = NULL,
-                           suppress_output = TRUE) {
+                           data_threshold = NULL
+                           ) {
   if (!(is.function(family) && is.function(rng) && is.function(rng_link))) {
     stop("family, rng or rng_link argument were not a function!")
   }
@@ -511,9 +512,9 @@ construct_brms <- function(n_data_sampels,
     stop("seed argument if used has to be a real scalar. Else it is let default as NULL,
          which will not change the current RNG seed")
   }
-  if (!isLogic_len(suppress_output)) {
-    stop("The argument suppress_output has to be a single boolean")
-  }
+  # if (!isLogic_len(suppress_output)) {
+  #   stop("The argument suppress_output has to be a single boolean")
+  # }
 
 
   if (!is.null(seed)) {
@@ -533,36 +534,48 @@ construct_brms <- function(n_data_sampels,
 
   data <- list(y = y_data)
 
-  if (isTRUE(suppress_output)) {
-    # if printout suppression is wished, use suppressAll as wrapper
+#   if (isTRUE(suppress_output)) {
+#     # if printout suppression is wished, use suppressAll as wrapper
+#
+#     # testing to repair segfaults caused by this function (or functions caling this)...
+#
+#     #BBmisc::suppressAll({
+#       posterior_fit <- brms::brm(
+#         y ~ 1,
+#         data = data,
+#         family = family(),
+#         stanvars = family()$stanvars,
+# #        chains = 2,
+#         silent = 2,
+#         refresh = 0,
+#         init = 0.1
+#       )
+#     #})
+#   } else {
+#     # and if not, do nothing special
+#     posterior_fit <- brms::brm(
+#       y ~ 1,
+#       data = data,
+#       family = family(),
+#       stanvars = family()$stanvars,
+# #      chains = 2,
+#       silent = 2,
+#       refresh = 0,
+#       init = 0.1
+#     )
+#   }
 
-    # testing to repair segfaults caused by this function (or functions caling this)...
-
-    #BBmisc::suppressAll({
-      posterior_fit <- brms::brm(
-        y ~ 1,
-        data = data,
-        family = family(),
-        stanvars = family()$stanvars,
-#        chains = 2,
-        silent = 2,
-        refresh = 0,
-        init = 0.1
-      )
-    #})
-  } else {
-    # and if not, do nothing special
-    posterior_fit <- brms::brm(
-      y ~ 1,
-      data = data,
-      family = family(),
-      stanvars = family()$stanvars,
-#      chains = 2,
-      silent = 2,
-      refresh = 0,
-      init = 0.1
-    )
-  }
+  posterior_fit <- brms::brm(
+    y ~ 1,
+    data = data,
+    family = family(),
+    stanvars = family()$stanvars,
+    chains = 2,
+    cores = 2,
+    silent = 2,
+    refresh = 0,
+    init = 0.1
+  )
 
   return(posterior_fit)
 }

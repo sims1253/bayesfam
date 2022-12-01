@@ -85,9 +85,9 @@ test_that("custom-lomax", {
 
   # Check of brms can fit the custom family and recover the intercept and shape
   expect_brms_family(
-    intercept = 5,
+    intercept = 4,
     aux_par = 2,
-    ref_intercept = 5,
+    ref_intercept = 4,
     rng_link = identity,
     parameter_link = log,
     family = lomax,

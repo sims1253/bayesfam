@@ -94,16 +94,13 @@ posterior_epred_cloglognormal <- function(prep) {
 #'
 #' @examples # Running the example might take a while and may make RStudio unresponsive.
 #' # Just relax and grab a cup of coffe or tea in the meantime.
-#' cloglog_data <- rcloglognormal(1000, 0.5, 2)
+#' raw_data <- rcloglognormal(1000, 0.5, 2)
 #' # cloglognormal does not like values to close to the boundary
-#' cloglog_data <- limit_data(cloglog_data, c(1e-12, 1 - 1e-12))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1,
-#'     data = list(y = cloglog_data), family = cloglognormal(),
-#'     stanvars = cloglognormal()$stanvars
-#'   )
-#' })
+#' cloglog_data <- limit_data(raw_data, c(1e-12, 1 - 1e-12))
+#' # refresh = 0 supresses chain updates
+#' fit1 <- brms::brm(y ~ 1, data = list(y = cloglog_data),
+#'  family = cloglognormal(), stanvars = cloglognormal()$stanvars,
+#'  refresh = 0)
 #' plot(fit1)
 cloglognormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

@@ -22,12 +22,9 @@ Lomax Stan-implementation in Mean parametrization.
 # Just relax and grab a cup of coffe or tea in the meantime.
 a <- rnorm(1000)
 data <- list(a = a, y = rlomax(1000, exp(0.5 * a + 1), 2))
-# BBmisc::surpressAll necassary to keep the test output clean
-BBmisc::suppressAll({
-  fit1 <- brms::brm(y ~ 1 + a,
-    data = data, family = lomax(),
-    stanvars = lomax()$stanvars
-  )
-})
+# refresh = 0 supresses chain updates
+fit1 <- brms::brm(y ~ 1 + a, data = data,
+ family = lomax(), stanvars = lomax()$stanvars,
+ refresh = 0)
 plot(fit1)
 }
