@@ -32,8 +32,12 @@ to fail for the whole test to still succeed.}
 }
 \value{
 Success or failure with message
-
-#@examples eps <- 0.001
+}
+\description{
+Is currently not in a reliable state useful for testing. Needs more thought.
+}
+\examples{
+eps <- 0.001
 mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 phis <- seq(from = 2 + eps, to = 20, length.out = 10)
 # if working as expected, this test should not print any errors
@@ -44,7 +48,4 @@ result <- bayesfam:::test_rng_asym(
   aux_list = phis,
 )
 print(result)
-}
-\description{
-Is currently not in a reliable state useful for testing. Needs more thought.
 }

@@ -41,8 +41,12 @@ useful in link-normal-distributions}
 }
 \value{
 Nothing actually, just wraps the test
-
-#@examples library(testthat)
+}
+\description{
+Tests if an RNG can achieve a good enough location often enough
+}
+\examples{
+library(testthat)
 eps <- 1e-6
 mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 phis <- seq(from = 2 + eps, to = 20, length.out = 10)
@@ -51,7 +55,4 @@ result <- bayesfam:::test_rng(
   aux_list = phis, mu_eps = 0.2, p_acceptable_failures = 0.05
 )
 print(result)
-}
-\description{
-Tests if an RNG can achieve a good enough location often enough
 }

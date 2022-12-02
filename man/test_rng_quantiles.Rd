@@ -43,7 +43,12 @@ useful in link-normal-distributions}
 }
 \value{
 Nothing actually, just wraps the test
-#@examples eps <- 0.001
+}
+\description{
+Tests if an RNG can recover the true quantiles within a margin of error
+}
+\examples{
+eps <- 0.001
 mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
 # if working as expected, this test should not print any errors
@@ -59,7 +64,4 @@ bayesfam:::test_rng_quantiles(
    relative = TRUE
 )
 print("If no error was printed, then the test succeeded.")
-}
-\description{
-Tests if an RNG can recover the true quantiles within a margin of error
 }

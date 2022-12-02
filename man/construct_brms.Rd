@@ -34,9 +34,7 @@ Positive Integer scalar, Default = NA will do nothing. Seed is stored before and
 
 \item{data_threshold}{Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
-Default = Null, will be in R terms "invisible" and will not cap any input data.
-#@param suppress_output Scalar Boolean argument. Default = TRUE suppresses all prints.
-#Only exceptions will be printed. For testing reasons, to not spam the test-window.}
+Default = Null, will be in R terms "invisible" and will not cap any input data.}
 }
 \value{
 BRMS model for the specified family.

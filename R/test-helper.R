@@ -137,7 +137,7 @@ normale_difference <- function(va, vb) {
 #'
 #' @return Nothing actually, just wraps the test
 #'
-#' #@examples library(testthat)
+#' @examples library(testthat)
 #' eps <- 1e-6
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
@@ -220,7 +220,7 @@ test_rng <- function(rng_fun,
 #'
 #' @return Success or failure with message
 #'
-#' #@examples eps <- 0.001
+#' @examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
@@ -315,7 +315,7 @@ test_rng_asym <- function(rng_fun,
 #' @param relative True if the error should be relative to the mu_list
 #'
 #' @return Nothing actually, just wraps the test
-#' #@examples eps <- 0.001
+#' @examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
@@ -471,8 +471,6 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 #' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 #' Default = Null, will be in R terms "invisible" and will not cap any input data.
-#' #@param suppress_output Scalar Boolean argument. Default = TRUE suppresses all prints.
-#' #Only exceptions will be printed. For testing reasons, to not spam the test-window.
 #'
 #' @return BRMS model for the specified family.
 #'
@@ -533,6 +531,10 @@ construct_brms <- function(n_data_sampels,
 
 
   data <- list(y = y_data)
+
+# The suppress output did mute compiling messages and such.
+# With the latest RStan version installed via BRMS, no such messages appear,
+# So this is redundant now. Comment will be most likely removed in next release version.
 
 #   if (isTRUE(suppress_output)) {
 #     # if printout suppression is wished, use suppressAll as wrapper
