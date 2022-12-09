@@ -19,6 +19,5 @@ Boolean vector check
 }
 \examples{
 bayesfam:::isLogic_len(c(TRUE, FALSE), 2) # should be TRUE
-bayesfam:::isLogic_len(0, len = 1) # should be FALSE, 0 and 1 are numeric,
-# not boolean (unlike in C)
+bayesfam:::isLogic_len(0, len = 1) # should be FALSE, 0 and 1 are numeric
 }

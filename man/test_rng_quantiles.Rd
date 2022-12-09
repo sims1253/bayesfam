@@ -63,5 +63,4 @@ bayesfam:::test_rng_quantiles(
    p_acceptable_failures = 0.1,
    relative = TRUE
 )
-print("If no error was printed, then the test succeeded.")
 }

@@ -32,6 +32,6 @@ Length and data check function
 va <- c(1, 2, 3)
 vb <- c(4, 5, 6)
 vc <- c(7, 8)
-bayesfam:::lenEqual(list(va, vb))
-bayesfam:::lenEqual(list(va, vc))
+bayesfam:::lenEqual(list(va, vb))  # both got 3 entries
+bayesfam:::lenEqual(list(va, vb, vc))  # not all vectors have the same number of entries
 }

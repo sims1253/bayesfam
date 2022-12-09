@@ -46,7 +46,6 @@ Nothing actually, just wraps the test
 Tests if an RNG can achieve a good enough location often enough
 }
 \examples{
-library(testthat)
 eps <- 1e-6
 mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 phis <- seq(from = 2 + eps, to = 20, length.out = 10)

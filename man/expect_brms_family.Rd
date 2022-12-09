@@ -53,8 +53,7 @@ Scalar or 2-entry real vector within (0, 1).
 Vector is used as is, scalar will be interpreted as c(thresh, 1-thresh).
 Default = 0.05}
 
-\item{debug}{Scalar Boolean argument, whether debug info is printed or not. Default = False.
-Note: Will suppress everything, besides errors (so tests stay clean).}
+\item{debug}{Scalar Boolean argument, whether debug info is printed or not. Default = False.}
 }
 \value{
 None
@@ -64,7 +63,6 @@ BRMS family expect recovery. Tries linear baysian model y ~ 1.
 Checking of the arguments done in construct_brms.
 }
 \examples{
-library(testthat)
 result <- bayesfam:::expect_brms_family(
   intercept = 5,
   aux_par = 2,

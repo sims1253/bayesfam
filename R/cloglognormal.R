@@ -92,16 +92,13 @@ posterior_epred_cloglognormal <- function(prep) {
 #' @return Cloglog BRMS model-object
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' raw_data <- rcloglognormal(1000, 0.5, 2)
+#' @examples data <- rcloglognormal(1000, 0.5, 2)
 #' # cloglognormal does not like values to close to the boundary
-#' cloglog_data <- limit_data(raw_data, c(1e-12, 1 - 1e-12))
-#' # refresh = 0 supresses chain updates
-#' fit1 <- brms::brm(y ~ 1, data = list(y = cloglog_data),
+#' data <- limit_data(data, c(1e-12, 1 - 1e-12))
+#' fit <- brms::brm(formula = y ~ 1, data = list(y = data),
 #'  family = cloglognormal(), stanvars = cloglognormal()$stanvars,
 #'  refresh = 0)
-#' plot(fit1)
+#' plot(fit)
 cloglognormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")
   family <- brms::custom_family(

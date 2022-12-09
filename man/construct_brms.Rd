@@ -52,5 +52,5 @@ posterior_fit <- bayesfam:::construct_brms(
   rng = rbetaprime
 )
 plot(posterior_fit)
-print("compare b_Intercept to log(intercept) in case of betaprime. log(5) = 1.61")
+# beta_prime uses log-link for Intercept
 }

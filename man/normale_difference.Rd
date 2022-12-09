@@ -2,7 +2,7 @@
 % Please edit documentation in R/test-helper.R
 \name{normale_difference}
 \alias{normale_difference}
-\title{Uses euler metric for denominator. I like it, that is why. :D}
+\title{Uses euler metric for denominator}
 \usage{
 normale_difference(va, vb)
 }
@@ -16,7 +16,7 @@ If both va and vb are no scalars, their lengths have to be equal}
 Vector of normalized differences
 }
 \description{
-Uses euler metric for denominator. I like it, that is why. :D
+Uses euler metric for denominator
 }
 \examples{
 print(bayesfam:::normale_difference(c(1, 1, 1, 1, 1), c(-1, 0, 1, 2, 3)))

@@ -93,12 +93,9 @@ posterior_epred_cauchitnormal <- function(prep) {
 #' @return Cauchitnormal BRMS model-object
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rcauchitnormal(1000, 0.5 * a + 1, 2))
-#' # refresh = 0 supresses chain updates
-#' fit1 <- brms::brm(y ~ 1 + a, data = data,
+#' fit1 <- brms::brm(formula = y ~ 1 + a, data = data,
 #'  family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
 #'  refresh = 0)
 #' plot(fit1)

@@ -98,7 +98,7 @@ expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = 
   }
 }
 
-#' Uses euler metric for denominator. I like it, that is why. :D
+#' Uses euler metric for denominator
 #'
 #' @param va Numeric scalar or vector of entries
 #' @param vb Numeric scalar or vector of entries
@@ -113,6 +113,8 @@ normale_difference <- function(va, vb) {
   }
   difference <- abs(va - vb)
   denominator <- (va^2 + vb^2)^0.5
+  # I like euler as a compromise, between va or vb, given we usually do not know
+  # which is the correct one.
 
   result <- difference / denominator
   result[denominator == 0.0] <- 0.0 # those would be NAs, but are clearly valid 0!
@@ -137,8 +139,7 @@ normale_difference <- function(va, vb) {
 #'
 #' @return Nothing actually, just wraps the test
 #'
-#' @examples library(testthat)
-#' eps <- 1e-6
+#' @examples eps <- 1e-6
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' result <- bayesfam:::test_rng(
@@ -223,7 +224,6 @@ test_rng <- function(rng_fun,
 #' @examples eps <- 0.001
 #' mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 #' phis <- seq(from = 2 + eps, to = 20, length.out = 10)
-#' # if working as expected, this test should not print any errors
 #' result <- bayesfam:::test_rng_asym(
 #'   rng_fun = rbetaprime,
 #'   metric_mu = mean,
@@ -268,13 +268,6 @@ test_rng_asym <- function(rng_fun,
         sort(abs(loop_mu_list - mu), decreasing = TRUE)
       )) {
         num_failures <- num_failures + 1
-        # testthat::fail(paste(
-        #   "The RNG did not approach the true location parameter asymptotically\n",
-        #   "actual", toString(abs(loop_mu_list - mu)),"\n",
-        #   "vs\n",
-        #   "expected", toString(sort(abs(loop_mu_list - mu), decreasing = TRUE)), "\n",
-        #   "with arguments mu", mu, "aux", aux, "exponents", toString(exponents)
-        # ))
       }
     }
   }
@@ -282,10 +275,6 @@ test_rng_asym <- function(rng_fun,
   num_tests <- length(mu_list) * length(aux_list)
   allowed_failures_abs <- ceiling(num_tests * allowed_failures)
   if(num_failures <= allowed_failures_abs) {
-    # print(paste(
-    #   "Number of allowed failures in asymp test was violated\n",
-    #   "Allowed were", allowed_failures_abs, "of", num_tests, "to fail\n",
-    #   "only", num_failures, "number of tests did fail, so succeess"))
     testthat::succeed()
   }
   else {
@@ -330,7 +319,6 @@ test_rng_asym <- function(rng_fun,
 #'    p_acceptable_failures = 0.1,
 #'    relative = TRUE
 #' )
-#' print("If no error was printed, then the test succeeded.")
 test_rng_quantiles <- function(rng_fun,
                                quantile_fun,
                                n,
@@ -383,12 +371,10 @@ test_rng_quantiles <- function(rng_fun,
 #' Vector is used as is, scalar will be interpreted as c(thresh, 1-thresh).
 #' Default = 0.05
 #' @param debug Scalar Boolean argument, whether debug info is printed or not. Default = False.
-#' Note: Will suppress everything, besides errors (so tests stay clean).
 #'
 #' @return None
 #'
-#' @examples library(testthat)
-#' result <- bayesfam:::expect_brms_family(
+#' @examples result <- bayesfam:::expect_brms_family(
 #'   intercept = 5,
 #'   aux_par = 2,
 #'   ref_intercept = 5,
@@ -425,7 +411,6 @@ expect_brms_family <- function(n_data_sampels = 1000,
     family,
     rng,
     seed = seed,
-    #suppress_output = !debug,
     data_threshold = data_threshold
   )
 
@@ -483,14 +468,13 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #'   rng = rbetaprime
 #' )
 #' plot(posterior_fit)
-#' print("compare b_Intercept to log(intercept) in case of betaprime. log(5) = 1.61")
+#' # beta_prime uses log-link for Intercept
 construct_brms <- function(n_data_sampels,
                            intercept,
                            aux_par,
                            rng_link,
                            family,
                            rng,
-                           #suppress_output = TRUE,
                            seed = NULL,
                            data_threshold = NULL
                            ) {
@@ -510,9 +494,6 @@ construct_brms <- function(n_data_sampels,
     stop("seed argument if used has to be a real scalar. Else it is let default as NULL,
          which will not change the current RNG seed")
   }
-  # if (!isLogic_len(suppress_output)) {
-  #   stop("The argument suppress_output has to be a single boolean")
-  # }
 
 
   if (!is.null(seed)) {
@@ -531,41 +512,6 @@ construct_brms <- function(n_data_sampels,
 
 
   data <- list(y = y_data)
-
-# The suppress output did mute compiling messages and such.
-# With the latest RStan version installed via BRMS, no such messages appear,
-# So this is redundant now. Comment will be most likely removed in next release version.
-
-#   if (isTRUE(suppress_output)) {
-#     # if printout suppression is wished, use suppressAll as wrapper
-#
-#     # testing to repair segfaults caused by this function (or functions caling this)...
-#
-#     #BBmisc::suppressAll({
-#       posterior_fit <- brms::brm(
-#         y ~ 1,
-#         data = data,
-#         family = family(),
-#         stanvars = family()$stanvars,
-# #        chains = 2,
-#         silent = 2,
-#         refresh = 0,
-#         init = 0.1
-#       )
-#     #})
-#   } else {
-#     # and if not, do nothing special
-#     posterior_fit <- brms::brm(
-#       y ~ 1,
-#       data = data,
-#       family = family(),
-#       stanvars = family()$stanvars,
-# #      chains = 2,
-#       silent = 2,
-#       refresh = 0,
-#       init = 0.1
-#     )
-#   }
 
   posterior_fit <- brms::brm(
     y ~ 1,
@@ -604,9 +550,8 @@ construct_brms <- function(n_data_sampels,
 #' )
 #' result <- bayesfam:::test_brms_quantile(
 #'   posterior_data = fit, arg_name = "phi", 2.0, 0.025)
-#' print(result)
 #' plot(fit)
-#' print("compare b_Intercept to log(intercept) in case of betaprime. log(5) = 1.61")
+#' # beta_prime uses log-link for Intercept
 test_brms_quantile <- function(posterior_data, arg_name, reference, thresh, debug = FALSE) {
   if (!is.list(posterior_data)) {
     stop("The posterior_data frame has to be BRMS data, which itself is in R of type list")
@@ -733,8 +678,7 @@ isNat_len <- function(int, len = 1) {
 #' @export
 #'
 #' @examples bayesfam:::isLogic_len(c(TRUE, FALSE), 2) # should be TRUE
-#' bayesfam:::isLogic_len(0, len = 1) # should be FALSE, 0 and 1 are numeric,
-#' # not boolean (unlike in C)
+#' bayesfam:::isLogic_len(0, len = 1) # should be FALSE, 0 and 1 are numeric
 isLogic_len <- function(logic, len = 1) {
   if (any(is.function(logic))) {
     # other comparable functions threw warnings for function-ptr.
@@ -774,8 +718,8 @@ isSingleString <- function(input) {
 #' @examples va <- c(1, 2, 3)
 #' vb <- c(4, 5, 6)
 #' vc <- c(7, 8)
-#' bayesfam:::lenEqual(list(va, vb))
-#' bayesfam:::lenEqual(list(va, vc))
+#' bayesfam:::lenEqual(list(va, vb))  # both got 3 entries
+#' bayesfam:::lenEqual(list(va, vb, vc))  # not all vectors have the same number of entries
 lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL, na_allowed = FALSE) {
   if (!isLogic_len(scalars_allowed)) {
     stop("scalars_allowed has to be a single boolean value")
@@ -831,19 +775,19 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
 #' @export
 #'
 #' @examples input <- c(1, 2, 3, 4)
-#' print(input)
-#' print(bayesfam:::limit_data(input, c(2, 3)))
-#' print(bayesfam:::limit_data(input, c(2, NA)))
+#' print(bayesfam:::limit_data(input, c(2, 3)))   # lower and upper bounds
+#' print(bayesfam:::limit_data(input, c(2, NA)))  # only lower bound
 limit_data <- function(data, limits) {
   # check that the limit is usable
   if (length(limits) != 2) {
     stop("If the limits is to be used, it has to be of size 2.")
   }
+  # isNum_len also checks, that data does not contain any NAs
   if (!isNum_len(data, len = length(data))) {
     stop("Some data was not numeric, or was NA")
   }
 
-  # if so, use the applicable limit (If one uses to na, well. What are you trying to achieve? :)
+  # if both bounds are used, check the order of them
   if (isNum_len(limits, 2)) {
     if (limits[1] > limits[2]) {
       stop("In limit_data, the first limit is the lower limit, so it has to be
@@ -851,7 +795,6 @@ limit_data <- function(data, limits) {
     }
   }
 
-  # isNum_len will certailny return false, if NA
   if (isNum_len(limits[1])) {
     data[data < limits[1]] <- limits[1]
   }

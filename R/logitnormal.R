@@ -93,15 +93,12 @@ posterior_epred_logitnormal <- function(prep) {
 #' @return Logitnormal BRMS model-object
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rlogitnormal(1000, 0.5 * a + 1, 2))
-#' # refresh = 0 supresses chain updates
-#' fit1 <- brms::brm(y ~ 1 + a, data = data,
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
 #'  family = logitnormal(), stanvars = logitnormal()$stanvars,
 #'  refresh = 0)
-#' plot(fit1)
+#' plot(fit)
 logitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")
   family <- brms::custom_family(
