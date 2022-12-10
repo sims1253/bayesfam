@@ -1,3 +1,6 @@
+# Euler-Mascheroni constant used in a few equations in Gumbel
+euler_mascheroni <- 0.57721566490153
+
 #' Probability density function for the gumbel distribution
 #'
 #' @details The beta prime distribution has density
@@ -13,9 +16,9 @@
 #' @return Density of the pdf given x, mu and phi.
 #' @export
 #'
-#' @examples x <- seq(from = -2, to = 10, length.out = 1000)
-#' plot(x, dgumbel(x, mu = 2, sigma = 2), type = "l")
-dgumbel <- function(x, mu, sigma, log = FALSE) {
+#' @examples x <- seq(from = -5, to = 10, length.out = 1000)
+#' plot(x, dgumbel_mean(x, mu = 2, sigma = 2), type = "l")
+dgumbel_mean <- function(x, mu, sigma, log = FALSE) {
   # check the arguments
   if (isTRUE(any(sigma <= 0))) {
     stop("gumbel is only defined for sigma > 0")
@@ -29,7 +32,9 @@ dgumbel <- function(x, mu, sigma, log = FALSE) {
     stop("the log argument of a density has to be a scalar boolean")
   }
 
-  z <- (x - mu) / sigma
+  # location <- mu - sigma * euler_mascheroni
+  # z <- (x - location) / sigma
+  z <- (x - mu) / sigma + euler_mascheroni # same but optimized
   lpdf <- -log(sigma) - (z + exp(-z))
 
   #return either the log or the pdf itself, given the log-value
@@ -38,7 +43,6 @@ dgumbel <- function(x, mu, sigma, log = FALSE) {
   } else {
     return(exp(lpdf))
   }
-  #return(exp(-(z+exp(-z))) / sigma)
 }
 
 #' Quantile function of the gumbel distribution
@@ -51,8 +55,8 @@ dgumbel <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples x <- seq(from = 0.01, to = 0.99, length.out = 100)
-#' plot(x, qgumbel(x, mu = 2, sigma = 2), type = "l")
-qgumbel <- function(p, mu, sigma) {
+#' plot(x, qgumbel_mean(x, mu = 2, sigma = 2), type = "l")
+qgumbel_mean <- function(p, mu, sigma) {
   # check the arguments
   if (isTRUE(any(p <= 0 | p >= 1))) {
     stop("quantile value has to be between 0 and 1")
@@ -65,8 +69,9 @@ qgumbel <- function(p, mu, sigma) {
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
 
-  # calculate, then return the quantile
-  q <- mu - sigma * log(-log(p))
+  # may be optimized. Although the accuracy of Quantile and RNG are not that critical.
+  location <- mu - sigma * euler_mascheroni
+  q <- location - sigma * log(-log(p))
   return(q)
 }
 
@@ -79,8 +84,8 @@ qgumbel <- function(p, mu, sigma) {
 #' @return Random numbers from the gumbel distribution.
 #' @export
 #'
-#' @examples hist(rgumbel(100, mu = 2, sigma = 2))
-rgumbel <- function(n, mu, sigma) {
+#' @examples hist(rgumbel_mean(100, mu = 2, sigma = 2))
+rgumbel_mean <- function(n, mu, sigma) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")
@@ -89,7 +94,7 @@ rgumbel <- function(n, mu, sigma) {
     stop("Gumbel argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
-  return(qgumbel(runif(n, min = 0, max = 1), mu, sigma))
+  return(qgumbel_mean(runif(n, min = 0, max = 1), mu, sigma))
 }
 
 #' Log-Likelihood of the gumbel distribution
@@ -98,11 +103,11 @@ rgumbel <- function(n, mu, sigma) {
 #' @param prep BRMS data
 #'
 #' @return Log-Likelihood of gumbel given data in prep
-log_lik_gumbel <- function(i, prep) {
+log_lik_gumbel_mean <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   y <- prep$data$Y[i]
-  return(dgumbel(y, mu, sigma, log = TRUE))
+  return(dgumbel_mean(y, mu, sigma, log = TRUE))
 }
 
 
@@ -113,10 +118,10 @@ log_lik_gumbel <- function(i, prep) {
 #' @param ...
 #'
 #' @return Draws from the Posterior Predictive Distribution
-posterior_predict_gumbel <- function(i, prep, ...) {
+posterior_predict_gumbel_mean <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
-  return(rgumbel(prep$ndraws, mu, sigma))
+  return(rgumbel_mean(prep$ndraws, mu, sigma))
 }
 
 #' posterior_epred for the gumbel distribution
@@ -124,12 +129,12 @@ posterior_predict_gumbel <- function(i, prep, ...) {
 #' @param prep BRMS data
 #'
 #' @return Expected Values of the Posterior Predictive Distribution
-posterior_epred_gumbel <- function(prep) {
+posterior_epred_gumbel_mean <- function(prep) {
   return(brms::get_dpar(prep, "mu"))
 }
 
 
-#' Gumbel brms custom family
+#' Gumbel brms custom family, custom implementation vs Stan
 #'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
@@ -138,32 +143,33 @@ posterior_epred_gumbel <- function(prep) {
 #' @export
 #'
 #' @examples a <- rnorm(n = 1000)
-#' data <- list(a = a, y = rgumbel(n = 1000, mu = a + 2, sigma = 2))
+#' data <- list(a = a, y = rgumbel_mean(n = 1000, mu = a + 2, sigma = 2))
 #' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'   family = custom_gumbel(), stanvars = custom_gumbel()$stanvars,
+#'   family = gumbel_mean(), stanvars = gumbel_mean()$stanvars,
 #'   refresh = 0)
 #' plot(fit)
-custom_gumbel <- function(link = "identity", link_sigma = "log") {
+gumbel_mean <- function(link = "identity", link_sigma = "log") {
   family <- brms::custom_family(
-    "custom_gumbel",
+    "gumbel_mean",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
     lb = c(NA, 0),
     ub = c(NA, NA),
     type = "real",
-    log_lik = log_lik_gumbel,
-    posterior_predict = posterior_predict_gumbel,
-    posterior_epred = posterior_epred_gumbel
+    log_lik = log_lik_gumbel_mean,
+    posterior_predict = posterior_predict_gumbel_mean,
+    posterior_epred = posterior_epred_gumbel_mean
   )
   family$stanvars <- brms::stanvar(
     scode = "
-      real custom_gumbel_lpdf(real y, real mu, real sigma) {
-        real z = (y - mu) / sigma;
-        return log(sigma) - (z + exp(-z));
+      real gumbel_mean_lpdf(real y, real mu, real sigma) {
+        real loc = mu - sigma * 0.57721566490153; // Euler-Mascheroni
+        return gumbel_lpdf(y | loc, sigma);
       }
 
-      real custom_gumbel_rng(real mu, real sigma) {
-        return mu - sigma * log(-log(uniform_rng(0,1)));
+      real gumbel_mean_rng(real mu, real sigma) {
+        real loc = mu - sigma * 0.57721566490153;
+        return gumbel_rng(loc, sigma);
       }",
     block = "functions"
   )
