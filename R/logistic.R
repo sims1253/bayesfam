@@ -1,10 +1,7 @@
-# Euler-Mascheroni constant used in a few equations in Gumbel
-euler_mascheroni <- 0.57721566490153
-
-#' Probability density function for the gumbel distribution
+#' Probability density function for the logistic distribution
 #'
 #' @details The beta prime distribution has density
-#' \deqn{f(y | \mu, \sigma) = \frac{1}{\sigma} exp(-(z + e^{-z}))}
+#' \deqn{f(y | \mu, \sigma) = \frac{e^{-z}}{\sigma(1 + e^{-z})^2}}
 #' @details Where z is the linear transformation
 #' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}
 #'
@@ -17,25 +14,25 @@ euler_mascheroni <- 0.57721566490153
 #' @export
 #'
 #' @examples x <- seq(from = -5, to = 10, length.out = 1000)
-#' plot(x, dgumbel_mean(x, mu = 2, sigma = 2), type = "l")
-dgumbel_mean <- function(x, mu, sigma, log = FALSE) {
+#' plot(x, dlogistic(x, mu = 2, sigma = 1), type = "l")
+dlogistic <- function(x, mu, sigma, log = FALSE) {
   # check the arguments
   if (isTRUE(any(sigma <= 0))) {
-    stop("gumbel is only defined for sigma > 0")
+    stop("logistic is only defined for sigma > 0")
   }
   # Maybe overkill?
   if (!lenEqual(list_of_vectors = list(x, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("Gumbel argument vectors could not be matched. May be due to wrong type,
+    stop("logistic argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
   if (!isLogic_len(log)) {
     stop("the log argument of a density has to be a scalar boolean")
   }
 
-  # location <- mu - sigma * euler_mascheroni
-  # z <- (x - location) / sigma
-  z <- (x - mu) / sigma + euler_mascheroni # same but optimized
-  lpdf <- -log(sigma) - (z + exp(-z))
+
+  z <- (x - mu) / sigma
+
+  lpdf <- -z - log(sigma) - 2 * log1p(exp(-z))
 
   #return either the log or the pdf itself, given the log-value
   if (log) {
@@ -45,131 +42,127 @@ dgumbel_mean <- function(x, mu, sigma, log = FALSE) {
   }
 }
 
-#' Quantile function of the gumbel distribution
+#' Quantile function of the logistic distribution
 #'
 #' @param p quantile value, 0 < p < 1
 #' @param mu Mean, unbound
 #' @param sigma Scale, sigma > 0
 #'
-#' @return Quantiles of the gumbel distribution
+#' @return Quantiles of the logistic distribution
 #' @export
 #'
 #' @examples x <- seq(from = 0.01, to = 0.99, length.out = 100)
-#' plot(x, qgumbel_mean(x, mu = 2, sigma = 2), type = "l")
-qgumbel_mean <- function(p, mu, sigma) {
+#' plot(x, qlogistic(x, mu = 2, sigma = 2), type = "l")
+qlogistic <- function(p, mu, sigma) {
   # check the arguments
   if (isTRUE(any(p <= 0 | p >= 1))) {
     stop("quantile value has to be between 0 and 1")
   }
   if (isTRUE(any(sigma <= 0))) {
-    stop("gumbel is only defined for sigma > 0")
+    stop("logistic is only defined for sigma > 0")
   }
   if (!lenEqual(list_of_vectors = list(p, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("Gumbel argument vectors could not be matched. May be due to wrong type,
+    stop("logistic argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
 
-  # may be optimized. Although the accuracy of Quantile and RNG are not that critical.
-  location <- mu - sigma * euler_mascheroni
-  q <- location - sigma * log(-log(p))
+  q <- mu + sigma * (log(p) - log1p(-p))
   return(q)
 }
 
-#' RNG for the gumbel distribution
+#' RNG for the logistic distribution
 #'
 #' @param n Number of samples.
 #' @param mu Mean, mu > 0.
 #' @param sigma Scale, sigma > 0
 #'
-#' @return Random numbers from the gumbel distribution.
+#' @return Random numbers from the logistic distribution.
 #' @export
 #'
-#' @examples hist(rgumbel_mean(100, mu = 2, sigma = 2))
-rgumbel_mean <- function(n, mu, sigma) {
+#' @examples hist(rlogistic(100, mu = 2, sigma = 2))
+rlogistic <- function(n, mu, sigma) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")
   }
   if (!lenEqual(list_of_vectors = list(mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("Gumbel argument vectors could not be matched. May be due to wrong type,
+    stop("logistic argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
-  return(qgumbel_mean(runif(n, min = 0, max = 1), mu, sigma))
+  return(qlogistic(runif(n, min = 0, max = 1), mu, sigma))
 }
 
-#' Log-Likelihood of the gumbel distribution
+#' Log-Likelihood of the logistic distribution
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
 #'
-#' @return Log-Likelihood of gumbel given data in prep
-log_lik_gumbel_mean <- function(i, prep) {
+#' @return Log-Likelihood of logistic given data in prep
+log_lik_logistic <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   y <- prep$data$Y[i]
-  return(dgumbel_mean(y, mu, sigma, log = TRUE))
+  return(dlogistic(y, mu, sigma, log = TRUE))
 }
 
 
-#' posterior_predict for the gumbel distribution
+#' posterior_predict for the logistic distribution
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
 #' @param ...
 #'
 #' @return Draws from the Posterior Predictive Distribution
-posterior_predict_gumbel_mean <- function(i, prep, ...) {
+posterior_predict_logistic <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
-  return(rgumbel_mean(prep$ndraws, mu, sigma))
+  return(rlogistic(prep$ndraws, mu, sigma))
 }
 
-#' posterior_epred for the gumbel distribution
+#' posterior_epred for the logistic distribution
 #'
 #' @param prep BRMS data
 #'
 #' @return Expected Values of the Posterior Predictive Distribution
-posterior_epred_gumbel_mean <- function(prep) {
+posterior_epred_logistic <- function(prep) {
   return(brms::get_dpar(prep, "mu"))
 }
 
 
-#' Gumbel brms custom family, custom implementation vs Stan
+#' logistic brms custom family
 #'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
 #'
-#' @return BRMS Gumbel distribution family
+#' @return BRMS logistic distribution family
 #' @export
 #'
 #' @examples a <- rnorm(n = 1000)
-#' data <- list(a = a, y = rgumbel_mean(n = 1000, mu = a + 2, sigma = 2))
+#' data <- list(a = a, y = rlogistic(n = 1000, mu = a + 2, sigma = 2))
 #' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'   family = gumbel_mean(), stanvars = gumbel_mean()$stanvars,
+#'   family = logistic(), stanvars = logistic()$stanvars,
 #'   refresh = 0)
 #' plot(fit)
-gumbel_mean <- function(link = "identity", link_sigma = "log") {
+logistic <- function(link = "identity", link_sigma = "log") {
   family <- brms::custom_family(
-    "gumbel_mean",
+    "logistic_r",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
     lb = c(NA, 0),
     ub = c(NA, NA),
     type = "real",
-    log_lik = log_lik_gumbel_mean,
-    posterior_predict = posterior_predict_gumbel_mean,
-    posterior_epred = posterior_epred_gumbel_mean
+    log_lik = log_lik_logistic,
+    posterior_predict = posterior_predict_logistic,
+    posterior_epred = posterior_epred_logistic
   )
   family$stanvars <- brms::stanvar(
     scode = "
-      real gumbel_mean_lpdf(real y, real mu, real sigma) {
-        real loc = mu - sigma * 0.57721566490153; // Euler-Mascheroni
-        return gumbel_lpdf(y | loc, sigma);
+      real logistic_r_lpdf(real y, real mu, real sigma) {
+        return logistic_lpdf(y | mu, sigma);
       }
 
-      real gumbel_mean_rng(real mu, real sigma) {
-        real loc = mu - sigma * 0.57721566490153;
-        return gumbel_rng(loc, sigma);
+      real logistic_r_rng(real mu, real sigma) {
+        return logistic_rng(mu, sigma);
       }",
     block = "functions"
   )
