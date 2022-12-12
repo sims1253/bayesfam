@@ -1,4 +1,8 @@
-#' Probability density function for the logistic distribution
+# Implementation after Masashi Goto and Toshiaki Inoue
+# Some Properties of the Power Normal Distribution
+#
+
+#' Probability density function for the power_normal distribution
 #'
 #' @details The beta prime distribution has density
 #' \deqn{f(y | \mu, \sigma) = \frac{e^{-z}}{\sigma(1 + e^{-z})^2}}
@@ -14,15 +18,16 @@
 #' @export
 #'
 #' @examples x <- seq(from = -5, to = 10, length.out = 1000)
-#' plot(x, dlogistic(x, mu = 2, sigma = 1), type = "l")
-dlogistic <- function(x, mu, sigma, log = FALSE) {
+#' plot(x, dpower_normal(x, mu = 2, sigma = 1), type = "l")
+dpower_normal <- function(x, mu, sigma, log = FALSE) {
+  stop("tbd")
   # check the arguments
   if (isTRUE(any(sigma <= 0))) {
-    stop("logistic is only defined for sigma > 0")
+    stop("power_normal is only defined for sigma > 0")
   }
   # Maybe overkill?
   if (!lenEqual(list_of_vectors = list(x, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("logistic argument vectors could not be matched. May be due to wrong type,
+    stop("power_normal argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
   if (!isLogic_len(log)) {
@@ -42,122 +47,127 @@ dlogistic <- function(x, mu, sigma, log = FALSE) {
   }
 }
 
-#' Quantile function of the logistic distribution
+#' Quantile function of the power_normal distribution
 #'
 #' @param p quantile value, 0 < p < 1
 #' @param mu Mean, unbound
 #' @param sigma Scale, sigma > 0
 #'
-#' @return Quantiles of the logistic distribution
+#' @return Quantiles of the power_normal distribution
 #' @export
 #'
 #' @examples x <- seq(from = 0.01, to = 0.99, length.out = 100)
-#' plot(x, qlogistic(x, mu = 2, sigma = 2), type = "l")
-qlogistic <- function(p, mu, sigma) {
+#' plot(x, qpower_normal(x, mu = 2, sigma = 2), type = "l")
+qpower_normal <- function(p, mu, sigma) {
   # check the arguments
   if (isTRUE(any(p <= 0 | p >= 1))) {
     stop("quantile value has to be between 0 and 1")
   }
   if (isTRUE(any(sigma <= 0))) {
-    stop("logistic is only defined for sigma > 0")
+    stop("power_normal is only defined for sigma > 0")
   }
   if (!lenEqual(list_of_vectors = list(p, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("logistic argument vectors could not be matched. May be due to wrong type,
+    stop("power_normal argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
 
-  return(mu + sigma * (log(p) - log1p(-p)))
+  q <- mu + sigma * (log(p) - log1p(-p))
+  return(q)
 }
 
-#' RNG for the logistic distribution
+#' RNG for the power_normal distribution
 #'
 #' @param n Number of samples.
-#' @param mu Mean, unbound
+#' @param mu Mean, mu > 0.
 #' @param sigma Scale, sigma > 0
 #'
-#' @return Random numbers from the logistic distribution.
+#' @return Random numbers from the power_normal distribution.
 #' @export
 #'
-#' @examples hist(rlogistic(100, mu = 2, sigma = 2))
-rlogistic <- function(n, mu, sigma) {
+#' @examples hist(rpower_normal(100, mu = 2, sigma = 2))
+rpower_normal <- function(n, mu, sigma) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")
   }
-  return(qlogistic(runif(n, min = 0, max = 1), mu, sigma))
+  if (!lenEqual(list_of_vectors = list(mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
+    stop("power_normal argument vectors could not be matched. May be due to wrong type,
+         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
+  }
+  return(qpower_normal(runif(n, min = 0, max = 1), mu, sigma))
 }
 
-#' Log-Likelihood of the logistic distribution
+#' Log-Likelihood of the power_normal distribution
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
 #'
-#' @return Log-Likelihood of logistic given data in prep
-log_lik_logistic <- function(i, prep) {
+#' @return Log-Likelihood of power_normal given data in prep
+log_lik_power_normal <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   y <- prep$data$Y[i]
-  return(dlogistic(y, mu, sigma, log = TRUE))
+  return(dpower_normal(y, mu, sigma, log = TRUE))
 }
 
 
-#' posterior_predict for the logistic distribution
+#' posterior_predict for the power_normal distribution
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
 #' @param ...
 #'
 #' @return Draws from the Posterior Predictive Distribution
-posterior_predict_logistic <- function(i, prep, ...) {
+posterior_predict_power_normal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
-  return(rlogistic(prep$ndraws, mu, sigma))
+  return(rpower_normal(prep$ndraws, mu, sigma))
 }
 
-#' posterior_epred for the logistic distribution
+#' posterior_epred for the power_normal distribution
 #'
 #' @param prep BRMS data
 #'
 #' @return Expected Values of the Posterior Predictive Distribution
-posterior_epred_logistic <- function(prep) {
+posterior_epred_power_normal <- function(prep) {
   return(brms::get_dpar(prep, "mu"))
 }
 
 
-#' logistic brms custom family
+#' power_normal brms custom family
 #'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
 #'
-#' @return BRMS logistic distribution family
+#' @return BRMS power_normal distribution family
 #' @export
 #'
 #' @examples a <- rnorm(n = 1000)
-#' data <- list(a = a, y = rlogistic(n = 1000, mu = a + 2, sigma = 2))
+#' data <- list(a = a, y = rpower_normal(n = 1000, mu = a + 2, sigma = 2))
 #' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'   family = logistic(), stanvars = logistic()$stanvars,
+#'   family = power_normal(), stanvars = power_normal()$stanvars,
 #'   refresh = 0)
 #' plot(fit)
-logistic <- function(link = "identity", link_sigma = "log") {
+power_normal <- function(link = "identity", link_sigma = "log") {
   family <- brms::custom_family(
-    "logistic_r",
+    "power_normal",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
     lb = c(NA, 0),
     ub = c(NA, NA),
     type = "real",
-    log_lik = log_lik_logistic,
-    posterior_predict = posterior_predict_logistic,
-    posterior_epred = posterior_epred_logistic
+    log_lik = log_lik_power_normal,
+    posterior_predict = posterior_predict_power_normal,
+    posterior_epred = posterior_epred_power_normal
   )
   family$stanvars <- brms::stanvar(
     scode = "
-      real logistic_r_lpdf(real y, real mu, real sigma) {
-        return logistic_lpdf(y | mu, sigma);
+      real power_normal_lpdf(real y, real mu, real sigma) {
+        return power_normal_lpdf(y | mu, sigma);
       }
 
-      real logistic_r_rng(real mu, real sigma) {
-        return logistic_rng(mu, sigma);
+      real power_normal_rng(real mu, real sigma) {
+        return power_normalng(mu, sigma);
       }",
     block = "functions"
   )

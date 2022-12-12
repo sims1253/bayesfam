@@ -71,14 +71,13 @@ qgumbel_mean <- function(p, mu, sigma) {
 
   # may be optimized. Although the accuracy of Quantile and RNG are not that critical.
   location <- mu - sigma * euler_mascheroni
-  q <- location - sigma * log(-log(p))
-  return(q)
+  return(location - sigma * log(-log(p)))
 }
 
 #' RNG for the gumbel distribution
 #'
-#' @param n Number of samples.
-#' @param mu Mean, mu > 0.
+#' @param n Number of samples
+#' @param mu Mean, unbound
 #' @param sigma Scale, sigma > 0
 #'
 #' @return Random numbers from the gumbel distribution.

@@ -9,7 +9,7 @@ rlogistic(n, mu, sigma)
 \arguments{
 \item{n}{Number of samples.}
 
-\item{mu}{Mean, mu > 0.}
+\item{mu}{Mean, unbound}
 
 \item{sigma}{Scale, sigma > 0}
 }
