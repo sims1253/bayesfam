@@ -1,7 +1,7 @@
 #' Probability density function for the generalized_normal distribution
 #'
 #' @details The beta prime distribution has density
-#' \deqn{f(y | \mu, \sigma) = \frac{e^{-z}}{\sigma(1 + e^{-z})^2}}
+#' \deqn{f(y | \mu, \sigma, \beta) = \frac{\beta}{2 \beta \Gamma(1/\beta)}exp(-|z|^\beta)}
 #' @details Where z is the linear transformation
 #' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}
 #'
@@ -47,9 +47,6 @@ dgeneralized_normal <- function(x, mu, sigma, beta, log = FALSE) {
 }
 
 #' Quantile function of the generalized_normal distribution
-#' \url{https://cran.r-project.org/web/packages/gnorm/vignettes/gnormUse.html}
-#' BTW, don't believe the * found on Wikipedia.
-#' TODO: well, write this here a bit more nicely^^
 #'
 #' @param p quantile value, 0 < p < 1
 #' @param mu Mean, unbound
@@ -77,8 +74,7 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
 
-  # https://cran.r-project.org/web/packages/gnorm/vignettes/gnormUse.html
-  q_part <- qgamma(2*abs(p - 0.5), 1/beta, (1/sigma)^beta)^(1/beta)
+  q_part <- ((sigma^beta) * pgamma(2*abs(p - 0.5), 1/beta))^(1/beta)
   return(sign(p - 0.5) * q_part + mu)
 }
 
@@ -92,13 +88,13 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
 #' @return Random numbers from the generalized_normal distribution.
 #' @export
 #'
-#' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2, beta = 2))
+#' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2))
 rgeneralized_normal <- function(n, mu, sigma, beta) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")
   }
-  return(qgeneralized_normal(runif(n, min = 0, max = 1), mu, sigma, beta))
+  return(qgeneralized_normal(p = runif(n, min = 0, max = 1), mu = mu, sigma = sigma, beta = beta))
 }
 
 #' Log-Likelihood of the generalized_normal distribution
@@ -112,7 +108,7 @@ log_lik_generalized_normal <- function(i, prep) {
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   beta <- brms::get_dpar(prep, "beta", i = i)
   y <- prep$data$Y[i]
-  return(dgeneralized_normal(y, mu, sigma, beta, log = TRUE))
+  return(dgeneralized_normal(x = y, mu = mu, sigma = sigma, beta = beta, log = TRUE))
 }
 
 
@@ -127,7 +123,7 @@ posterior_predict_generalized_normal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   beta <- brms::get_dpar(prep, "beta", i = i)
-  return(rgeneralized_normal(prep$ndraws, mu, sigma, beta))
+  return(rgeneralized_normal(n = prep$ndraws, mu = mu, sigma = sigma, beta = beta))
 }
 
 #' posterior_epred for the generalized_normal distribution
@@ -139,21 +135,18 @@ posterior_epred_generalized_normal <- function(prep) {
   return(brms::get_dpar(prep, "mu"))
 }
 
-
 #' generalized_normal brms custom family
 #'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
-#' @param link_beta Link function for beta argument
 #'
 #' @return BRMS generalized_normal distribution family
 #' @export
 #'
-#' @examples a <- rnorm(1000)
-#' data <- list(a = a, y = rgeneralized_normal(n = 1000, mu = 0.5 + 1*a, sigma = 2, beta = 4))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#' @examples data <- list(y = rgeneralized_normal(n = 1000, mu = 2, sigma = 2, beta = 4))
+#' fit <- brms::brm(formula = y ~ 1, data = data,
 #'   family = generalized_normal(), stanvars = generalized_normal()$stanvars,
-#'   refresh = 0)
+#'   cores = 4, init = 0.1)
 #' plot(fit)
 generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "log") {
   family <- brms::custom_family(
@@ -182,7 +175,7 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
 
       real generalized_normal_rng(real mu, real sigma, real beta) {
         real p = uniform_rng(0,1);
-        real q_part = gamma_lccdf(2*abs(p - 0.5) | 1/beta, (1/sigma)^beta)^(1/beta);
+        real q_part = pow((sigma^beta) * gamma_lccdf(2*abs(p - 0.5) | 1/beta, 1), 1/beta);
         return sign(p - 0.5) * q_part + mu;
       }",
     block = "functions"

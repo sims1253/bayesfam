@@ -2,10 +2,7 @@
 % Please edit documentation in R/generalized_normal.R
 \name{qgeneralized_normal}
 \alias{qgeneralized_normal}
-\title{Quantile function of the generalized_normal distribution
-\url{https://cran.r-project.org/web/packages/gnorm/vignettes/gnormUse.html}
-BTW, don't believe the * found on Wikipedia.
-TODO: well, write this here a bit more nicely^^}
+\title{Quantile function of the generalized_normal distribution}
 \usage{
 qgeneralized_normal(p, mu, sigma, beta)
 }
@@ -23,9 +20,6 @@ Quantiles of the generalized_normal distribution
 }
 \description{
 Quantile function of the generalized_normal distribution
-\url{https://cran.r-project.org/web/packages/gnorm/vignettes/gnormUse.html}
-BTW, don't believe the * found on Wikipedia.
-TODO: well, write this here a bit more nicely^^
 }
 \examples{
 x <- seq(from = 0.01, to = 0.99, length.out = 100)

@@ -89,10 +89,6 @@ rgumbel_mean <- function(n, mu, sigma) {
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")
   }
-  if (!lenEqual(list_of_vectors = list(mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("Gumbel argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
   return(qgumbel_mean(runif(n, min = 0, max = 1), mu, sigma))
 }
 

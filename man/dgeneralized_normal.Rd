@@ -25,7 +25,7 @@ Probability density function for the generalized_normal distribution
 }
 \details{
 The beta prime distribution has density
-\deqn{f(y | \mu, \sigma) = \frac{e^{-z}}{\sigma(1 + e^{-z})^2}}
+\deqn{f(y | \mu, \sigma, \beta) = \frac{\beta}{2 \beta \Gamma(1/\beta)}exp(-|z|^\beta)}
 
 Where z is the linear transformation
 \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}

@@ -4,7 +4,7 @@
 \alias{power_normal}
 \title{power_normal brms custom family}
 \usage{
-power_normal(link = "identity", link_sigma = "log")
+power_normal(link = "identity", link_sigma = "log", link_beta = "log")
 }
 \arguments{
 \item{link}{Link function for function}
@@ -19,7 +19,7 @@ power_normal brms custom family
 }
 \examples{
 a <- rnorm(n = 1000)
-data <- list(a = a, y = rpower_normal(n = 1000, mu = a + 2, sigma = 2))
+data <- list(a = a, y = rpower_normal(n = 1000, mu = a + 1, sigma = 2, beta = 10))
 fit <- brms::brm(formula = y ~ 1 + a, data = data,
   family = power_normal(), stanvars = power_normal()$stanvars,
   refresh = 0)

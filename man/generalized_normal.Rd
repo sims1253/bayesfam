@@ -10,8 +10,6 @@ generalized_normal(link = "identity", link_sigma = "log", link_b = "log")
 \item{link}{Link function for function}
 
 \item{link_sigma}{Link function for sigma argument}
-
-\item{link_beta}{Link function for beta argument}
 }
 \value{
 BRMS generalized_normal distribution family
@@ -20,10 +18,9 @@ BRMS generalized_normal distribution family
 generalized_normal brms custom family
 }
 \examples{
-a <- rnorm(1000)
-data <- list(a = a, y = rgeneralized_normal(n = 1000, mu = 0.5 + 1*a, sigma = 2, beta = 4))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
+data <- list(y = rgeneralized_normal(n = 1000, mu = 2, sigma = 2, beta = 4))
+fit <- brms::brm(formula = y ~ 1, data = data,
   family = generalized_normal(), stanvars = generalized_normal()$stanvars,
-  refresh = 0)
+  cores = 4, init = 0.1)
 plot(fit)
 }

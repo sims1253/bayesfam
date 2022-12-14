@@ -4,7 +4,7 @@
 \alias{rpower_normal}
 \title{RNG for the power_normal distribution}
 \usage{
-rpower_normal(n, mu, sigma)
+rpower_normal(n, mu, sigma, beta)
 }
 \arguments{
 \item{n}{Number of samples.}
@@ -20,5 +20,5 @@ Random numbers from the power_normal distribution.
 RNG for the power_normal distribution
 }
 \examples{
-hist(rpower_normal(100, mu = 2, sigma = 2))
+hist(rpower_normal(100, mu = 0, sigma = 2, beta = 10))
 }

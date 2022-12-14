@@ -4,7 +4,7 @@
 \alias{qpower_normal}
 \title{Quantile function of the power_normal distribution}
 \usage{
-qpower_normal(p, mu, sigma)
+qpower_normal(p, mu, sigma, beta)
 }
 \arguments{
 \item{p}{quantile value, 0 < p < 1}
@@ -21,5 +21,5 @@ Quantile function of the power_normal distribution
 }
 \examples{
 x <- seq(from = 0.01, to = 0.99, length.out = 100)
-plot(x, qpower_normal(x, mu = 2, sigma = 2), type = "l")
+plot(x, qpower_normal(x, mu = 0, sigma = 2, beta = 10), type = "l")
 }

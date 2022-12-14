@@ -1,32 +1,32 @@
-# Implementation after Masashi Goto and Toshiaki Inoue
-# Some Properties of the Power Normal Distribution
-#
-
 #' Probability density function for the power_normal distribution
-#'
+#' Implementation after Nelson Wayne
+#' \url{https://archive.org/details/computerprogramp4760nels/page/10/mode/2up}
 #' @details The beta prime distribution has density
 #' \deqn{f(y | \mu, \sigma) = \frac{e^{-z}}{\sigma(1 + e^{-z})^2}}
 #' @details Where z is the linear transformation
 #' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}
 #'
 #' @param x Value, unbound
-#' @param mu Mean, unbound
+#' @param mu Median, unbound
 #' @param sigma Scale, sigma > 0
+#' @param beta Shape, beta > 0
 #' @param log Optional argument. If true, returns the log density.
 #'
 #' @return Density of the pdf given x, mu and sigma
 #' @export
 #'
-#' @examples x <- seq(from = -5, to = 10, length.out = 1000)
-#' plot(x, dpower_normal(x, mu = 2, sigma = 1), type = "l")
-dpower_normal <- function(x, mu, sigma, log = FALSE) {
-  stop("tbd")
+#' @examples x <- seq(from = -4, to = 4, length.out = 1000)
+#' plot(x, dpower_normal(x, mu = 0, sigma = 1, beta = 4), type = "l")
+dpower_normal <- function(x, mu, sigma, beta, log = FALSE) {
   # check the arguments
   if (isTRUE(any(sigma <= 0))) {
     stop("power_normal is only defined for sigma > 0")
   }
+  if (isTRUE(any(beta <= 0))) {
+    stop("generalized_normal is only defined for beta > 0")
+  }
   # Maybe overkill?
-  if (!lenEqual(list_of_vectors = list(x, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
+  if (!lenEqual(list_of_vectors = list(x, mu, sigma, beta), scalars_allowed = TRUE, type_check = is.numeric)) {
     stop("power_normal argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
@@ -34,10 +34,12 @@ dpower_normal <- function(x, mu, sigma, log = FALSE) {
     stop("the log argument of a density has to be a scalar boolean")
   }
 
+  #loc <- mu - power_zf(0.5, beta) * sigma
+  #z <- (x - loc) / sigma
+  z <- (x - mu)/sigma + power_zf(0.5, beta)
 
-  z <- (x - mu) / sigma
-
-  lpdf <- -z - log(sigma) - 2 * log1p(exp(-z))
+  # optimized version of log cdf?
+  lpdf <- log(beta) - log(sigma) + dnorm(z, log = TRUE) + (beta-1) * log(pnorm(-z, lower.tail = FALSE))
 
   #return either the log or the pdf itself, given the log-value
   if (log) {
@@ -45,6 +47,20 @@ dpower_normal <- function(x, mu, sigma, log = FALSE) {
   } else {
     return(exp(lpdf))
   }
+}
+
+#' Power transformed qnorm (zf-parameter used by Nelson Wayne)
+#'
+#' @param p percentile to be calculated, 0 < p < 1
+#' @param beta shape argument, beta > 0
+#'
+#' @return zf argument used in power-normal computation
+#'
+#' @examples
+power_zf <- function(p, beta) {
+  # only gets called by internal functions, so no further checks necassary!
+  arg <- (1 - p) ^ (1 / beta)
+  return(qnorm(-arg + 1))
 }
 
 #' Quantile function of the power_normal distribution
@@ -57,8 +73,8 @@ dpower_normal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples x <- seq(from = 0.01, to = 0.99, length.out = 100)
-#' plot(x, qpower_normal(x, mu = 2, sigma = 2), type = "l")
-qpower_normal <- function(p, mu, sigma) {
+#' plot(x, qpower_normal(x, mu = 0, sigma = 2, beta = 10), type = "l")
+qpower_normal <- function(p, mu, sigma, beta) {
   # check the arguments
   if (isTRUE(any(p <= 0 | p >= 1))) {
     stop("quantile value has to be between 0 and 1")
@@ -66,12 +82,16 @@ qpower_normal <- function(p, mu, sigma) {
   if (isTRUE(any(sigma <= 0))) {
     stop("power_normal is only defined for sigma > 0")
   }
-  if (!lenEqual(list_of_vectors = list(p, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
+  if (!lenEqual(list_of_vectors = list(p, mu, sigma, beta), scalars_allowed = TRUE, type_check = is.numeric)) {
     stop("power_normal argument vectors could not be matched. May be due to wrong type,
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
 
-  q <- mu + sigma * (log(p) - log1p(-p))
+  # loc <- mu - power_zf(0.5, beta) * sigma
+  # q <- loc + power_zf(p, beta) * sigma
+
+  # loc <- mu - power_zf(0.5, beta) * sigma
+  q <- mu + sigma * (power_zf(p, beta) - power_zf(0.5, beta))
   return(q)
 }
 
@@ -84,17 +104,13 @@ qpower_normal <- function(p, mu, sigma) {
 #' @return Random numbers from the power_normal distribution.
 #' @export
 #'
-#' @examples hist(rpower_normal(100, mu = 2, sigma = 2))
-rpower_normal <- function(n, mu, sigma) {
+#' @examples hist(rpower_normal(100, mu = 0, sigma = 2, beta = 10))
+rpower_normal <- function(n, mu, sigma, beta) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")
   }
-  if (!lenEqual(list_of_vectors = list(mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("power_normal argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
-  return(qpower_normal(runif(n, min = 0, max = 1), mu, sigma))
+  return(qpower_normal(runif(n, min = 0, max = 1), mu, sigma, beta))
 }
 
 #' Log-Likelihood of the power_normal distribution
@@ -106,8 +122,9 @@ rpower_normal <- function(n, mu, sigma) {
 log_lik_power_normal <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
+  beta <- brms::get_dpar(prep, "beta", i = i)
   y <- prep$data$Y[i]
-  return(dpower_normal(y, mu, sigma, log = TRUE))
+  return(dpower_normal(y, mu, sigma, beta, log = TRUE))
 }
 
 
@@ -121,7 +138,8 @@ log_lik_power_normal <- function(i, prep) {
 posterior_predict_power_normal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
-  return(rpower_normal(prep$ndraws, mu, sigma))
+  beta <- brms::get_dpar(prep, "beta", i = i)
+  return(rpower_normal(prep$ndraws, mu, sigma, beta))
 }
 
 #' posterior_epred for the power_normal distribution
@@ -130,7 +148,8 @@ posterior_predict_power_normal <- function(i, prep, ...) {
 #'
 #' @return Expected Values of the Posterior Predictive Distribution
 posterior_epred_power_normal <- function(prep) {
-  return(brms::get_dpar(prep, "mu"))
+  #return(brms::get_dpar(prep, "mu"))
+  stop("No closed form for mean")
 }
 
 
@@ -143,18 +162,18 @@ posterior_epred_power_normal <- function(prep) {
 #' @export
 #'
 #' @examples a <- rnorm(n = 1000)
-#' data <- list(a = a, y = rpower_normal(n = 1000, mu = a + 2, sigma = 2))
+#' data <- list(a = a, y = rpower_normal(n = 1000, mu = a + 1, sigma = 2, beta = 10))
 #' fit <- brms::brm(formula = y ~ 1 + a, data = data,
 #'   family = power_normal(), stanvars = power_normal()$stanvars,
 #'   refresh = 0)
 #' plot(fit)
-power_normal <- function(link = "identity", link_sigma = "log") {
+power_normal <- function(link = "identity", link_sigma = "log", link_beta = "log") {
   family <- brms::custom_family(
     "power_normal",
-    dpars = c("mu", "sigma"),
-    links = c(link, link_sigma),
-    lb = c(NA, 0),
-    ub = c(NA, NA),
+    dpars = c("mu", "sigma", "beta"),
+    links = c(link, link_sigma, link_beta),
+    lb = c(NA, 0, 0),
+    ub = c(NA, NA, NA),
     type = "real",
     log_lik = log_lik_power_normal,
     posterior_predict = posterior_predict_power_normal,
@@ -162,12 +181,25 @@ power_normal <- function(link = "identity", link_sigma = "log") {
   )
   family$stanvars <- brms::stanvar(
     scode = "
-      real power_normal_lpdf(real y, real mu, real sigma) {
-        return power_normal_lpdf(y | mu, sigma);
+      real power_zf(real p, real beta) {
+        real arg = (1 - p) ^ (1 / beta);
+        return exp(normal_lccdf(-arg + 1 | 0, 1));
       }
 
-      real power_normal_rng(real mu, real sigma) {
-        return power_normalng(mu, sigma);
+      real power_normal_lpdf(real y, real mu, real sigma, real beta) {
+        //real loc = mu - power_zf(0.5, beta) * sigma;
+        //real z = (y - loc) / sigma;
+
+        real z = (y - mu) / sigma + power_zf(0.5, beta);
+        return log(beta) - log(sigma) + normal_lpdf(z | 0, 1) + (beta-1) * normal_lcdf(-z | 0, 1);
+      }
+
+      real power_normal_rng(real mu, real sigma, real beta) {
+        //real loc = mu - power_zf(0.5, beta) * sigma;
+        //return loc + power_zf(p, beta) * sigma;
+
+        real p = uniform_rng(0,1);
+        return mu + sigma * (power_zf(p, beta) - power_zf(0.5, beta));
       }",
     block = "functions"
   )
