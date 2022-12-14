@@ -36,7 +36,7 @@ dbetaprime <- function(x, mu, phi, log = FALSE) {
 
   lpdf <- (alpha - 1) * log(x) +
     (-(alpha + beta)) * log1p(x) -
-    log(beta(alpha, beta))
+    lbeta(alpha, beta)
 
   # return either the log or the pdf itself, given the log-value
   if (log) {
