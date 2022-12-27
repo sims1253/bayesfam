@@ -132,7 +132,7 @@ softplusnormal <- function(link = "identity", link_sigma = "log") {
       }
 
       real softplusnormal_rng(real mu, real sigma) {
-        return log(exp(normal_rng(mu, sigma)) - 1);
+        return log(exp(normal_rng(mu, sigma)) + 1);
       }",
     block = "functions"
   )
