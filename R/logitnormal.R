@@ -39,7 +39,7 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rlogitnormal(100, 0.5, 2))
-rlogitnormal <- function(n, mu, sigma) {
+rlogitnormal <- function(n, mu = 0, sigma = 1) {
   if (isTRUE(any(sigma < 0))) {
     stop("P must be above or equal to 0.")
   }

@@ -4,7 +4,7 @@
 \alias{rgompertz}
 \title{RNG function for the Gompertz distribution, with Median parametrization.}
 \usage{
-rgompertz(n, mu, beta)
+rgompertz(n, mu = 1, beta = 0.5)
 }
 \arguments{
 \item{n}{Number of draws}

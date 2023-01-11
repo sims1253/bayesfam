@@ -87,7 +87,7 @@ qbetaprime <- function(p, mu, phi) {
 #' @export
 #'
 #' @examples hist(rbetaprime(100, mu = 1, phi = 2))
-rbetaprime <- function(n, mu, phi) {
+rbetaprime <- function(n, mu = 1, phi = 1) {
   # check the arguments
   # if ()
   if (isTRUE(phi <= 0)) {

@@ -40,7 +40,7 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rsoftplusnormal(100, 1, 2))
-rsoftplusnormal <- function(n, mu, sigma) {
+rsoftplusnormal <- function(n, mu = 1, sigma = 1) {
   # check the arguments
   if (isTRUE(sigma <= 0)) {
     stop("softplusnormal is only defined for sigma > 0")

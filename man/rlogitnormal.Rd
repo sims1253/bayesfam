@@ -4,7 +4,7 @@
 \alias{rlogitnormal}
 \title{Logitnormal RNG-function in median parametrization.}
 \usage{
-rlogitnormal(n, mu, sigma)
+rlogitnormal(n, mu = 0, sigma = 1)
 }
 \arguments{
 \item{n}{Number of draws}
