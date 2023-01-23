@@ -51,8 +51,8 @@ dbeta_binomial2 <- function(x, mu, phi, t, log = FALSE) {
   if (isTRUE(any(phi <= 0))) {
     stop("beta prime is only defined for phi > 0")
   }
-  if (isTRUE(any(mu <= 0))) {
-    stop("beta prime is only defined for mu > 0")
+  if (isTRUE(any(mu < 0 | mu > 1))) {
+    stop("beta prime is only defined for mu e [0, 1]")
   }
   if (!isInt_len(t, len=length(t))) {
     stop("Only natural numbers are allowed for the t argument")
@@ -60,11 +60,14 @@ dbeta_binomial2 <- function(x, mu, phi, t, log = FALSE) {
   if (isFALSE(isLogic_len(log))) {
     stop("The log argument has to be a boolean of len 1")
   }
+  if (isTRUE(any(x > t))) {
+    stop("No x may be bigger than the t argument")
+  }
 
-  #lpdf <- beta_binomial2_lpmf(x, mu, phi, t)
   a <- mu*phi
   b <- (1-mu)*phi
-  lpdf <- log_bin_coeff(t, x) + log(beta(x + a, t - x + b)) - log(beta(a, b))
+  lpdf <- log_bin_coeff(t,x) + log_beta(x + a, t - x + b) - log_beta(a, b)
+  #lpdf <- log(choose(t,x)) + log(beta(x + a, t - x + b)) - log(beta(a, b))
   if(log) {
     return(lpdf)
   } else {
@@ -72,21 +75,39 @@ dbeta_binomial2 <- function(x, mu, phi, t, log = FALSE) {
   }
 }
 
-sum_nat_numbers <- function(n) {
-  # small helpers, n is already checked by caller here, so no further checks necassary
-  # but I guess, n > 0!
-  return(n*(n+1)/2)
+log_beta <- function(a, b) {
+  # Is this actually better than log(beta)?
+  return(log(gamma(a)) + log(gamma(b)) - log(gamma(a + b)))
 }
 
 log_bin_coeff <- function(n, k) {
+  # Is this actually better, than log(choose)?
   # https://en.wikipedia.org/wiki/Binomial_coefficient
   # log of bin coefficient, to be more stable, with sum, rather than mult
-  return(sum_nat_numbers(n) - sum_nat_numbers(k) - sum_nat_numbers(n-k))
+  #return(sum_nat_numbers(n) - sum_nat_numbers(k) - sum_nat_numbers(n-k))
+  return(log_fact(n) - log_fact(k) - log_fact(n-k))
 }
 
-beta2 <- function(mu, phi) {
-  return(beta(mu*phi, (1-mu)*phi))
+log_fact <- function(n) {
+  # Using Pochhammer with x=1
+  # log(n!) = sum log(n)
+  # -> https://www.wolframalpha.com/input?i=sum+log%28n%29
+  return(log(gamma(1 + n)))
 }
+
+# pochhammer <- function(x, n) {
+#   # https://mathworld.wolfram.com/PochhammerSymbol.html
+# }
+
+# pochhammer_x1 <- function(n) {
+#   # for x=1, the formula gets simpler
+#   # https://mathworld.wolfram.com/PochhammerSymbol.html
+#   return(gamma(1+n))
+# }
+
+# beta2 <- function(mu, phi) {
+#   return(beta(mu*phi, (1-mu)*phi))
+# }
 
 rbeta_binomial2 <- function(x, mu, phi, t, log = FALSE) {
   # check the arguments
