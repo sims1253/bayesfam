@@ -10,14 +10,14 @@ log_lik_beta_binomial2 <- function(i, prep) {
   phi <- brms::get_dpar(prep, "phi", i = i)
   trials <- prep$data$vint1[i]
   y <- prep$data$Y[i]
-  beta_binomial2_lpmf(y, mu, phi, trials)
+  dbeta_binomial2(y, mu, phi, trials)
 }
 
 posterior_predict_beta_binomial2 <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   phi <- brms::get_dpar(prep, "phi", i = i)
   trials <- prep$data$vint1[i]
-  beta_binomial2_rng(mu, phi, trials)
+  rbeta_binomial2(mu, phi, trials)
 }
 
 posterior_epred_beta_binomial2 <- function(prep) {
@@ -43,31 +43,47 @@ beta_binomial2 <- function(link = "logit", link_phi = "log") {
   )
 }
 
+#' Title
+#'
+#' @param x
+#' @param mu
+#' @param phi
+#' @param t
+#' @param log
+#'
+#' @return
+#' @export
+#'
+#' @examples
 dbeta_binomial2 <- function(x, mu, phi, t, log = FALSE) {
   # check the arguments
   if (!isNat_len(x, len=length(x))) {
-    stop("beta prime is only defined for x > 0")
+    stop("beta binomial2 is only defined for x > 0")
   }
   if (isTRUE(any(phi <= 0))) {
-    stop("beta prime is only defined for phi > 0")
+    stop("beta binomial2 is only defined for phi > 0")
   }
   if (isTRUE(any(mu < 0 | mu > 1))) {
-    stop("beta prime is only defined for mu e [0, 1]")
+    stop("beta binomial2 is only defined for mu e [0, 1]")
   }
   if (!isInt_len(t, len=length(t))) {
-    stop("Only natural numbers are allowed for the t argument")
+    stop("Only natural numbers are allowed for the t argument in beta binomial2")
   }
   if (isFALSE(isLogic_len(log))) {
-    stop("The log argument has to be a boolean of len 1")
+    stop("The log argument has to be a boolean of len 1 in beta binomial2")
   }
   if (isTRUE(any(x > t))) {
-    stop("No x may be bigger than the t argument")
+    stop("No x may be bigger than the t argument in beta binomial2")
   }
 
+  # calculate the usual alpha and beta for the beta function
   a <- mu*phi
   b <- (1-mu)*phi
+  # calculate stability optimized log of the pdf
   lpdf <- log_bin_coeff(t,x) + log_beta(x + a, t - x + b) - log_beta(a, b)
   #lpdf <- log(choose(t,x)) + log(beta(x + a, t - x + b)) - log(beta(a, b))
+
+  # return the corresponding value
   if(log) {
     return(lpdf)
   } else {
@@ -109,25 +125,35 @@ log_fact <- function(n) {
 #   return(beta(mu*phi, (1-mu)*phi))
 # }
 
-rbeta_binomial2 <- function(x, mu, phi, t, log = FALSE) {
-  # check the arguments
-  if (isTRUE(any(x <= 0))) {
-    stop("beta prime is only defined for x > 0")
+#' Title
+#'
+#' @param n
+#' @param mu
+#' @param phi
+#' @param t
+#'
+#' @return
+#' @export
+#'
+#' @examples
+rbeta_binomial2 <- function(n, mu, phi, t) {
+  # check the n argument, rest is checked by quantile function
+  if (!isNat_len(n)) {
+    stop("In rbeta_binomial2 the n argument has to be a natural scalar")
   }
   if (isTRUE(any(phi <= 0))) {
-    stop("beta prime is only defined for phi > 0")
+    stop("beta binomial2 is only defined for phi > 0")
   }
-  if (isTRUE(any(mu <= 0))) {
-    stop("beta prime is only defined for mu > 0")
+  if (isTRUE(any(mu < 0 | mu > 1))) {
+    stop("beta binomial2 is only defined for mu e [0, 1]")
   }
-  if (!isNat_len(t, len=length(t))) {
-    stop("Only natural numbers are allowed for the t argument")
-  }
-  if (isFALSE(isLogic_len(log))) {
-    stop("The log argument has to be a boolean of len 1")
+  if (!isInt_len(t, len=length(t))) {
+    stop("Only natural numbers are allowed for the t argument in beta binomial2")
   }
 
-  return(beta_binomial2_rng(mu, phi, t))
+  # calculate beta_binom, by calculating beta2 and using the result for binom
+  p <- rbeta(n, mu*phi, (1-mu)*phi)
+  return(rbinom(n, t, p))
 }
 
 # additionally required Stan code
