@@ -28,6 +28,15 @@ posterior_epred_beta_binomial2 <- function(prep) {
 }
 
 # definition of the custom family
+#' Title
+#'
+#' @param link
+#' @param link_phi
+#'
+#' @return
+#' @export
+#'
+#' @examples
 beta_binomial2 <- function(link = "logit", link_phi = "log") {
   custom_family(
     "beta_binomial2",
@@ -40,6 +49,17 @@ beta_binomial2 <- function(link = "logit", link_phi = "log") {
     log_lik = log_lik_beta_binomial2,
     posterior_predict = posterior_predict_beta_binomial2,
     posterior_epred = posterior_epred__beta_binomial2
+  )
+  family$stanvars <- brms::stanvar(
+    scode = "
+      real beta_binomial2_lpmf(int y, real mu, real phi, int T) {
+        return beta_binomial_lpmf(y | T, mu * phi, (1 - mu) * phi);
+      }
+      int beta_binomial2_rng(real mu, real phi, int T) {
+        return beta_binomial_rng(T, mu * phi, (1 - mu) * phi);
+      }
+      }",
+    block = "functions"
   )
 }
 
@@ -157,11 +177,11 @@ rbeta_binomial2 <- function(n, mu, phi, t) {
 }
 
 # additionally required Stan code
-stan_beta_binomial2 <- "
-  real beta_binomial2_lpmf(int y, real mu, real phi, int T) {
-    return beta_binomial_lpmf(y | T, mu * phi, (1 - mu) * phi);
-  }
-  int beta_binomial2_rng(real mu, real phi, int T) {
-    return beta_binomial_rng(T, mu * phi, (1 - mu) * phi);
-  }
-"
+# stan_beta_binomial2 <- "
+#   real beta_binomial2_lpmf(int y, real mu, real phi, int T) {
+#     return beta_binomial_lpmf(y | T, mu * phi, (1 - mu) * phi);
+#   }
+#   int beta_binomial2_rng(real mu, real phi, int T) {
+#     return beta_binomial_rng(T, mu * phi, (1 - mu) * phi);
+#   }
+# "
