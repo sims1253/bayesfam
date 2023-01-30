@@ -104,7 +104,8 @@ qpower_normal <- function(p, mu, sigma, beta) {
 #' @return Random numbers from the power_normal distribution.
 #' @export
 #'
-#' @examples hist(rpower_normal(100, mu = 0, sigma = 2, beta = 10))
+#' @examples data <- rpower_normal(100, mu = 0, sigma = 2, beta = 10)
+#' hist(data, main = paste("rpower_normal(100, mu = 0, sigma = 2, beta = 10), mu =", median(data)))
 rpower_normal <- function(n, mu, sigma, beta) {
   # check the arguments
   if (!isNat_len(n)) {

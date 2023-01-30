@@ -20,5 +20,6 @@ Random numbers from the power_normal distribution.
 RNG for the power_normal distribution
 }
 \examples{
-hist(rpower_normal(100, mu = 0, sigma = 2, beta = 10))
+data <- rpower_normal(100, mu = 0, sigma = 2, beta = 10)
+hist(data, main = paste("rpower_normal(100, mu = 0, sigma = 2, beta = 10), mu =", median(data)))
 }
