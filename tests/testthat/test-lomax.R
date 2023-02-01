@@ -76,7 +76,6 @@ test_that("custom-lomax", {
   expect_error(qlomax(c(-1, 2), mu = 2, alpha = 2)) # q is not allowed to be outside [0, 1]
 
   # Check rng for errors
-  expect_error(rlomax(100, 2)) # to few arguments
   expect_error(rlomax(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rlomax(-1, mu = 2, alpha = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rlomax("r", mu = 2, alpha = 2))) # non-numeric arguments are disallowed

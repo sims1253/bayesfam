@@ -42,7 +42,6 @@ test_that("custom-softplusnormal", {
   expect_error(dsoftplusnormal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
   # Check rng for errors
-  expect_error(rsoftplusnormal(100, 2)) # to few arguments
   expect_error(rsoftplusnormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rsoftplusnormal(-1, mu = 2, sigma = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rsoftplusnormal("r", mu = 2, sigma = 2))) # non-numeric arguments are disallowed

@@ -9,12 +9,12 @@ rsoftplusnormal(n, mu = 1, sigma = 1)
 \arguments{
 \item{n}{Number of draws}
 
-\item{mu}{Median paramameter, mu unbound, mu already log transformed}
+\item{mu}{Median parameter, mu unbound, mu already log transformed}
 
 \item{sigma}{Sigma shape parameter, sigma > 0}
 }
 \value{
-n Softplussy ditributed samples
+n Softplus distributed samples
 }
 \description{
 Softplus RNG-function in median parametrization.

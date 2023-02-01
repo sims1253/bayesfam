@@ -2,7 +2,7 @@
 % Please edit documentation in R/cloglognormal.R
 \name{cloglognormal}
 \alias{cloglognormal}
-\title{Custom BRMS family CLogLog-Normal in median parametrization.}
+\title{Custom BRMS family Cloglog-Normal in median parametrization.}
 \usage{
 cloglognormal(link = "identity", link_sigma = "log")
 }
@@ -15,20 +15,14 @@ cloglognormal(link = "identity", link_sigma = "log")
 Cloglog BRMS model-object
 }
 \description{
-Custom BRMS family CLogLog-Normal in median parametrization.
+Custom BRMS family Cloglog-Normal in median parametrization.
 }
 \examples{
-# Running the example might take a while and may make RStudio unresponsive.
-# Just relax and grab a cup of coffe or tea in the meantime.
-cloglog_data <- rcloglognormal(1000, 0.5, 2)
+data <- rcloglognormal(1000, 0.5, 2)
 # cloglognormal does not like values to close to the boundary
-cloglog_data <- limit_data(cloglog_data, c(1e-12, 1 - 1e-12))
-# BBmisc::surpressAll necassary to keep the test output clean
-BBmisc::suppressAll({
-  fit1 <- brms::brm(y ~ 1,
-    data = list(y = cloglog_data), family = cloglognormal(),
-    stanvars = cloglognormal()$stanvars, backend = "cmdstanr", cores = 4
-  )
-})
-plot(fit1)
+data <- limit_data(data, c(1e-12, 1 - 1e-12))
+fit <- brms::brm(formula = y ~ 1, data = list(y = data),
+ family = cloglognormal(), stanvars = cloglognormal()$stanvars,
+ refresh = 0)
+plot(fit)
 }

@@ -20,5 +20,5 @@ n Weibull distributed samples.
 Median parameterization of the Weibull RNG.
 }
 \examples{
-hist(log(rweibull_mean(10000, mu = 2, k = 1)))
+hist(log(rweibull_median(10000, mu = 2, k = 1)))
 }

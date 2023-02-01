@@ -89,7 +89,6 @@ qbetaprime <- function(p, mu, phi) {
 #' @examples hist(rbetaprime(100, mu = 1, phi = 2))
 rbetaprime <- function(n, mu = 1, phi = 1) {
   # check the arguments
-  # if ()
   if (isTRUE(phi <= 0)) {
     stop("beta prime is only defined for phi > 0")
   }
@@ -144,18 +143,12 @@ posterior_epred_betaprime <- function(prep) {
 #' @return brms beta prime distribution family
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(n = 1000)
+#' @examples a <- rnorm(n = 1000)
 #' data <- list(a = a, y = rbetaprime(n = 1000, mu = exp(0.5 * a + 1), phi = 2))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = betaprime(),
-#'     stanvars = betaprime()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = betaprime(), stanvars = betaprime()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 betaprime <- function(link = "log", link_phi = "log") {
   family <- brms::custom_family(
     "betaprime",

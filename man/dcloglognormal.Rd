@@ -13,7 +13,7 @@ dcloglognormal(x, mu, sigma, log = FALSE)
 
 \item{sigma}{Shape parameter, sigma >= 0}
 
-\item{log}{optional argument. If true, returns logarathmic probability. Default = FALSE}
+\item{log}{optional argument. If true, returns logarithmic probability. Default = FALSE}
 }
 \value{
 Normal Distribution density with Cloglog link function

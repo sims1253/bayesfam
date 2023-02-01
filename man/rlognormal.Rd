@@ -9,12 +9,12 @@ rlognormal(n, mu = 0, sigma = 1)
 \arguments{
 \item{n}{Number of draws}
 
-\item{mu}{Median paramameter, mu unbound, mu already log transformed}
+\item{mu}{Median parameter, mu unbound, mu already log transformed}
 
 \item{sigma}{Sigma shape parameter, sigma > 0}
 }
 \value{
-n Lognormally ditributed samples
+n Lognormal distributed samples
 }
 \description{
 Lognormal RNG-function in median parametrization.

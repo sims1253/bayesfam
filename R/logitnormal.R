@@ -31,10 +31,10 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
 #' Logitnormal RNG-function in median parametrization.
 #'
 #' @param n Number of draws
-#' @param mu Median paramameter, mu unbound, mu already logit transformed
+#' @param mu Median parameter, mu unbound, mu already logit transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @returns n Logitnormally ditributed samples
+#' @returns n Logitnormal distributed samples
 #'
 #' @export
 #'
@@ -93,18 +93,12 @@ posterior_epred_logitnormal <- function(prep) {
 #' @return Logitnormal BRMS model-object
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rlogitnormal(1000, 0.5 * a + 1, 2))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = logitnormal(),
-#'     stanvars = logitnormal()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = logitnormal(), stanvars = logitnormal()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 logitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")
   family <- brms::custom_family(

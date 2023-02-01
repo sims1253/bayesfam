@@ -97,7 +97,7 @@ rMIG <-
   }
 
 
-#' Simplex RNG function in Median parametrisations.
+#' Simplex RNG function in Median parametrization.
 #'
 #' Based on code from simplexreg
 #' Peng Zhang, Zhenguo Qiu, Chengchun Shi (2016). simplexreg: An R
@@ -189,18 +189,12 @@ posterior_epred_simplex <- function(prep) {
 #' @return BRMS Beta-Custom distribution family
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rsimplex(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
-#' # BBmisc::surpressAll necassary to keep test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = simplex(),
-#'     stanvars = simplex()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = simplex(), stanvars = simplex()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 simplex <- function(link = "logit", link_sigma = "identity") {
   family <- brms::custom_family(
     "simplex",

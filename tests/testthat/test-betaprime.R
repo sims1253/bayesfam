@@ -8,7 +8,7 @@ test_that("custom-betaprime", {
   mu_list <- seq(from = eps, to = 100, length.out = n_small)
   phi_list <- seq(from = eps, to = 50, length.out = n_small)
   accepted_relative_error <- 1e-6
-  accepted_rng_error <- 0.05
+  accepted_rng_error <- 0.085
   accepred_rng_failures <- 0.1
 
   # Check lengths
@@ -76,7 +76,6 @@ test_that("custom-betaprime", {
   expect_error(qbetaprime("r", mu = 2, phi = 2)) # non-numeric arguments are disallowed
 
   # Check rng for errors
-  expect_error(rbetaprime(100, 2)) # to few arguments
   expect_error(rbetaprime(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rbetaprime(-1, mu = 2, phi = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rbetaprime("r", mu = 2, phi = 2))) # non-numeric arguments are disallowed

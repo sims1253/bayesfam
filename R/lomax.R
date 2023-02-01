@@ -127,18 +127,12 @@ posterior_epred_lomax <- function(prep) {
 #' @return BRMS Lomax distribution family
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rlomax(1000, exp(0.5 * a + 1), 2))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = lomax(),
-#'     stanvars = lomax()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = lomax(), stanvars = lomax()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 lomax <- function(link = "log", link_alpha = "log1p") {
   family <- brms::custom_family(
     "lomax",

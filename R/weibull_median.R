@@ -39,7 +39,7 @@ dweibull_median <- function(x, mu, k, log = FALSE) {
 #' @return n Weibull distributed samples.
 #' @export
 #'
-#' @examples hist(log(rweibull_mean(10000, mu = 2, k = 1)))
+#' @examples hist(log(rweibull_median(10000, mu = 2, k = 1)))
 rweibull_median <- function(n, mu = 1, k = 1) {
   # check the arguments
   if (isTRUE(k <= 0)) {

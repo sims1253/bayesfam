@@ -60,7 +60,6 @@ test_that("lognormal", {
   expect_error(dlognormal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
   # Check rng for errors
-  expect_error(rlognormal(100, 2)) # to few arguments
   expect_error(rlognormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rlognormal(-1, mu = 2, sigma = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rlognormal("r", mu = 2, sigma = 2))) # non-numeric arguments are disallowed
