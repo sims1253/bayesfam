@@ -40,7 +40,7 @@ dweibull_median <- function(x, mu, k, log = FALSE) {
 #' @export
 #'
 #' @examples hist(log(rweibull_median(10000, mu = 2, k = 1)))
-rweibull_median <- function(n, mu, k) {
+rweibull_median <- function(n, mu = 1, k = 1) {
   # check the arguments
   if (isTRUE(k <= 0)) {
     stop("weibull is only defined for k > 0")

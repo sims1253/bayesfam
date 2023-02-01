@@ -72,7 +72,7 @@ qgompertz <- function(p, mu, beta) {
 #' @export
 #'
 #' @examples hist(rgompertz(n = 100, mu = 2, beta = 0.1))
-rgompertz <- function(n, mu, beta) {
+rgompertz <- function(n, mu = 1, beta = 0.5) {
   if (isTRUE(mu <= 0)) {
     stop("rgompertz is only defined for mu > 0")
   }

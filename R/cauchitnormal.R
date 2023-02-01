@@ -39,7 +39,7 @@ dcauchitnormal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rcauchitnormal(100, 0.5, 2))
-rcauchitnormal <- function(n, mu, sigma) {
+rcauchitnormal <- function(n, mu = 0, sigma = 1) {
   if (isTRUE(any(sigma < 0))) {
     stop("P must be above or equal to 0.")
   }

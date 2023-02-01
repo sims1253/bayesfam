@@ -4,7 +4,7 @@
 \alias{rbetaprime}
 \title{RNG for the beta prime distribution}
 \usage{
-rbetaprime(n, mu, phi)
+rbetaprime(n, mu = 1, phi = 1)
 }
 \arguments{
 \item{n}{Number of samples.}

@@ -40,7 +40,7 @@ dgamma_mean <- function(x, mu, a, log = FALSE) {
 #' @export
 #'
 #' @examples hist(log(rgamma_mean(10000, mu = 2, a = 1)))
-rgamma_mean <- function(n, mu, a) {
+rgamma_mean <- function(n, mu = 1, a = 1) {
   # check the arguments
   if (isTRUE(a <= 0)) {
     stop("gamma is only defined for a > 0")

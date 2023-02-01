@@ -78,7 +78,6 @@ test_that("custom-kumaraswamy", {
   expect_error(qkumaraswamy(c(-1, 2), mu = 2, p = 2)) # q is not allowed to be outside [0, 1]
 
   # Check rng for errors
-  expect_error(rkumaraswamy(100, 0.8)) # to few arguments
   expect_error(rkumaraswamy(100.82, 3, 4, 5)) # to many arguments
   expect_error(rkumaraswamy(-1, mu = 0.8, p = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rkumaraswamy("r", mu = 0.8, p = 2))) # non-numeric arguments are disallowed

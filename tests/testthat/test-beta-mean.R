@@ -63,7 +63,6 @@ test_that("test-custom-beta", {
   expect_error(dbeta_mean(1, mu = 0.8, phi = 0)) # p is not allowed to be 1 or smaller
 
   # Check rng for errors
-  expect_error(rbeta_mean(100, 0.8)) # to few arguments
   expect_error(rbeta_mean(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rbeta_mean(-1, mu = 0.8, phi = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rbeta_mean("r", mu = 0.8, phi = 2))) # non-numeric arguments are disallowed

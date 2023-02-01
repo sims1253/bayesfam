@@ -4,7 +4,7 @@
 \alias{rbeta_mean}
 \title{Beta distribution RNG for mean parameterization}
 \usage{
-rbeta_mean(n, mu, phi)
+rbeta_mean(n, mu = 0.5, phi = 4)
 }
 \arguments{
 \item{n}{Number of draws.}

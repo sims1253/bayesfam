@@ -76,7 +76,6 @@ test_that("custom-betaprime", {
   expect_error(qbetaprime("r", mu = 2, phi = 2)) # non-numeric arguments are disallowed
 
   # Check rng for errors
-  expect_error(rbetaprime(100, 2)) # to few arguments
   expect_error(rbetaprime(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rbetaprime(-1, mu = 2, phi = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rbetaprime("r", mu = 2, phi = 2))) # non-numeric arguments are disallowed

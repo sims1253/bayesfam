@@ -4,7 +4,7 @@
 \alias{rsoftplusnormal}
 \title{Softplus RNG-function in median parametrization.}
 \usage{
-rsoftplusnormal(n, mu, sigma)
+rsoftplusnormal(n, mu = 1, sigma = 1)
 }
 \arguments{
 \item{n}{Number of draws}

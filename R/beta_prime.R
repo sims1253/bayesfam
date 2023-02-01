@@ -36,7 +36,7 @@ dbetaprime <- function(x, mu, phi, log = FALSE) {
 
   lpdf <- (alpha - 1) * log(x) +
     (-(alpha + beta)) * log1p(x) -
-    log(beta(alpha, beta))
+    lbeta(alpha, beta)
 
   # return either the log or the pdf itself, given the log-value
   if (log) {
@@ -87,7 +87,7 @@ qbetaprime <- function(p, mu, phi) {
 #' @export
 #'
 #' @examples hist(rbetaprime(100, mu = 1, phi = 2))
-rbetaprime <- function(n, mu, phi) {
+rbetaprime <- function(n, mu = 1, phi = 1) {
   # check the arguments
   if (isTRUE(phi <= 0)) {
     stop("beta prime is only defined for phi > 0")

@@ -44,7 +44,6 @@ test_that("custom-cauchitnormal", {
 
 
   # Check rng for errors
-  expect_error(rcauchitnormal(100, 2)) # to few arguments
   expect_error(rcauchitnormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rcauchitnormal(-1, mu = cauchit(0.5), sigma = 0.4)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rcauchitnormal("r", mu = cauchit(0.5), sigma = 0.4))) # non-numeric arguments are disallowed

@@ -4,7 +4,7 @@
 \alias{rcloglognormal}
 \title{Cloglognormal RNG-function}
 \usage{
-rcloglognormal(n, mu, sigma)
+rcloglognormal(n, mu = -0.36, sigma = 0.75)
 }
 \arguments{
 \item{n}{Number of draws}

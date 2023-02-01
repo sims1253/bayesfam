@@ -39,7 +39,7 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rlogitnormal(100, 0.5, 2))
-rlogitnormal <- function(n, mu, sigma) {
+rlogitnormal <- function(n, mu = 0, sigma = 1) {
   if (isTRUE(any(sigma < 0))) {
     stop("P must be above or equal to 0.")
   }
@@ -78,11 +78,11 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
 #'
 #' @param prep BRMS data
 #'
-#' @return Mean of Posterior
+#' @return Median of Posterior
 posterior_epred_logitnormal <- function(prep) {
+  warning("posterior_epred promises the mean, however with no analytical mean available for the logit-normal distribution, we provide the median in this case. Proceed with caution.")
   mu <- brms::get_dpar(prep, "mu")
-  sigma <- brms::get_dpar(prep, "sigma")
-  return(exp(mu + sigma^2 / 2))
+  return(plogis(mu))
 }
 
 #' Custom BRMS family Logit-Normal in median parametrization.

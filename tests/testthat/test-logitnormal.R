@@ -43,7 +43,6 @@ test_that("custom-logitnormal", {
 
 
   # Check rng for errors
-  expect_error(rlogitnormal(100, 2)) # to few arguments
   expect_error(rlogitnormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rlogitnormal(-1, mu = logit(0.5), sigma = 0.4)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rlogitnormal("r", mu = logit(0.5), sigma = 0.4))) # non-numeric arguments are disallowed

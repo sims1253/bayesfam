@@ -4,7 +4,7 @@
 \alias{rweibull_median}
 \title{Median parameterization of the Weibull RNG.}
 \usage{
-rweibull_median(n, mu, k)
+rweibull_median(n, mu = 1, k = 1)
 }
 \arguments{
 \item{n}{Number of samples, scalar natural number.}

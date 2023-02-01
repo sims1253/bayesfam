@@ -114,7 +114,7 @@ rMIG <-
 #'
 #' @examples hist(rsimplex(10000, mu = 0.7, sigma = 2))
 rsimplex <-
-  function(n, mu, sigma) {
+  function(n, mu = 0.5, sigma = 1) {
     ## generating random number from simplex dist'n
     ## by transformation from inverse-gaussian mixture dist'n
     if (any(mu <= 0 | mu >= 1)) {
