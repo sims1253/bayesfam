@@ -43,7 +43,6 @@ test_that("custom-cloglognormal", {
 
 
   # Check rng for errors
-  expect_error(rcloglognormal(100, 2)) # to few arguments
   expect_error(rcloglognormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rcloglognormal(-1, mu = cloglog(0.5), sigma = 0.4)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rcloglognormal("r", mu = cloglog(0.5), sigma = 0.4))) # non-numeric arguments are disallowed

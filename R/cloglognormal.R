@@ -3,7 +3,7 @@
 #' @param x Value space of the function, x e (0, 1)
 #' @param mu Median parameter, mu is already Cloglog-transformed, mu unbound
 #' @param sigma Shape parameter, sigma >= 0
-#' @param log optional argument. If true, returns logarathmic probability. Default = FALSE
+#' @param log optional argument. If true, returns logarithmic probability. Default = FALSE
 #'
 #' @return Normal Distribution density with Cloglog link function
 #' @export
@@ -38,7 +38,7 @@ dcloglognormal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rcloglognormal(100, 0.5, 2))
-rcloglognormal <- function(n, mu, sigma) {
+rcloglognormal <- function(n, mu = -0.36, sigma = 0.75) {
   if (isTRUE(any(sigma < 0))) {
     stop("P must be above or equal to 0.")
   }
@@ -73,7 +73,7 @@ posterior_predict_cloglognormal <- function(i, prep, ...) {
   return(rcloglognormal(prep$ndraws, mu, sigma))
 }
 
-#' Posterior expected value prediction. Mean undefined for CLogLog-Normal
+#' Posterior expected value prediction. Mean undefined for Cloglog-Normal
 #'
 #' @param prep BRMS data
 #'
@@ -84,7 +84,7 @@ posterior_epred_cloglognormal <- function(prep) {
         distribution, posterior_epred is currently not supported.")
 }
 
-#' Custom BRMS family CLogLog-Normal in median parametrization.
+#' Custom BRMS family Cloglog-Normal in median parametrization.
 #'
 #' @param link Link function argument (as string) for Median argument. Left as identity!
 #' @param link_sigma Link function argument (as string) for Shape argument
@@ -92,19 +92,13 @@ posterior_epred_cloglognormal <- function(prep) {
 #' @return Cloglog BRMS model-object
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' cloglog_data <- rcloglognormal(1000, 0.5, 2)
+#' @examples data <- rcloglognormal(1000, 0.5, 2)
 #' # cloglognormal does not like values to close to the boundary
-#' cloglog_data <- limit_data(cloglog_data, c(1e-12, 1 - 1e-12))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1,
-#'     data = list(y = cloglog_data), family = cloglognormal(),
-#'     stanvars = cloglognormal()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' data <- limit_data(data, c(1e-12, 1 - 1e-12))
+#' fit <- brms::brm(formula = y ~ 1, data = list(y = data),
+#'  family = cloglognormal(), stanvars = cloglognormal()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 cloglognormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")
   family <- brms::custom_family(

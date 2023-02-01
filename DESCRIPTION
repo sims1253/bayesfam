@@ -1,7 +1,7 @@
 Package: bayesfam
 Type: Package
 Title: brms Custom Families
-Version: 0.2.1
+Version: 0.2.3
 Date: 2022-10-26
 Authors@R:
     c(person("Maximilian", "Scholz", email = "research.scholz@mailbox.org",
@@ -21,7 +21,7 @@ Suggests:
     extraDistr,
     BBmisc,
     posterior (>= 1.3.1)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 NeedsCompilation: no
 URL: https://github.com/sims1253/bayesfam
 BugReports: https://github.com/sims1253/bayesfam/issues

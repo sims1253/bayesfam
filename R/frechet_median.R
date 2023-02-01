@@ -39,7 +39,7 @@ dfrechet_median <- function(x, mu, nu) {
 #' @export
 #'
 #' @examples hist(rfrechet_median(100, mu = 1, nu = 2))
-rfrechet_median <- function(n, mu, nu) {
+rfrechet_median <- function(n, mu = 1, nu = 2) {
   # check the arguments
   if (isTRUE(nu <= 1)) {
     stop("frechet is only defined for nu > 1")

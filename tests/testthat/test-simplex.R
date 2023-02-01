@@ -52,7 +52,6 @@ test_that("custom-simplex", {
   expect_error(dsimplex(1, mu = 0.8, sigma = 0)) # p is not allowed to be 1 or smaller
 
   # Check rng for errors
-  expect_error(rsimplex(100, 0.8)) # to few arguments
   expect_error(rsimplex(100.82, 3, 4, 5)) # to many arguments
   expect_error(rsimplex(-1, mu = 0.8, sigma = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rsimplex("r", mu = 0.8, sigma = 2))) # non-numeric arguments are disallowed

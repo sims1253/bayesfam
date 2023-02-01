@@ -38,7 +38,7 @@ dkumaraswamy <- function(x, mu, p, log = FALSE) {
   }
 }
 
-#' Kumaraswamy RNG function in Median parametrisations.
+#' Kumaraswamy RNG function in Median parametrization.
 #'
 #' @param n Number of samples to draw, as a natural number scalar.
 #' @param mu Median parameter, mu e (0, 1)
@@ -48,7 +48,7 @@ dkumaraswamy <- function(x, mu, p, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rkumaraswamy(10000, mu = 0.5, p = 4))
-rkumaraswamy <- function(n, mu, p) {
+rkumaraswamy <- function(n, mu = 0.5, p = 2) {
   if (isTRUE(any(mu <= 0 | mu >= 1))) {
     stop("The mean must be in (0,1).")
   }
@@ -146,7 +146,7 @@ posterior_predict_kumaraswamy <- function(i, prep, ...) {
   return(rkumaraswamy(prep$ndraws, mu, p))
 }
 
-#' Posterior expected value prediction of the Kuramaswamy implementation.
+#' Posterior expected value prediction of the Kumaraswamy implementation.
 #'
 #' @param prep BRMS data
 #'
@@ -166,18 +166,12 @@ posterior_epred_kumaraswamy <- function(prep) {
 #' @return BRMS Beta-Custom distribution family
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rkumaraswamy(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = kumaraswamy(),
-#'     stanvars = kumaraswamy()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = kumaraswamy(), stanvars = kumaraswamy()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 kumaraswamy <- function(link = "logit", link_p = "log") {
   family <- brms::custom_family(
     "kumaraswamy",

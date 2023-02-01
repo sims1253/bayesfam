@@ -46,12 +46,12 @@ Nothing actually, just wraps the test
 Tests if an RNG can achieve a good enough location often enough
 }
 \examples{
-library(testthat)
 eps <- 1e-6
 mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 phis <- seq(from = 2 + eps, to = 20, length.out = 10)
-bayesfam:::test_rng(
+result <- bayesfam:::test_rng(
   rng_fun = rbetaprime, metric_mu = mean, n = 10000, mu_list = mu_list,
   aux_list = phis, mu_eps = 0.2, p_acceptable_failures = 0.05
 )
+print(result)
 }

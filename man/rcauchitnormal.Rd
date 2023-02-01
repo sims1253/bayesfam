@@ -4,17 +4,17 @@
 \alias{rcauchitnormal}
 \title{Cauchitnormal RNG-function}
 \usage{
-rcauchitnormal(n, mu, sigma)
+rcauchitnormal(n, mu = 0, sigma = 1)
 }
 \arguments{
 \item{n}{Number of draws}
 
-\item{mu}{Median paramameter, mu unbound, mu already cauchit transformed}
+\item{mu}{Median parameter, mu unbound, mu already cauchit transformed}
 
 \item{sigma}{Sigma shape parameter, sigma > 0}
 }
 \value{
-n chauchitnormally ditributed samples
+n chauchitnormal distributed samples
 }
 \description{
 Cauchitnormal RNG-function

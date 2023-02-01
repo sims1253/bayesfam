@@ -32,15 +32,15 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
 #' Softplus RNG-function in median parametrization.
 #'
 #' @param n Number of draws
-#' @param mu Median paramameter, mu unbound, mu already log transformed
+#' @param mu Median parameter, mu unbound, mu already log transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @returns n Softplussy ditributed samples
+#' @returns n Softplus distributed samples
 #'
 #' @export
 #'
 #' @examples hist(rsoftplusnormal(100, 1, 2))
-rsoftplusnormal <- function(n, mu, sigma) {
+rsoftplusnormal <- function(n, mu = 1, sigma = 1) {
   # check the arguments
   if (isTRUE(sigma <= 0)) {
     stop("softplusnormal is only defined for sigma > 0")
@@ -98,18 +98,12 @@ posterior_epred_softplusnormal <- function(prep) {
 #' @return Softplus BRMS model-object
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rsoftplusnormal(1000, 0.5 * a + 1, 2))
-#' # BBmisc::surpressAll necassary to keep test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = softplusnormal(),
-#'     stanvars = softplusnormal()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = softplusnormal(), stanvars = softplusnormal()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 softplusnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")
   family <- brms::custom_family(
@@ -132,7 +126,7 @@ softplusnormal <- function(link = "identity", link_sigma = "log") {
       }
 
       real softplusnormal_rng(real mu, real sigma) {
-        return log(exp(normal_rng(mu, sigma)) - 1);
+        return log(exp(normal_rng(mu, sigma)) + 1);
       }",
     block = "functions"
   )

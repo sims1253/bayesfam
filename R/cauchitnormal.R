@@ -31,15 +31,15 @@ dcauchitnormal <- function(x, mu, sigma, log = FALSE) {
 #' Cauchitnormal RNG-function
 #'
 #' @param n Number of draws
-#' @param mu Median paramameter, mu unbound, mu already cauchit transformed
+#' @param mu Median parameter, mu unbound, mu already cauchit transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @returns n chauchitnormally ditributed samples
+#' @returns n chauchitnormal distributed samples
 #'
 #' @export
 #'
 #' @examples hist(rcauchitnormal(100, 0.5, 2))
-rcauchitnormal <- function(n, mu, sigma) {
+rcauchitnormal <- function(n, mu = 0, sigma = 1) {
   if (isTRUE(any(sigma < 0))) {
     stop("P must be above or equal to 0.")
   }
@@ -48,7 +48,7 @@ rcauchitnormal <- function(n, mu, sigma) {
   )
 }
 
-#' Log-Likelihood vignette for the Chauchitnormal Distribution
+#' Log-Likelihood vignette for the Cauchitnormal Distribution
 #'
 #' @param i Indices
 #' @param prep BRMS data
@@ -61,7 +61,7 @@ log_lik_cauchitnormal <- function(i, prep) {
   return(dcauchitnormal(y, mu, sigma, log = TRUE))
 }
 
-#' Posterior-predict vignette for the Chauchitnormal Distribution
+#' Posterior-predict vignette for the Cauchitnormal Distribution
 #'
 #' @param i Indices
 #' @param prep BRMS data
@@ -93,17 +93,11 @@ posterior_epred_cauchitnormal <- function(prep) {
 #' @return Cauchitnormal BRMS model-object
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rcauchitnormal(1000, 0.5 * a + 1, 2))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = cauchitnormal(),
-#'     stanvars = cauchitnormal()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
+#' fit1 <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
+#'  refresh = 0)
 #' plot(fit1)
 cauchitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

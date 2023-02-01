@@ -230,13 +230,10 @@ test_that("test_brms_quantile", {
   allowed_interval <- c(eps_brms, 1 - eps_brms)
   cloglog_data <- limit_data(cloglog_data, allowed_interval)
 
-  # special BRMS test implementation (as it uses a simplified y ~ 1 model)
-  BBmisc::suppressAll({
-    fit <- brms::brm(y ~ 1,
-      family = cloglognormal(), stanvars = cloglognormal()$stanvars,
-      backend = "rstan", cores = 2, data = list(y = cloglog_data)
-    )
-  })
+  fit <- brms::brm(y ~ 1,
+    family = cloglognormal(), stanvars = cloglognormal()$stanvars,
+    backend = "rstan", cores = 2, data = list(y = cloglog_data)
+  )
 
   # OK, after all that preamble, now it is getting interesting!
   expect_true(test_brms_quantile(fit, "b_Intercept", intercept, tresh) &&

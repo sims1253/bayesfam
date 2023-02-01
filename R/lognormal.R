@@ -32,15 +32,15 @@ dlognormal <- function(x, mu, sigma, log = FALSE) {
 #' Lognormal RNG-function in median parametrization.
 #'
 #' @param n Number of draws
-#' @param mu Median paramameter, mu unbound, mu already log transformed
+#' @param mu Median parameter, mu unbound, mu already log transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
-#' @returns n Lognormally ditributed samples
+#' @returns n Lognormal distributed samples
 #'
 #' @export
 #'
 #' @examples hist(rlognormal(100, 1, 0.5))
-rlognormal <- function(n, mu, sigma) {
+rlognormal <- function(n, mu = 0, sigma = 1) {
   # check the arguments
   if (isTRUE(sigma <= 0)) {
     stop("lognormal is only defined for sigma > 0")

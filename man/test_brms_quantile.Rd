@@ -4,30 +4,38 @@
 \alias{test_brms_quantile}
 \title{Check, that data of the posterior is close enough to the reference data.}
 \usage{
-test_brms_quantile(posterior_data, name, reference, thresh, debug = FALSE)
+test_brms_quantile(posterior_data, arg_name, reference, thresh, debug = FALSE)
 }
 \arguments{
 \item{posterior_data}{Data fitted and drawn, a BRMS object, which is a list in R terms}
 
-\item{name}{Name of the variable to check, as single string}
+\item{arg_name}{Name of the argument variable to check, as single string}
 
 \item{reference}{Reference value to check against, single real scalar}
 
 \item{thresh}{real scalar or 2-length vector of quantile bounds.
-For scalar constructs bound as [tresh, 1-thresh]
+For scalar constructs bound as [thresh, 1-thresh]
 thresh has to be inside the Unit-Interval.}
 
-\item{debug}{True for verbouse output of test results.}
+\item{debug}{True for verbose output of test results.}
 }
 \value{
-Single boolean succeess, fail or error
+Single boolean success, fail or error
 }
 \description{
 Check, that data of the posterior is close enough to the reference data.
 }
 \examples{
-fit <- bayesfam:::construct_brms(1000, 0.5, 2.0, identity, betaprime, rbetaprime)
-result <- bayesfam:::test_brms_quantile(fit, "b_Intercept", log(0.5), 0.025)
-print(result)
+fit <- bayesfam:::construct_brms(
+  n_data_sampels = 1000,
+  intercept = 5.0,
+  aux_par = 2.0,
+  rng_link = identity,
+  family = betaprime,
+  rng = rbetaprime
+)
+result <- bayesfam:::test_brms_quantile(
+  posterior_data = fit, arg_name = "phi", 2.0, 0.025)
 plot(fit)
+# beta_prime uses log-link for Intercept
 }
