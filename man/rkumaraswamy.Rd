@@ -4,7 +4,7 @@
 \alias{rkumaraswamy}
 \title{Kumaraswamy RNG function in Median parametrisations.}
 \usage{
-rkumaraswamy(n, mu, p)
+rkumaraswamy(n, mu = 0.5, p = 2)
 }
 \arguments{
 \item{n}{Number of samples to draw, as a natural number scalar.}

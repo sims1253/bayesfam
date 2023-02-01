@@ -38,7 +38,7 @@ dcloglognormal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rcloglognormal(100, 0.5, 2))
-rcloglognormal <- function(n, mu, sigma) {
+rcloglognormal <- function(n, mu = -0.36, sigma = 0.75) {
   if (isTRUE(any(sigma < 0))) {
     stop("P must be above or equal to 0.")
   }

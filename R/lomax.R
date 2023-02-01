@@ -72,7 +72,7 @@ qlomax <- function(p, mu, alpha) {
 #' @export
 #'
 #' @examples hist(log(rlomax(1000, mu = 1, alpha = 2)))
-rlomax <- function(n, mu, alpha) {
+rlomax <- function(n, mu = 1, alpha = 10) {
   # check arguments
   if (isTRUE(mu <= 0)) {
     stop("The Lomax RNG is only defined for mu > 0")

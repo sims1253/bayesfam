@@ -4,7 +4,7 @@
 \alias{rfrechet_median}
 \title{Median parameterization of the Fréchet RNG}
 \usage{
-rfrechet_median(n, mu, nu)
+rfrechet_median(n, mu = 1, nu = 2)
 }
 \arguments{
 \item{n}{Number samples to draw}

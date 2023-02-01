@@ -4,7 +4,7 @@
 \alias{rcauchitnormal}
 \title{Cauchitnormal RNG-function}
 \usage{
-rcauchitnormal(n, mu, sigma)
+rcauchitnormal(n, mu = 0, sigma = 1)
 }
 \arguments{
 \item{n}{Number of draws}

@@ -4,7 +4,7 @@
 \alias{rlomax}
 \title{RNG function for the Lomax distribution, with Mean parametrization.}
 \usage{
-rlomax(n, mu, alpha)
+rlomax(n, mu = 1, alpha = 10)
 }
 \arguments{
 \item{n}{Number of draws}

@@ -40,7 +40,7 @@ dlognormal <- function(x, mu, sigma, log = FALSE) {
 #' @export
 #'
 #' @examples hist(rlognormal(100, 1, 0.5))
-rlognormal <- function(n, mu, sigma) {
+rlognormal <- function(n, mu = 0, sigma = 1) {
   # check the arguments
   if (isTRUE(sigma <= 0)) {
     stop("lognormal is only defined for sigma > 0")
