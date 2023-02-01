@@ -4,7 +4,7 @@
 \alias{rgamma_mean}
 \title{Mean parameterization of the gamma RNG.}
 \usage{
-rgamma_mean(n, mu, a)
+rgamma_mean(n, mu = 1, a = 1)
 }
 \arguments{
 \item{n}{Number of samples, scalar natural number.}

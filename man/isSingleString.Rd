@@ -16,6 +16,6 @@ Is a string and only one string
 Check, if the input is a single string
 }
 \examples{
-isSingleString("abc") # should be TRUE
+bayesfam:::isSingleString("abc") # should be TRUE
 bayesfam:::isSingleString(c("abc", "def")) # should be FALSE, not a single string
 }

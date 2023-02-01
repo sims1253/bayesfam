@@ -69,7 +69,7 @@ qbeta_mean <- function(p, mu, phi) {
 #' @return n samples Beta distributed.
 #' @export
 #' @examples hist(rbeta_mean(1000, mu = 0.5, phi = 1))
-rbeta_mean <- function(n, mu, phi) {
+rbeta_mean <- function(n, mu = 0.5, phi = 4) {
   if (isTRUE(any(mu <= 0 | mu >= 1))) {
     stop("The mean must be in (0,1).")
   }

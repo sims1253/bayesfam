@@ -16,14 +16,14 @@ expect_eps(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = FALSE)
 
 \item{eps}{numeric scalar or vector, setting the max differences, eps > 0}
 
-\item{r}{optional numeric scalar (r = 0 in defualt), relative number of values, that may have an difference > eps.}
+\item{r}{optional numeric scalar (r = 0 in default), relative number of values, that may have an difference > eps.}
 
 \item{relative}{bool argument, if set will take the normale difference with euler metric. Default = FALSE}
 
 \item{note}{optional parameter used for debugging.}
 
 \item{debug}{bool argument, if set will printout the difference, in case of failure. Default = FALSE
-Used internally, tlo calculate acceptable amount of deviances. Calculated absolute value will be floored.}
+Used internally, too calculate acceptable amount of deviances. Calculated absolute value will be floored.}
 }
 \value{
 success or failure with message
@@ -48,9 +48,7 @@ For vector/scalar combinations, allowed are (r has to always be a scalar!):
 }
 }
 \examples{
-library(testthat)
-library(bayesfam)
-bayesfam:::expect_eps(1, 1.1, 0.2) # should pass
-expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3))
+print(bayesfam:::expect_eps(1, 1.1, 0.2)) # should pass
+# print(expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3)))
 # should fail (2/3 were wrong, but only 1/3 was allowed)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cloglognormal.R
 \name{posterior_epred_cloglognormal}
 \alias{posterior_epred_cloglognormal}
-\title{Posterior expected value prediction. Mean undefined for CLogLog-Normal}
+\title{Posterior expected value prediction. Mean undefined for Cloglog-Normal}
 \usage{
 posterior_epred_cloglognormal(prep)
 }
@@ -13,5 +13,5 @@ posterior_epred_cloglognormal(prep)
 Nothing
 }
 \description{
-Posterior expected value prediction. Mean undefined for CLogLog-Normal
+Posterior expected value prediction. Mean undefined for Cloglog-Normal
 }

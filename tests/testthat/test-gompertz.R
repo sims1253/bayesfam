@@ -79,7 +79,6 @@ test_that("custom-gompertz", {
   expect_error(qgompertz("r", mu = 2, beta = 2)) # non-numeric arguments are disallowed
 
   # Check rng for errors
-  expect_error(rgompertz(100, 2)) # to few arguments
   expect_error(rgompertz(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rgompertz(-1, mu = 2, b = 2)) # number of drawn samples cannot be smaller 0
   expect_warning(expect_error(rgompertz("r", mu = 2, b = 2))) # non-numeric arguments are disallowed

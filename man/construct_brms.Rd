@@ -2,7 +2,7 @@
 % Please edit documentation in R/test-helper.R
 \name{construct_brms}
 \alias{construct_brms}
-\title{Construct BRMS family for simple linear y ~ 1 + a model.}
+\title{Construct BRMS family for simple linear y ~ 1 model.}
 \usage{
 construct_brms(
   n_data_sampels,
@@ -12,8 +12,7 @@ construct_brms(
   family,
   rng,
   seed = NULL,
-  data_threshold = NULL,
-  suppress_output = TRUE
+  data_threshold = NULL
 )
 }
 \arguments{
@@ -30,24 +29,28 @@ construct_brms(
 \item{rng}{function pointer of bespoke RNG for the family to be tested.}
 
 \item{seed}{Seed argument, so that input data is always the same in each test.
-BRMS test does not test RNG and is not guarateed to fit on all data.
+BRMS test does not test RNG and is not guaranteed to fit on all data.
 Positive Integer scalar, Default = NA will do nothing. Seed is stored before and restored after.}
 
 \item{data_threshold}{Usually unused. But in rare cases, data too close at the boundary may cause trouble.
-If so, set a two entry real vector c(lower, uppper). If one of them is NA, the data will not be capped for that boundary.
+If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 Default = Null, will be in R terms "invisible" and will not cap any input data.}
-
-\item{suppress_output}{Scalar Boolean argument. Default = TRUE supresses all prints.
-Only exceptions will be printed. For testing reasons, to not spam the test-window.}
 }
 \value{
 BRMS model for the specified family.
 }
 \description{
-Construct BRMS family for simple linear y ~ 1 + a model.
+Construct BRMS family for simple linear y ~ 1 model.
 }
 \examples{
-library(testthat)
-posterior_fit <- bayesfam:::construct_brms(1000, 0.5, 2.0, identity, betaprime, rbetaprime)
+posterior_fit <- bayesfam:::construct_brms(
+  n_data_sampels = 1000,
+  intercept = 5.0,
+  aux_par = 2.0,
+  rng_link = identity,
+  family = betaprime,
+  rng = rbetaprime
+)
 plot(posterior_fit)
+# beta_prime uses log-link for Intercept
 }

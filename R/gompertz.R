@@ -72,7 +72,7 @@ qgompertz <- function(p, mu, beta) {
 #' @export
 #'
 #' @examples hist(rgompertz(n = 100, mu = 2, beta = 0.1))
-rgompertz <- function(n, mu, beta) {
+rgompertz <- function(n, mu = 1, beta = 0.5) {
   if (isTRUE(mu <= 0)) {
     stop("rgompertz is only defined for mu > 0")
   }
@@ -130,18 +130,12 @@ posterior_epred_gompertz <- function(prep) {
 #' @return BRMS gompertz distribution family
 #' @export
 #'
-#' @examples # Running the example might take a while and may make RStudio unresponsive.
-#' # Just relax and grab a cup of coffe or tea in the meantime.
-#' a <- rnorm(1000)
+#' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rgompertz(1000, mu = exp(0.5 * a + 1), beta = 0.1))
-#' # BBmisc::surpressAll necassary to keep the test output clean
-#' BBmisc::suppressAll({
-#'   fit1 <- brms::brm(y ~ 1 + a,
-#'     data = data, family = gompertz(),
-#'     stanvars = gompertz()$stanvars, backend = "cmdstanr", cores = 4
-#'   )
-#' })
-#' plot(fit1)
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = gompertz(), stanvars = gompertz()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
 gompertz <- function(link = "log", link_b = "log") {
   family <- brms::custom_family(
     "gompertz",

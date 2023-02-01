@@ -2,9 +2,9 @@
 % Please edit documentation in R/simplex.R
 \name{rsimplex}
 \alias{rsimplex}
-\title{Simplex RNG function in Median parametrisations.}
+\title{Simplex RNG function in Median parametrization.}
 \usage{
-rsimplex(n, mu, sigma)
+rsimplex(n, mu = 0.5, sigma = 1)
 }
 \arguments{
 \item{n}{Number of samples to draw, as a natural number scalar.}

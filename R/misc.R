@@ -109,7 +109,7 @@ erf <- function(x) {
 #' @return softplus function of x, result is unbound
 #' @export
 #'
-#' @examples x <- seq(from = -5, to = 5, length.out = 100)
+#' @examples x <- seq(from = 0, to = 5, length.out = 100)
 #' plot(x, softplus(x), type = "l")
 softplus <- function(x) {
   return(log(exp(x) - 1))

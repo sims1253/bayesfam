@@ -3,9 +3,9 @@
 #' @param x Value space, x > 0.
 #' @param mu Mean parameter of the density, mu > 0.
 #' @param a Shape parameter, a > 0.
-#' @param log optional argument. If true, returns logarathmic probability. Default = FALSE
+#' @param log optional argument. If true, returns logarithmic probability. Default = FALSE
 #'
-#' @details Define rate constante rho as:
+#' @details Define rate constant rho as:
 #' \deqn{\rho(\alpha, \mu) = \frac{\alpha}{\mu}}
 #' @details The Frechet distribution density is defined as
 #' \deqn{f(y) = \frac{y^{\alpha - 1} exp(-\frac{y}{\rho})} {\rho^\alpha \Gamma(\alpha)} }
@@ -40,7 +40,7 @@ dgamma_mean <- function(x, mu, a, log = FALSE) {
 #' @export
 #'
 #' @examples hist(log(rgamma_mean(10000, mu = 2, a = 1)))
-rgamma_mean <- function(n, mu, a) {
+rgamma_mean <- function(n, mu = 1, a = 1) {
   # check the arguments
   if (isTRUE(a <= 0)) {
     stop("gamma is only defined for a > 0")
