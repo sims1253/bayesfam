@@ -27,6 +27,7 @@ posterior_epred_beta_binomial2 <- function(prep) {
   mu * trials
 }
 
+### !!! Already implemented in BRMS?!
 # definition of the custom family
 #' Title
 #'
