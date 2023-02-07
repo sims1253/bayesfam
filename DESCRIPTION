@@ -6,7 +6,9 @@ Date: 2022-10-26
 Authors@R:
     c(person("Maximilian", "Scholz", email = "research.scholz@mailbox.org",
              role = c("aut", "cre")),
-      person("Yannick", "Dzubba", role = c("ctb")))
+      person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com",
+             role = c("aut")),
+      person("Yannick", "Dzubba", role = c("aut")))
 Maintainer: Maximilian Scholz <research.scholz@mailbox.org>
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
