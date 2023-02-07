@@ -7,7 +7,7 @@ value that is part of the custom family object.
 ```r
 library(brms)
 library(bayesfam)
-data <- list(y = rbetaprime(1000, mu = 10, phi = 2))
+data <- list(y = rbetaprime(1000, mu = exp(2.3), phi = 2))
 brm(
     y ~ 1 ,
     data = data,
@@ -37,3 +37,4 @@ Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).
 ```
+
