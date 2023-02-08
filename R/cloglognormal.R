@@ -64,7 +64,7 @@ log_lik_cloglognormal <- function(i, prep) {
 #'
 #' @param i Indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return Posterior prediction of the data
 posterior_predict_cloglognormal <- function(i, prep, ...) {

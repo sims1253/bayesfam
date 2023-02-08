@@ -137,7 +137,7 @@ log_lik_kumaraswamy <- function(i, prep) {
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return Posterior prediction of Kumaraswamy, given data in prep
 posterior_predict_kumaraswamy <- function(i, prep, ...) {

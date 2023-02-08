@@ -65,7 +65,7 @@ log_lik_logitnormal <- function(i, prep) {
 #'
 #' @param i Indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return The posterior prediction of the Logitnormal distribution, given some BRMS data.
 posterior_predict_logitnormal <- function(i, prep, ...) {
