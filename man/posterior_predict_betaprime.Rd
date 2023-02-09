@@ -11,7 +11,7 @@ posterior_predict_betaprime(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 Draws from the Posterior Predictive Distribution

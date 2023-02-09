@@ -11,7 +11,7 @@ posterior_predict_cloglognormal(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 Posterior prediction of the data

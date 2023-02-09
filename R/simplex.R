@@ -147,7 +147,7 @@ rsimplex <-
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return Posterior prediction of Simplex, given data in prep
 posterior_predict_simplex <- function(i, prep, ...) {

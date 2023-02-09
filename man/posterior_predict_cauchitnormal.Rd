@@ -11,7 +11,7 @@ posterior_predict_cauchitnormal(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 The posterior prediction of the Cauchitnormal Distribution, given some BRMS data.

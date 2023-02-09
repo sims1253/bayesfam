@@ -11,7 +11,7 @@ posterior_predict_logitnormal(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 The posterior prediction of the Logitnormal distribution, given some BRMS data.
