@@ -1,5 +1,12 @@
 # bayesfam
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/sims1253/bayesfam/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/bayesfam/actions/workflows/R-CMD-check.yaml)
+[![Coverage
+Status](https://codecov.io/github/sims1253/bayesfam/coverage.svg?branch=master)](https://codecov.io/github/sims1253/bayesfam?branch=master)
+<!-- badges: end -->
+> *note that Windows is currently not tested*
+
 This is a collection of custom brms families initially written for our [simulation study ](https://arxiv.org/abs/2210.06927) and [bayesim](https://github.com/sims1253/bayesim), our simulation framework.
 
 They can be used like any other brms family. The only thing to remember is to explicitly hand brm the `stanvar`
@@ -7,7 +14,7 @@ value that is part of the custom family object.
 ```r
 library(brms)
 library(bayesfam)
-data <- list(y = rbetaprime(1000, mu = 10, phi = 2))
+data <- list(y = rbetaprime(1000, mu = exp(2.3), phi = 2))
 brm(
     y ~ 1 ,
     data = data,

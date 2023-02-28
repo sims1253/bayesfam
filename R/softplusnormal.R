@@ -67,7 +67,7 @@ log_lik_softplusnormal <- function(i, prep) {
 #'
 #' @param i Indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return The posterior prediction of the Softplus distribution, given some BRMS data.
 posterior_predict_softplusnormal <- function(i, prep, ...) {

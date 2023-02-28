@@ -100,7 +100,7 @@ log_lik_lomax <- function(i, prep) {
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return Posterior prediction of Lomax, given data in prep
 posterior_predict_lomax <- function(i, prep, ...) {

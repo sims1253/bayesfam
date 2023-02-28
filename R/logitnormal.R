@@ -41,7 +41,7 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
 #' @examples hist(rlogitnormal(100, 0.5, 2))
 rlogitnormal <- function(n, mu = 0, sigma = 1) {
   if (isTRUE(any(sigma < 0))) {
-    stop("P must be above or equal to 0.")
+    stop("sigma must be above or equal to 0.")
   }
   return(
     inv_logit(rnorm(n, mu, sigma))
@@ -65,7 +65,7 @@ log_lik_logitnormal <- function(i, prep) {
 #'
 #' @param i Indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return The posterior prediction of the Logitnormal distribution, given some BRMS data.
 posterior_predict_logitnormal <- function(i, prep, ...) {

@@ -11,7 +11,7 @@ posterior_predict_lomax(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 Posterior prediction of Lomax, given data in prep

@@ -65,7 +65,7 @@ log_lik_cauchitnormal <- function(i, prep) {
 #'
 #' @param i Indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return The posterior prediction of the Cauchitnormal Distribution, given some BRMS data.
 posterior_predict_cauchitnormal <- function(i, prep, ...) {

@@ -11,7 +11,7 @@ posterior_predict_gompertz(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 Posterior prediction of gompertz, given data in prep

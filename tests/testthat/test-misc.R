@@ -180,3 +180,15 @@ test_that("Inverse Softplus link-function", {
   # check, that wrong number of arguments produce an error
   expect_error(inv_softplus(0.1, 0.5))
 })
+
+test_that("Symlog link-function", {
+  expect_equal(symlog(0), 0)
+  expect_equal(symlog(-1), - symlog(1))
+  expect_equal(symlog(inv_symlog(1)), 1)
+})
+
+test_that("Inverse Symlog link-function", {
+  expect_equal(inv_symlog(0), 0)
+  expect_equal(inv_symlog(-1), -inv_symlog(1))
+  expect_equal(inv_symlog(symlog(1)), 1)
+})

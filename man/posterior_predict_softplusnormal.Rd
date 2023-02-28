@@ -11,7 +11,7 @@ posterior_predict_softplusnormal(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 The posterior prediction of the Softplus distribution, given some BRMS data.

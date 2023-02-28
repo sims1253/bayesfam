@@ -11,7 +11,7 @@ posterior_predict_kumaraswamy(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall}
 }
 \value{
 Posterior prediction of Kumaraswamy, given data in prep

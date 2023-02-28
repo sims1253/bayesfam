@@ -116,7 +116,7 @@ log_lik_betaprime <- function(i, prep) {
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return Draws from the Posterior Predictive Distribution
 posterior_predict_betaprime <- function(i, prep, ...) {

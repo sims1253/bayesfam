@@ -102,7 +102,7 @@ log_lik_gompertz <- function(i, prep) {
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall
 #'
 #' @return Posterior prediction of gompertz, given data in prep
 posterior_predict_gompertz <- function(i, prep, ...) {
