@@ -4,7 +4,7 @@
 \alias{rgeneralized_normal}
 \title{RNG for the generalized_normal distribution}
 \usage{
-rgeneralized_normal(n, mu, sigma, beta)
+rgeneralized_normal(n, mu = 0, sigma = 1, beta = 1)
 }
 \arguments{
 \item{n}{Number of sample}

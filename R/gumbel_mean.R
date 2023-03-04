@@ -84,7 +84,7 @@ qgumbel_mean <- function(p, mu, sigma) {
 #' @export
 #'
 #' @examples hist(rgumbel_mean(100, mu = 2, sigma = 2))
-rgumbel_mean <- function(n, mu, sigma) {
+rgumbel_mean <- function(n, mu = 0, sigma = 1) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")

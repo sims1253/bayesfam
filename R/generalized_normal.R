@@ -89,7 +89,7 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
 #' @export
 #'
 #' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2))
-rgeneralized_normal <- function(n, mu, sigma, beta) {
+rgeneralized_normal <- function(n, mu = 0, sigma = 1, beta = 1) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")

@@ -4,7 +4,7 @@
 \alias{rgumbel_mean}
 \title{RNG for the gumbel distribution}
 \usage{
-rgumbel_mean(n, mu, sigma)
+rgumbel_mean(n, mu = 0, sigma = 1)
 }
 \arguments{
 \item{n}{Number of samples}

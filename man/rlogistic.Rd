@@ -4,7 +4,7 @@
 \alias{rlogistic}
 \title{RNG for the logistic distribution}
 \usage{
-rlogistic(n, mu, sigma)
+rlogistic(n, mu = 0, sigma = 1)
 }
 \arguments{
 \item{n}{Number of samples.}

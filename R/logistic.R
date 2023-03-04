@@ -79,7 +79,7 @@ qlogistic <- function(p, mu, sigma) {
 #' @export
 #'
 #' @examples hist(rlogistic(100, mu = 2, sigma = 2))
-rlogistic <- function(n, mu, sigma) {
+rlogistic <- function(n, mu = 0, sigma = 1) {
   # check the arguments
   if (!isNat_len(n)) {
     stop("The number RNG-samples has to be a scalar natural")
