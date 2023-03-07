@@ -51,27 +51,26 @@ test_that("custom-generalized-normal", {
   warning("RNG test function currently uses only 1 auxiliary parameter")
 
   # Check density function for errors
-  # expect_error(dbetaprime(1, 2)) # to few arguments
-  # expect_error(dbetaprime(1, 2, 3, 4, 5)) # to many arguments
-  # expect_error(dbetaprime(-1, mu = 2, phi = 2)) # x is not allowed to be smaller 0
-  # expect_error(dbetaprime(1, mu = 0, phi = 2)) # mu is not allowed to be 0 or smaller
-  # expect_error(dbetaprime(1, mu = 1, phi = 0)) # phi is not allowed to be 0 or smaller
-  # expect_error(dbetaprime("r", mu = 2, phi = 2)) # non-numeric arguments are disallowed
+  expect_error(dgeneralized_normal(1, 2)) # to few arguments
+  expect_error(dgeneralized_normal(1, 2, 3, 4, 5, 6)) # to many arguments
+  expect_error(dgeneralized_normal(1, mu = 1, sigma = 0, beta = 1)) # aux is not allowed to be 0 or smaller
+  expect_error(dgeneralized_normal(1, mu = 1, sigma = 1, beta = 0)) # aux is not allowed to be 0 or smaller
+  expect_error(dgeneralized_normal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
   # Check quantile function for errors
-  # expect_error(qbetaprime(1, 2)) # to few arguments
-  # expect_error(qbetaprime(1, 2, 3, 4, 5)) # to many arguments
-  # expect_error(qbetaprime(1, mu = 0, phi = 2)) # mu is not allowed to be 0 or smaller
-  # expect_error(qbetaprime(1, mu = 1, phi = 0)) # phi is not allowed to be 0 or smaller
-  # expect_error(qbetaprime(c(-1, 2), mu = 2, phi = 2)) # q is not allowed to be outside [0, 1]
-  # expect_error(qbetaprime("r", mu = 2, phi = 2)) # non-numeric arguments are disallowed
+  expect_error(qgeneralized_normal(1, 2)) # to few arguments
+  expect_error(qgeneralized_normal(1, 2, 3, 4, 5, 6)) # to many arguments
+  expect_error(qgeneralized_normal(1, mu = 1, sigma = 0, beta = 1)) # aux is not allowed to be 0 or smaller
+  expect_error(qgeneralized_normal(1, mu = 1, sigma = 1, beta = 0)) # aux is not allowed to be 0 or smaller
+  expect_error(qgeneralized_normal(c(-1, 2), mu = 2, sigma = 2, beta = 1)) # q is not allowed to be outside [0, 1]
+  expect_error(qgeneralized_normal("r", mu = 2, sigma = 2, beta = 1)) # non-numeric arguments are disallowed
 
   # Check rng for errors
-  # expect_error(rbetaprime(10, 2, 3, 4, 5)) # to many arguments
-  # expect_error(rbetaprime(-1, mu = 2, phi = 2)) # number of drawn samples cannot be smaller 0
-  # expect_warning(expect_error(rbetaprime("r", mu = 2, phi = 2))) # non-numeric arguments are disallowed
-  # expect_error(rbetaprime(100, mu = 0, phi = 2)) # mu is not allowed to be 0 or smaller
-  # expect_error(rbetaprime(100, mu = 1, phi = 0)) # phi is not allowed to be 0 or smaller
+  expect_error(rgeneralized_normal(10, 2, 3, 4, 5, 6)) # to many arguments
+  expect_error(rgeneralized_normal(-1, mu = 2, sigma = 2, beta = 1)) # number of drawn samples cannot be smaller 0
+  expect_error(rgeneralized_normal("r", mu = 2, sigma = 2, beta = 1)) # non-numeric arguments are disallowed
+  expect_error(rgeneralized_normal(1, mu = 1, sigma = 0, beta = 1)) # aux is not allowed to be 0 or smaller
+  expect_error(rgeneralized_normal(1, mu = 1, sigma = 1, beta = 0)) # aux is not allowed to be 0 or smaller
 
   # Check of brms can fit the custom family and recover the intercept and shape
   # expect_brms_family(

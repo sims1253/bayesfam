@@ -6,7 +6,8 @@ euler_mascheroni <- 0.57721566490153
 #' @details The beta prime distribution has density
 #' \deqn{f(y | \mu, \sigma) = \frac{1}{\sigma} exp(-(z + e^{-z}))}
 #' @details Where z is the linear transformation
-#' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}
+#' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma} + \gamma}
+#' @details Where $\gamma$ refers to the Euler-Mascheroni constant
 #'
 #' @param x Value, unbound
 #' @param mu Mean, unbound

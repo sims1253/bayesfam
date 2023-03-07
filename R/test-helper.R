@@ -741,6 +741,7 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
     # gets the vector of the greatest length
 
     if (is.function(type_check) && !type_check(vector)) {
+      # warning surpressed the then following error?
       warning("At least one vector was not of the specified type! Return FALSE immediatly.")
       return(FALSE)
     }
