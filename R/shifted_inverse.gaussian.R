@@ -28,7 +28,7 @@ log_lik_shifted_inverse.gaussian <- function(i, prep) {
     shape <- brms::get_dpar(prep, "shape", i = i)
     ndt <- brms::get_dpar(prep, "ndt", i = i)
     y <- prep$data$Y[i]
-    brms::dshifted_inv_gaussian(y, mu, shape, ndt, log = TRUE)
+    dshifted_inv_gaussian(y, mu, shape, ndt, log = TRUE)
 }
 
 shifted_inverse.gaussian <- function(link = "1/mu^2", link_shape = "log", link_ndt = "log"){
