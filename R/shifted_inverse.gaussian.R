@@ -11,11 +11,11 @@ rshifted_inv_gaussian <- function(n, mu = 1, shape = 1, shift = 0) {
     brms::rinv_gaussian(n, mu, shape) + shift
 }
 
-posterior_epred_shifted_inverse.gaussian <- function(prep) {
+posterior_epred_shifted_inv_gaussian <- function(prep) {
     with(prep$dpars, mu + ndt)
 }
 
-posterior_predict_shifted_inverse.gaussian <- function(i, prep, ...) {
+posterior_predict_shifted_inv_gaussian <- function(i, prep, ...) {
     n <- prep$ndraws
     mu <- brms::get_dpar(prep, "mu", i = i)
     shape <- brms::get_dpar(prep, "shape", i = i)
@@ -23,7 +23,7 @@ posterior_predict_shifted_inverse.gaussian <- function(i, prep, ...) {
     brms::rshifted_inv_gaussian(n, mu, shape, ndt)
 }
 
-log_lik_shifted_inverse.gaussian <- function(i, prep) {
+log_lik_shifted_inv_gaussian <- function(i, prep) {
     mu <- brms::get_dpar(prep, "mu", i = i)
     shape <- brms::get_dpar(prep, "shape", i = i)
     ndt <- brms::get_dpar(prep, "ndt", i = i)
@@ -31,18 +31,42 @@ log_lik_shifted_inverse.gaussian <- function(i, prep) {
     dshifted_inv_gaussian(y, mu, shape, ndt, log = TRUE)
 }
 
-shifted_inverse.gaussian <- function(link = "1/mu^2", link_shape = "log", link_ndt = "log"){
-    custom_family(
-        "shifted_inv_gaussian",
-        dpars = c("mu", "shape", "ndt"),
-        links = c(link, link_shape, link_ndt),
-        lb = c(0, 0, 0),
-        ub = c(NA, NA, NA),
-        type = "real",
-        log_lik = log_lik_shifted_inverse.gaussian,
-        posterior_predict = posterior_predict_shifted_inverse.gaussian,
-        posterior_epred = posterior_epred_shifted_inverse.gaussian
+shifted_inv_gaussian <- function(link = "1/mu^2", link_shape = "log", link_ndt = "log"){
+  family <- custom_family(
+      "shifted_inv_gaussian",
+      dpars = c("mu", "shape", "ndt"),
+      links = c(link, link_shape, link_ndt),
+      lb = c(0, 0, 0),
+      ub = c(NA, NA, NA),
+      type = "real",
+      log_lik = log_lik_shifted_inv_gaussian,
+      posterior_predict = posterior_predict_shifted_inv_gaussian,
+      posterior_epred = posterior_epred_shifted_inv_gaussian
     )
+  family$stanvars <- brms::stanvar(
+    scode = "
+      real shifted_inv_gaussian_lpdf(real y, real mu, real shape, real ndt) {
+          return inv_gaussian_lpdf(y - ndt| mu, shape);
+          real x = y - ndt;
+          return 0.5 * log(shape / (2 * pi())) - 1.5 * log(x)
+               - 0.5 * shape * square((x - mu) / (mu * sqrt(x)));
+      }
+
+      real shifted_inv_gaussian_rng(real mu, real shape, real ndt) {
+          real y = normal_rng(0, 1) ^ 2;
+          real x = mu + (mu^2 * y) / (2 * shape) - mu / (2 * shape) *
+                    sqrt(4 * mu * shape * y + mu^2 * y^2);
+          real z = uniform_rng(0,1);
+
+          if(z <= mu / (mu + x))
+            return x + ndt;
+          else
+            return mu^2 / x + ndt;
+      }",
+    # code ported from BRMS
+    block = "functions"
+  )
+  return(family)
 }
 
 # additionally required Stan code
