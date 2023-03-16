@@ -26,7 +26,9 @@ The beta prime distribution has density
 \deqn{f(y | \mu, \sigma) = \frac{1}{\sigma} exp(-(z + e^{-z}))}
 
 Where z is the linear transformation
-\deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}
+\deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma} + \gamma}
+
+Where $\gamma$ refers to the Euler-Mascheroni constant
 }
 \examples{
 x <- seq(from = -5, to = 10, length.out = 1000)
