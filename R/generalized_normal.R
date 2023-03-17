@@ -162,6 +162,8 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
   )
   family$stanvars <- brms::stanvar(
     scode = "
+      // z <- (x - mu) / sigma
+      // lpdf <- log(beta) - (log(2) + log(sigma) + log(gamma(1/beta))) - abs(z)^beta
       real generalized_normal_lpdf(real y, real mu, real sigma, real beta) {
         real z = (y - mu) / sigma;
         return log(beta) - (log(2) + log(sigma) + lgamma(1/beta)) - abs(z)^beta;
@@ -169,13 +171,25 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
 
       // own implementation of sign w/o branching
       // using bool to generate real is not the most fashionable way, but it works well
-      real sign(real x) {
-        return (x > 0) - (x < 0);
+      //real sign(real x) {
+      //  return (x > 0) - (x < 0);
+      //}
+
+      int sign(real x) {
+        if (x > 0) {
+          return 1;
+        } else if (x < 0) {
+          return -1;
+        } else {
+          return 0;
+        }
       }
 
+      //q_part <- ((sigma^beta) * pgamma(2*abs(p - 0.5), 1/beta))^(1/beta)
+      //return(sign(p - 0.5) * q_part + mu)
       real generalized_normal_rng(real mu, real sigma, real beta) {
         real p = uniform_rng(0,1);
-        real q_part = pow((sigma^beta) * gamma_lccdf(2*abs(p - 0.5) | 1/beta, 1), 1/beta);
+        real q_part = pow(pow(sigma, beta) * gamma_cdf(2*abs(p - 0.5), 1/beta, 1), 1/beta);
         return sign(p - 0.5) * q_part + mu;
       }",
     block = "functions"
