@@ -35,7 +35,8 @@ fit <- bayesfam:::construct_brms(
   rng = rbetaprime
 )
 result <- bayesfam:::test_brms_quantile(
-  posterior_data = fit, arg_name = "phi", 2.0, 0.025)
+  posterior_data = fit, arg_name = "phi", 2.0, 0.025
+)
 plot(fit)
 # beta_prime uses log-link for Intercept
 }

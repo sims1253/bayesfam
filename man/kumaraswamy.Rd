@@ -20,8 +20,10 @@ Kumaraswamy BRMS-implementation in median parametrization.
 \examples{
 a <- rnorm(1000)
 data <- list(a = a, y = rkumaraswamy(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = kumaraswamy(), stanvars = kumaraswamy()$stanvars,
- refresh = 0)
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = kumaraswamy(), stanvars = kumaraswamy()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

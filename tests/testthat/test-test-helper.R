@@ -1,4 +1,3 @@
-
 test_that("test custom expect_eps function", {
   # wrong amount of arguments
   expect_error(expect_eps(1, 1))

@@ -129,9 +129,11 @@ posterior_epred_lomax <- function(prep) {
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rlomax(1000, exp(0.5 * a + 1), 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = lomax(), stanvars = lomax()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = lomax(), stanvars = lomax()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 lomax <- function(link = "log", link_alpha = "log1p") {
   family <- brms::custom_family(

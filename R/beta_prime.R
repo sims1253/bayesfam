@@ -145,9 +145,11 @@ posterior_epred_betaprime <- function(prep) {
 #'
 #' @examples a <- rnorm(n = 1000)
 #' data <- list(a = a, y = rbetaprime(n = 1000, mu = exp(0.5 * a + 1), phi = 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = betaprime(), stanvars = betaprime()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = betaprime(), stanvars = betaprime()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 betaprime <- function(link = "log", link_phi = "log") {
   family <- brms::custom_family(
