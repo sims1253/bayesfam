@@ -165,8 +165,9 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
       // z <- (x - mu) / sigma
       // lpdf <- log(beta) - (log(2) + log(sigma) + log(gamma(1/beta))) - abs(z)^beta
       real generalized_normal_lpdf(real y, real mu, real sigma, real beta) {
-        real z = (y - mu) / sigma;
-        return log(beta) - (log(2) + log(sigma) + lgamma(1/beta)) - abs(z)^beta;
+        // real z = (y - mu) / sigma;
+        return log(beta) - (log(2) + log(sigma) + log(tgamma(1/beta)))
+          - abs((y - mu) / sigma)^beta;
       }
 
       // own implementation of sign w/o branching
@@ -189,7 +190,7 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
       //return(sign(p - 0.5) * q_part + mu)
       real generalized_normal_rng(real mu, real sigma, real beta) {
         real p = uniform_rng(0,1);
-        real q_part = pow(pow(sigma, beta) * gamma_cdf(2*abs(p - 0.5), 1/beta, 1), 1/beta);
+        real q_part = ((sigma^beta) * gamma_cdf(2*abs(p - 0.5), 1/beta, 1))^(1/beta);
         return sign(p - 0.5) * q_part + mu;
       }",
     block = "functions"
