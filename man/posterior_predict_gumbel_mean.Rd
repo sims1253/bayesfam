@@ -11,7 +11,7 @@ posterior_predict_gumbel_mean(i, prep, ...)
 
 \item{prep}{BRMS data}
 
-\item{...}{}
+\item{...}{catchall argument}
 }
 \value{
 Draws from the Posterior Predictive Distribution

@@ -24,7 +24,7 @@ Density of the pdf given x, mu and sigma
 Probability density function for the generalized_normal distribution
 }
 \details{
-The beta prime distribution has density
+The generalized_normal distribution has density
 \deqn{f(y | \mu, \sigma, \beta) = \frac{\beta}{2 \beta \Gamma(1/\beta)}exp(-|z|^\beta)}
 
 Where z is the linear transformation

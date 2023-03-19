@@ -22,7 +22,7 @@ Density of the pdf given x, mu and sigma
 Probability density function for the logistic distribution
 }
 \details{
-The beta prime distribution has density
+The logistic distribution has density
 \deqn{f(y | \mu, \sigma) = \frac{e^{-z}}{\sigma(1 + e^{-z})^2}}
 
 Where z is the linear transformation

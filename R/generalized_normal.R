@@ -1,6 +1,6 @@
 #' Probability density function for the generalized_normal distribution
 #'
-#' @details The beta prime distribution has density
+#' @details The generalized_normal distribution has density
 #' \deqn{f(y | \mu, \sigma, \beta) = \frac{\beta}{2 \beta \Gamma(1/\beta)}exp(-|z|^\beta)}
 #' @details Where z is the linear transformation
 #' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}
@@ -116,7 +116,7 @@ log_lik_generalized_normal <- function(i, prep) {
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall argument
 #'
 #' @return Draws from the Posterior Predictive Distribution
 posterior_predict_generalized_normal <- function(i, prep, ...) {
@@ -135,7 +135,11 @@ posterior_epred_generalized_normal <- function(prep) {
   return(brms::get_dpar(prep, "mu"))
 }
 
-#' generalized_normal brms custom family
+#' Generalized Normal BRMS family
+#'
+#' @details generalized_normal brms custom family
+#' the formulas should be identical to the Unit-Tested R ones,
+#' still does not recover, so use at your own risk
 #'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
@@ -169,12 +173,6 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
         return log(beta) - (log(2) + log(sigma) + log(tgamma(1/beta)))
           - abs((y - mu) / sigma)^beta;
       }
-
-      // own implementation of sign w/o branching
-      // using bool to generate real is not the most fashionable way, but it works well
-      //real sign(real x) {
-      //  return (x > 0) - (x < 0);
-      //}
 
       int sign(real x) {
         if (x > 0) {

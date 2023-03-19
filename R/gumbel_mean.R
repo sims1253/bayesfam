@@ -3,11 +3,11 @@ euler_mascheroni <- 0.57721566490153
 
 #' Probability density function for the gumbel distribution
 #'
-#' @details The beta prime distribution has density
+#' @details The gumbel distribution has density
 #' \deqn{f(y | \mu, \sigma) = \frac{1}{\sigma} exp(-(z + e^{-z}))}
 #' @details Where z is the linear transformation
 #' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma} + \gamma}
-#' @details Where $\gamma$ refers to the Euler-Mascheroni constant
+#' @details Where Gamma refers to the Euler-Mascheroni constant
 #'
 #' @param x Value, unbound
 #' @param mu Mean, unbound
@@ -111,7 +111,7 @@ log_lik_gumbel_mean <- function(i, prep) {
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall argument
 #'
 #' @return Draws from the Posterior Predictive Distribution
 posterior_predict_gumbel_mean <- function(i, prep, ...) {

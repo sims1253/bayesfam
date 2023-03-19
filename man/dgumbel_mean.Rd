@@ -22,13 +22,13 @@ Density of the pdf given x, mu and sigma
 Probability density function for the gumbel distribution
 }
 \details{
-The beta prime distribution has density
+The gumbel distribution has density
 \deqn{f(y | \mu, \sigma) = \frac{1}{\sigma} exp(-(z + e^{-z}))}
 
 Where z is the linear transformation
 \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma} + \gamma}
 
-Where $\gamma$ refers to the Euler-Mascheroni constant
+Where Gamma refers to the Euler-Mascheroni constant
 }
 \examples{
 x <- seq(from = -5, to = 10, length.out = 1000)

@@ -1,6 +1,6 @@
 #' Probability density function for the logistic distribution
 #'
-#' @details The beta prime distribution has density
+#' @details The logistic distribution has density
 #' \deqn{f(y | \mu, \sigma) = \frac{e^{-z}}{\sigma(1 + e^{-z})^2}}
 #' @details Where z is the linear transformation
 #' \deqn{z(y, \mu, \sigma) = \frac{y - \mu}{\sigma}}
@@ -105,7 +105,7 @@ log_lik_logistic <- function(i, prep) {
 #'
 #' @param i BRMS indices
 #' @param prep BRMS data
-#' @param ...
+#' @param ... catchall argument
 #'
 #' @return Draws from the Posterior Predictive Distribution
 posterior_predict_logistic <- function(i, prep, ...) {

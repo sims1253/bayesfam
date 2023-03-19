@@ -2,7 +2,7 @@
 % Please edit documentation in R/generalized_normal.R
 \name{generalized_normal}
 \alias{generalized_normal}
-\title{generalized_normal brms custom family}
+\title{Generalized Normal BRMS family}
 \usage{
 generalized_normal(link = "identity", link_sigma = "log", link_b = "log")
 }
@@ -15,7 +15,12 @@ generalized_normal(link = "identity", link_sigma = "log", link_b = "log")
 BRMS generalized_normal distribution family
 }
 \description{
+Generalized Normal BRMS family
+}
+\details{
 generalized_normal brms custom family
+the formulas should be identical to the Unit-Tested R ones,
+still does not recover, so use at your own risk
 }
 \examples{
 data <- list(y = rgeneralized_normal(n = 1000, mu = 2, sigma = 2, beta = 4))
