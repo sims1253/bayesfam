@@ -95,9 +95,11 @@ posterior_epred_cloglognormal <- function(prep) {
 #' @examples data <- rcloglognormal(1000, 0.5, 2)
 #' # cloglognormal does not like values to close to the boundary
 #' data <- limit_data(data, c(1e-12, 1 - 1e-12))
-#' fit <- brms::brm(formula = y ~ 1, data = list(y = data),
-#'  family = cloglognormal(), stanvars = cloglognormal()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1, data = list(y = data),
+#'   family = cloglognormal(), stanvars = cloglognormal()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 cloglognormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

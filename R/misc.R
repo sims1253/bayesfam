@@ -145,7 +145,7 @@ inv_softplus <- function(x) {
 #' symlog(1e10)
 #' symlog(-1e10)
 symlog <- function(x) {
-  return(sign(x) * log(abs(x)+1))
+  return(sign(x) * log(abs(x) + 1))
 }
 
 
@@ -165,6 +165,5 @@ symlog <- function(x) {
 #' inv_symlog(10)
 #' inv_symlog(-10)
 inv_symlog <- function(x) {
-  return(sign(x)*(exp(abs(x))-1))
+  return(sign(x) * (exp(abs(x)) - 1))
 }
-

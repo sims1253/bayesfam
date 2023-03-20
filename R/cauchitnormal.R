@@ -95,9 +95,11 @@ posterior_epred_cauchitnormal <- function(prep) {
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rcauchitnormal(1000, 0.5 * a + 1, 2))
-#' fit1 <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
-#'  refresh = 0)
+#' fit1 <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit1)
 cauchitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

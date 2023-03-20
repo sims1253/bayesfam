@@ -132,9 +132,11 @@ posterior_epred_gompertz <- function(prep) {
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rgompertz(1000, mu = exp(0.5 * a + 1), beta = 0.1))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = gompertz(), stanvars = gompertz()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = gompertz(), stanvars = gompertz()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 gompertz <- function(link = "log", link_b = "log") {
   family <- brms::custom_family(

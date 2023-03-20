@@ -1,4 +1,3 @@
-
 eps <- 1e-6
 n_testset <- 100
 
@@ -183,7 +182,7 @@ test_that("Inverse Softplus link-function", {
 
 test_that("Symlog link-function", {
   expect_equal(symlog(0), 0)
-  expect_equal(symlog(-1), - symlog(1))
+  expect_equal(symlog(-1), -symlog(1))
   expect_equal(symlog(inv_symlog(1)), 1)
 })
 

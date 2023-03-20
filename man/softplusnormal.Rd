@@ -20,8 +20,10 @@ Custom BRMS family Softplus in median parametrization.
 \examples{
 a <- rnorm(1000)
 data <- list(a = a, y = rsoftplusnormal(1000, 0.5 * a + 1, 2))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = softplusnormal(), stanvars = softplusnormal()$stanvars,
- refresh = 0)
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = softplusnormal(), stanvars = softplusnormal()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

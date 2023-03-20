@@ -95,9 +95,11 @@ posterior_epred_logitnormal <- function(prep) {
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rlogitnormal(1000, 0.5 * a + 1, 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = logitnormal(), stanvars = logitnormal()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = logitnormal(), stanvars = logitnormal()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 logitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

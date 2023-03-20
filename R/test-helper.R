@@ -1,4 +1,3 @@
-
 # used only for an internal function
 
 #' Check that |a - b| < eps. Works with scalars and vectors on any input.
@@ -238,9 +237,8 @@ test_rng_asym <- function(rng_fun,
                           aux_list,
                           mu_link = identity,
                           allowed_failures = 0.05) {
-
   len_n <- length(n_samples)
-  if(len_n < 2 || !isNat_len(n_samples, len = len_n)) {
+  if (len_n < 2 || !isNat_len(n_samples, len = len_n)) {
     stop("n_samples to be a vector of at least two positive integer entries")
   }
 
@@ -274,14 +272,14 @@ test_rng_asym <- function(rng_fun,
 
   num_tests <- length(mu_list) * length(aux_list)
   allowed_failures_abs <- ceiling(num_tests * allowed_failures)
-  if(num_failures <= allowed_failures_abs) {
+  if (num_failures <= allowed_failures_abs) {
     testthat::succeed()
-  }
-  else {
+  } else {
     testthat::fail(paste(
       "Number of allowed failures in asymp test was violated\n",
       "Allowed were", allowed_failures_abs, "of", num_tests, "to fail\n",
-      "but actually", num_failures, "number of tests did fail"))
+      "but actually", num_failures, "number of tests did fail"
+    ))
   }
 }
 
@@ -309,15 +307,15 @@ test_rng_asym <- function(rng_fun,
 #' phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
 #' bayesfam:::test_rng_quantiles(
-#'    rng_fun = rbetaprime,
-#'    quantile_fun = qbetaprime,
-#'    n = 10000,
-#'    mu_list = mu_list,
-#'    aux_list = phi_list,
-#'    eps = 0.1,
-#'    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
-#'    p_acceptable_failures = 0.1,
-#'    relative = TRUE
+#'   rng_fun = rbetaprime,
+#'   quantile_fun = qbetaprime,
+#'   n = 10000,
+#'   mu_list = mu_list,
+#'   aux_list = phi_list,
+#'   eps = 0.1,
+#'   quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+#'   p_acceptable_failures = 0.1,
+#'   relative = TRUE
 #' )
 test_rng_quantiles <- function(rng_fun,
                                quantile_fun,
@@ -476,8 +474,7 @@ construct_brms <- function(n_data_sampels,
                            family,
                            rng,
                            seed = NULL,
-                           data_threshold = NULL
-                           ) {
+                           data_threshold = NULL) {
   if (!(is.function(family) && is.function(rng) && is.function(rng_link))) {
     stop("family, rng or rng_link argument were not a function!")
   }
@@ -549,7 +546,8 @@ construct_brms <- function(n_data_sampels,
 #'   rng = rbetaprime
 #' )
 #' result <- bayesfam:::test_brms_quantile(
-#'   posterior_data = fit, arg_name = "phi", 2.0, 0.025)
+#'   posterior_data = fit, arg_name = "phi", 2.0, 0.025
+#' )
 #' plot(fit)
 #' # beta_prime uses log-link for Intercept
 test_brms_quantile <- function(posterior_data, arg_name, reference, thresh, debug = FALSE) {
@@ -718,8 +716,8 @@ isSingleString <- function(input) {
 #' @examples va <- c(1, 2, 3)
 #' vb <- c(4, 5, 6)
 #' vc <- c(7, 8)
-#' bayesfam:::lenEqual(list(va, vb))  # both got 3 entries
-#' bayesfam:::lenEqual(list(va, vb, vc))  # not all vectors have the same number of entries
+#' bayesfam:::lenEqual(list(va, vb)) # both got 3 entries
+#' bayesfam:::lenEqual(list(va, vb, vc)) # not all vectors have the same number of entries
 lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL, na_allowed = FALSE) {
   if (!isLogic_len(scalars_allowed)) {
     stop("scalars_allowed has to be a single boolean value")
@@ -775,8 +773,8 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
 #' @export
 #'
 #' @examples input <- c(1, 2, 3, 4)
-#' print(bayesfam:::limit_data(input, c(2, 3)))   # lower and upper bounds
-#' print(bayesfam:::limit_data(input, c(2, NA)))  # only lower bound
+#' print(bayesfam:::limit_data(input, c(2, 3))) # lower and upper bounds
+#' print(bayesfam:::limit_data(input, c(2, NA))) # only lower bound
 limit_data <- function(data, limits) {
   # check that the limit is usable
   if (length(limits) != 2) {
