@@ -17,15 +17,10 @@ BRMS generalized_normal distribution family
 \description{
 Generalized Normal BRMS family
 }
-\details{
-generalized_normal brms custom family
-the formulas should be identical to the Unit-Tested R ones,
-still does not recover, so use at your own risk
-}
 \examples{
 data <- list(y = rgeneralized_normal(n = 1000, mu = 2, sigma = 2, beta = 4))
 fit <- brms::brm(formula = y ~ 1, data = data,
   family = generalized_normal(), stanvars = generalized_normal()$stanvars,
-  cores = 4, init = 0.1)
+  init = 0.1)
 plot(fit)
 }

@@ -10,11 +10,13 @@ expect_brms_family(
   intercept,
   ref_intercept = NULL,
   aux_par,
+  aux2_par = NA,
   rng_link,
   parameter_link,
   family,
   rng,
   aux_name,
+  aux2_name = NULL,
   seed = 1235813,
   data_threshold = NULL,
   thresh = 0.05,
@@ -29,6 +31,8 @@ expect_brms_family(
 \item{ref_intercept}{Reference intercept to compare model against. If NULL (default) uses the given intercept.}
 
 \item{aux_par}{Auxiliary parameter of each distribution.}
+
+\item{aux2_par}{2nd Auxiliary parameter (if applicable).}
 
 \item{rng_link}{Link function pointer used for data generation. Mainly for transformed normal distributions.}
 

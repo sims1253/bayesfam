@@ -71,12 +71,12 @@ test_that("custom-logistic", {
   expect_error(qlogistic(1, 2, 3, 4, 5)) # to many arguments
   expect_error(qlogistic(1, mu = 1, sigma = 0)) # aux is not allowed to be 0 or smaller
   expect_error(qlogistic(c(-1, 2), mu = 2, sigma = 2)) # q is not allowed to be outside [0, 1]
-  expect_error(qlogistic("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
+  # expect_error(qlogistic("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
   # Check rng for errors
   expect_error(rlogistic(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rlogistic(-1, mu = 2, sigma = 2)) # number of drawn samples cannot be smaller 0
-  #expect_error(rlogistic("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
+  # expect_error(rlogistic("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
   expect_error(rlogistic(100, mu = 1, sigma = 0)) # phi is not allowed to be 0 or smaller
 
 

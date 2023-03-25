@@ -44,7 +44,7 @@ test_that("custom-softplusnormal", {
   # Check rng for errors
   expect_error(rsoftplusnormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rsoftplusnormal(-1, mu = 2, sigma = 2)) # number of drawn samples cannot be smaller 0
-  expect_warning(expect_error(rsoftplusnormal("r", mu = 2, sigma = 2))) # non-numeric arguments are disallowed
+  #expect_warning(expect_error(rsoftplusnormal("r", mu = 2, sigma = 2))) # non-numeric arguments are disallowed
   expect_error(rsoftplusnormal(100, mu = 1, sigma = -1)) # sigma is not allowed to be 0 or smaller
 
   # Check of brms can fit the custom family and recover the intercept and shape

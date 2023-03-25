@@ -130,6 +130,7 @@ normale_difference <- function(va, vb) {
 #' @param n Sample size for the rng test.
 #' @param mu_list Metric data used as RNG argument and to be compared to (usually mean or median)
 #' @param aux_list Auxiliary parameter
+#' @param aux2_list Auxiliary parameter for second parameter (if applicable).
 #' @param mu_eps Acceptable difference of |mu - metric_mu(rng_fun)
 #' @param p_acceptable_failures Acceptable rate of failure, relative value of difference bigger mu_eps
 #' @param mu_link Default=identity, optional link-function argument, for example
@@ -152,6 +153,7 @@ test_rng <- function(rng_fun,
                      n,
                      mu_list,
                      aux_list,
+                     aux2_list = NA,
                      mu_eps,
                      p_acceptable_failures,
                      mu_link = identity,
@@ -163,7 +165,7 @@ test_rng <- function(rng_fun,
     stop("RNG-, Metric- or mu_link-function argument was not a function!")
   }
   # check the number of samples to be generated and cecked
-  if (!(isInt_len(n) && n >= 1)) {
+  if (!(isNat_len(n))) {
     stop("n must be an integer, positive scalar!")
   }
   # check, that compare eps is a scalar
@@ -176,24 +178,44 @@ test_rng <- function(rng_fun,
   # prepare the data, use a vector for ease of use
   # allows re-using the expect_eps.
   # As opposed to using a matrix, which would just complicate implementation and comparison.
-  len_mu <- length(mu_list)
-  len_aux <- length(aux_list)
-  expected_mus <- rep(mu_list, times = len_aux)
-  rng_mu_list <- vector(mode = "numeric", length = len_aux * len_mu)
 
-  # calculate rng data
-  for (i in seq_along(aux_list)) {
-    for (j in seq_along(mu_list)) {
-      rng_mu_list[(i - 1) * len_mu + j] <-
-        metric_mu(
-          rng_fun(
-            n,
-            mu = mu_link(mu_list[j]), aux_list[i]
+  len_mu <- length(mu_list)
+  if(any(is.na(aux2_list))) {
+    len_aux <- length(aux_list)
+    expected_mus <- rep(mu_list, times = len_aux)
+    rng_mu_list <- vector(mode = "numeric", length = len_aux * len_mu)
+    # calculate rng data
+    for (i in seq_along(aux_list)) {
+      for (j in seq_along(mu_list)) {
+        rng_mu_list[(i - 1) * len_mu + j] <-
+          metric_mu(
+            rng_fun(
+              n,
+              mu = mu_link(mu_list[j]), aux_list[i]
+            )
           )
-        )
+      }
+    }
+  } else {
+    # aux2-list is defined
+    len_aux <- length(aux_list) * length(aux2_list)
+    expected_mus <- rep(mu_list, times = len_aux)
+    rng_mu_list <- vector(mode = "numeric", length = len_aux * len_mu)
+    # calculate rng data
+    mu_idx <- 1
+    for (i in seq_along(aux_list)) {
+      for (h in seq_along(aux2_list)) {
+        for (j in seq_along(mu_list)) {
+          rng_mu_list[mu_idx] <-
+            metric_mu(
+              rng_fun(n, mu = mu_link(mu_list[j]), aux_list[i], aux2_list[h])
+            )
+          mu_idx <- mu_idx + 1
+        }
+      }
     }
   }
-  # print(normale_difference(rng_mus, expected_mus))
+
   # now the data was written, compare it
   expect_eps(
     a = rng_mu_list,
@@ -214,6 +236,7 @@ test_rng <- function(rng_fun,
 #' @param n_samples Default=c(10, 10000), sample sizes for rng test, len >= 2. Gets sorted in routine.
 #' @param mu_list Metric data used as RNG argument and to be compared to (usually mean or median)
 #' @param aux_list Auxiliary parameter value list.
+#' @param aux2_list Auxiliary parameter for second parameter (if applicable).
 #' @param mu_link Default=identity, optional link-function argument, for example
 #' @param allowed_failures Default=0.05 marks, that 5 percent of all test cases are allowed
 #' to fail for the whole test to still succeed.
@@ -236,6 +259,7 @@ test_rng_asym <- function(rng_fun,
                           n_samples = c(10, 10000),
                           mu_list,
                           aux_list,
+                          aux2_list = NA,
                           mu_link = identity,
                           allowed_failures = 0.05) {
 
@@ -251,16 +275,30 @@ test_rng_asym <- function(rng_fun,
   # Generate a list of mus per mu, aux combination for growing sample sizes
   for (mu in mu_list) {
     for (aux in aux_list) {
-      loop_mu_list <- vector(mode = "numeric", length = len_n)
-      for (i in seq_along(n)) {
-        loop_mu_list[i] <- mu_link(
-          metric_mu(
-            rng_fun(
-              n[i],
-              mu = mu, aux
+      if(any(is.na(aux2_list))) {
+        loop_mu_list <- vector(mode = "numeric", length = len_n)
+        for (i in seq_along(n)) {
+          loop_mu_list[i] <- mu_link(
+            metric_mu(
+              rng_fun(
+                n[i],
+                mu = mu, aux
+              )
             )
           )
-        )
+        }
+      } else {
+        # aux2 list not empty
+        for (aux2 in aux2_list) {
+          loop_mu_list <- vector(mode = "numeric", length = len_n)
+          for (i in seq_along(n)) {
+            loop_mu_list[i] <- mu_link(
+              metric_mu(
+                rng_fun(n[i], mu = mu, aux, aux2)
+              )
+            )
+          }
+        }
       }
       # Tests if the resulting distances to the true mu reduce with growing sample size
       if (!identical(
@@ -295,6 +333,7 @@ test_rng_asym <- function(rng_fun,
 #' @param mu_list Metric data used as RNG argument and to be compared to
 #'                (usually mean or median)
 #' @param aux_list Auxiliary parameter value list.
+#' @param aux2_list Auxiliary parameter value list for applicable distributions.
 #' @param eps Acceptable difference of |mu - metric_mu(rng_fun)
 #' @param quantiles Quantiles to test for recovery.
 #' @param p_acceptable_failures Acceptable rate of failure, relative value of
@@ -324,26 +363,52 @@ test_rng_quantiles <- function(rng_fun,
                                n,
                                mu_list,
                                aux_list,
+                               aux2_list = NA,
                                eps,
                                quantiles,
                                p_acceptable_failures,
                                mu_link = identity,
                                relative = FALSE) {
-  for (mu in mu_list) {
-    for (aux in aux_list) {
-      sample <- rng_fun(
-        n,
-        mu = mu_link(mu),
-        aux
-      )
-      true_quantiles <- do.call(quantile_fun, list(quantiles, mu_link(mu), aux))
-      expect_eps(
-        a = true_quantiles,
-        b = quantile(sample, quantiles),
-        eps = eps,
-        r = p_acceptable_failures,
-        relative = relative
-      )
+  if(any(is.na(aux2_list))) {
+    for (mu in mu_list) {
+      for (aux in aux_list) {
+        sample <- rng_fun(
+          n,
+          mu = mu_link(mu),
+          aux
+        )
+        true_quantiles <- do.call(quantile_fun, list(quantiles, mu_link(mu), aux))
+        expect_eps(
+          a = true_quantiles,
+          b = quantile(sample, quantiles),
+          eps = eps,
+          r = p_acceptable_failures,
+          relative = relative
+        )
+      }
+    }
+  } else {
+    # aux2-list not empty
+    for (mu in mu_list) {
+      for (aux in aux_list) {
+        for(aux2 in aux2_list) {
+          sample <- rng_fun(
+            n,
+            mu = mu_link(mu),
+            aux,
+            aux2
+          )
+          true_quantiles <- do.call(quantile_fun,
+                                    list(quantiles, mu_link(mu), aux, aux2))
+          expect_eps(
+            a = true_quantiles,
+            b = quantile(sample, quantiles),
+            eps = eps,
+            r = p_acceptable_failures,
+            relative = relative
+          )
+        }
+      }
     }
   }
 }
@@ -355,11 +420,13 @@ test_rng_quantiles <- function(rng_fun,
 #' @param intercept Intercept for data generating RNG.
 #' @param ref_intercept Reference intercept to compare model against. If NULL (default) uses the given intercept.
 #' @param aux_par Auxiliary parameter of each distribution.
+#' @param aux2_par 2nd Auxiliary parameter (if applicable).
 #' @param rng_link Link function pointer used for data generation. Mainly for transformed normal distributions.
 #' @param parameter_link Link function pointer for the latent parameters. Used to transform for comparison with ref_intercept
 #' @param family BRMS family under test.
 #' @param rng function pointer of bespoke RNG for the family to be tested.
 #' @param aux_name BRMS string of aux_par argument name. Single string.
+#' @param aux2_name BRMS string of aux2_par argument name, if applicable. Single string.
 #' @param seed Seed argument, so that input data is always the same in each test.
 #' BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.
 #' Seed is stored before test and restored after it finished. If wants not to use a seed set to NA.
@@ -389,11 +456,13 @@ expect_brms_family <- function(n_data_sampels = 1000,
                                intercept,
                                ref_intercept = NULL,
                                aux_par,
+                               aux2_par = NA,
                                rng_link,
                                parameter_link,
                                family,
                                rng,
                                aux_name,
+                               aux2_name = NULL,
                                seed = 1235813,
                                data_threshold = NULL,
                                thresh = 0.05,
@@ -407,6 +476,7 @@ expect_brms_family <- function(n_data_sampels = 1000,
   posterior_fit <- construct_brms(n_data_sampels,
     intercept,
     aux_par,
+    aux2_par,
     rng_link = rng_link,
     family,
     rng,
@@ -420,7 +490,14 @@ expect_brms_family <- function(n_data_sampels = 1000,
   aux_par_recovered <- test_brms_quantile(
     posterior_fit, aux_name, aux_par, thresh, debug
   )
-  success <- intercept_recovered & aux_par_recovered
+  if(!is.na(aux2_par)) {
+    aux2_par_recovered <- test_brms_quantile(
+      posterior_fit, aux2_name, aux2_par, thresh, debug
+    )
+    success <- intercept_recovered & aux_par_recovered & aux2_par_recovered
+  } else {
+    success <- intercept_recovered & aux_par_recovered
+  }
 
   if (debug & !success) {
     print("Data were not recovered correctly! Print plot.")
@@ -432,6 +509,9 @@ expect_brms_family <- function(n_data_sampels = 1000,
       " and aux_par = ",
       aux_par
     )
+    if(!is.na(aux2_par)) {
+      debug <- paste0(debug, " and aux2_par = ", aux2_par)
+    }
     plot(posterior_fit, main = debug)
   }
 
@@ -447,6 +527,7 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #' @param n_data_sampels How many samples per chain. Positive integer scalar.
 #' @param intercept Intercept data argument, real scalar.
 #' @param aux_par aux_par argument of each distribution.
+#' @param aux2_par aux2_par argument applicable distribution
 #' @param rng_link Link function pointer used data. For positive bounded uses exp as example.
 #' @param family BRMS family under test.
 #' @param rng function pointer of bespoke RNG for the family to be tested.
@@ -472,6 +553,7 @@ expect_brms_family <- function(n_data_sampels = 1000,
 construct_brms <- function(n_data_sampels,
                            intercept,
                            aux_par,
+                           aux2_par = NA,
                            rng_link,
                            family,
                            rng,
@@ -490,6 +572,9 @@ construct_brms <- function(n_data_sampels,
   if (!isNum_len(aux_par)) {
     stop("aux_par argument has to be a real scalar")
   }
+  if (!is.na(aux2_par) && !isNum_len(aux2_par)) {
+    stop("aux2_par argument has to be a real scalar, or NA if unused")
+  }
   if (!(isNum_len(seed) || is.null(seed))) {
     stop("seed argument if used has to be a real scalar. Else it is let default as NULL,
          which will not change the current RNG seed")
@@ -501,7 +586,11 @@ construct_brms <- function(n_data_sampels,
     set.seed(seed)
   }
 
-  y_data <- rng(n_data_sampels, rng_link(intercept), aux_par)
+  if(is.na(aux2_par)) {
+    y_data <- rng(n_data_sampels, rng_link(intercept), aux_par)
+  } else {
+    y_data <- rng(n_data_sampels, rng_link(intercept), aux_par, aux2_par)
+  }
   if (!is.null(data_threshold)) {
     y_data <- limit_data(y_data, data_threshold)
   }

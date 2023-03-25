@@ -10,6 +10,7 @@ test_rng_quantiles(
   n,
   mu_list,
   aux_list,
+  aux2_list = NA,
   eps,
   quantiles,
   p_acceptable_failures,

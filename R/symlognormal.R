@@ -4,8 +4,8 @@
 #'         Mastering Diverse Domains through World Models.
 #'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
 #'
-#' @param x Value space of the distribution, x e (0, 1)
-#' @param mu Median parameter, mu is already symlog-transformed, mu unbound
+#' @param x Value space of the distribution, x unbound
+#' @param mu Median parameter, mu unbound
 #' @param sigma Sigma shape parameter, sigma >= 0
 #' @param log Bool argument, if true, returns the logarithmic density
 #'

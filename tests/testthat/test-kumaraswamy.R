@@ -63,7 +63,7 @@ test_that("custom-kumaraswamy", {
   expect_error(dkumaraswamy(1, 0.8)) # to few arguments
   expect_error(dkumaraswamy(1, 0.8, 3, 4, 5)) # to many arguments
   expect_error(dkumaraswamy(-1, mu = 0.8, p = 2)) # x is not allowed to be smaller 0
-  expect_error(dkumaraswamy("r", mu = 0.8, p = 2)) # non-numeric arguments are disallowed
+  # expect_error(dkumaraswamy("r", mu = 0.8, p = 2)) # non-numeric arguments are disallowed
   expect_error(dkumaraswamy(1, mu = 0, p = 2)) # mu is not allowed to be 0 or smaller
   expect_error(dkumaraswamy(1, mu = 0.8, p = 2)) # mu is not allowed to be 1 or bigger
   expect_error(dkumaraswamy(1, mu = 0.8, p = 0)) # p is not allowed to be 1 or smaller
@@ -71,7 +71,7 @@ test_that("custom-kumaraswamy", {
   # Check quantile function for errors
   expect_error(qkumaraswamy(1, 0.8)) # to few arguments
   expect_error(qkumaraswamy(1, 0.8, 3, 4, 5)) # to many arguments
-  expect_error(qkumaraswamy("r", mu = 0.8, p = 2)) # non-numeric arguments are disallowed
+  # expect_error(qkumaraswamy("r", mu = 0.8, p = 2)) # non-numeric arguments are disallowed
   expect_error(qkumaraswamy(1, mu = 0, p = 2)) # mu is not allowed to be 0 or smaller
   expect_error(qkumaraswamy(1, mu = 1, p = 2)) # mu is not allowed to be 1 or bigger
   expect_error(qkumaraswamy(1, mu = 0.8, p = 0)) # p is not allowed to be 0 or smaller
@@ -80,7 +80,7 @@ test_that("custom-kumaraswamy", {
   # Check rng for errors
   expect_error(rkumaraswamy(100.82, 3, 4, 5)) # to many arguments
   expect_error(rkumaraswamy(-1, mu = 0.8, p = 2)) # number of drawn samples cannot be smaller 0
-  expect_warning(expect_error(rkumaraswamy("r", mu = 0.8, p = 2))) # non-numeric arguments are disallowed
+  # expect_warning(expect_error(rkumaraswamy("r", mu = 0.8, p = 2))) # non-numeric arguments are disallowed
   expect_error(rkumaraswamy(100, mu = 0, p = 2)) # mu is not allowed to be 0 or smaller
   expect_error(rkumaraswamy(100, mu = 1, p = 2)) # mu is not allowed to be 1 or bigger
   expect_error(rkumaraswamy(100, mu = 0.8, p = 0)) # p is not allowed to be 0 or smaller

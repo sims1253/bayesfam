@@ -74,7 +74,7 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
 
-  q_part <- ((sigma^beta) * pgamma(2*abs(p - 0.5), 1/beta))^(1/beta)
+  q_part <- ((sigma^beta) * qgamma(2*abs(p - 0.5), 1/beta))^(1/beta)
   return(sign(p - 0.5) * q_part + mu)
 }
 
@@ -137,12 +137,9 @@ posterior_epred_generalized_normal <- function(prep) {
 
 #' Generalized Normal BRMS family
 #'
-#' @details generalized_normal brms custom family
-#' the formulas should be identical to the Unit-Tested R ones,
-#' still does not recover, so use at your own risk
-#'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
+#' @param link_b Link function for beta argument
 #'
 #' @return BRMS generalized_normal distribution family
 #' @export
@@ -150,7 +147,7 @@ posterior_epred_generalized_normal <- function(prep) {
 #' @examples data <- list(y = rgeneralized_normal(n = 1000, mu = 2, sigma = 2, beta = 4))
 #' fit <- brms::brm(formula = y ~ 1, data = data,
 #'   family = generalized_normal(), stanvars = generalized_normal()$stanvars,
-#'   cores = 4, init = 0.1)
+#'   init = 0.1)
 #' plot(fit)
 generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "log") {
   family <- brms::custom_family(
@@ -166,10 +163,7 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
   )
   family$stanvars <- brms::stanvar(
     scode = "
-      // z <- (x - mu) / sigma
-      // lpdf <- log(beta) - (log(2) + log(sigma) + log(gamma(1/beta))) - abs(z)^beta
       real generalized_normal_lpdf(real y, real mu, real sigma, real beta) {
-        // real z = (y - mu) / sigma;
         return log(beta) - (log(2) + log(sigma) + log(tgamma(1/beta)))
           - abs((y - mu) / sigma)^beta;
       }
@@ -184,11 +178,9 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
         }
       }
 
-      //q_part <- ((sigma^beta) * pgamma(2*abs(p - 0.5), 1/beta))^(1/beta)
-      //return(sign(p - 0.5) * q_part + mu)
       real generalized_normal_rng(real mu, real sigma, real beta) {
         real p = uniform_rng(0,1);
-        real q_part = ((sigma^beta) * gamma_cdf(2*abs(p - 0.5), 1/beta, 1))^(1/beta);
+        real q_part = ((sigma^beta) * exp(gamma_lccdf(2*abs(p - 0.5) | 1/beta, 1)))^(1/beta);
         return sign(p - 0.5) * q_part + mu;
       }",
     block = "functions"

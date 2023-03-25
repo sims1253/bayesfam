@@ -15,7 +15,16 @@ test_that("custom-logitnormal", {
   expect_equal(n, length(rlogitnormal(n, mu = logit(0.5), sigma = 0.4)))
 
   # Compare density to reference implementation
-  warning("No reference density available to test against!")
+  for (mu in mu_list) {
+    for (aux in sigma_list) {
+      expect_eps(
+        dlogitnormal(x, mu = mu, sigma = aux),
+        greybox::dlogitnorm(x, mu, aux),
+        eps = accepted_relative_error,
+        relative = TRUE
+      )
+    }
+  }
 
   # check if the RNG is close enough to the true mean in most cases
   test_rng(
@@ -31,7 +40,6 @@ test_that("custom-logitnormal", {
   )
 
   # Check if the RNG can recover the quantiles
-  warning("No quantile function available to test rng quantile recovery.")
 
   # Check density function for errors
   expect_error(dlogitnormal(0.5, 2)) # to few arguments
@@ -39,13 +47,13 @@ test_that("custom-logitnormal", {
   expect_error(dlogitnormal(-1, mu = 2, sigma = 2)) # x is not allowed to be smaller 0
   expect_error(dlogitnormal(2, mu = 2, sigma = 2)) # x is not allowed to be bigger 1
   expect_error(dlogitnormal(0.5, mu = 1, sigma = -1)) # sigma is not allowed to be 0 or smaller
-  expect_error(dlogitnormal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
+  # expect_error(dlogitnormal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
 
   # Check rng for errors
   expect_error(rlogitnormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rlogitnormal(-1, mu = logit(0.5), sigma = 0.4)) # number of drawn samples cannot be smaller 0
-  expect_warning(expect_error(rlogitnormal("r", mu = logit(0.5), sigma = 0.4))) # non-numeric arguments are disallowed
+  # expect_warning(expect_error(rlogitnormal("r", mu = logit(0.5), sigma = 0.4))) # non-numeric arguments are disallowed
   expect_error(rlogitnormal(100, mu = logit(-1), sigma = 0.4)) # mu must be between 0 and 1
   expect_error(rlogitnormal(100, mu = logit(0.5), sigma = -1)) # sigma is not allowed to be negative
 

@@ -10,6 +10,7 @@ test_rng(
   n,
   mu_list,
   aux_list,
+  aux2_list = NA,
   mu_eps,
   p_acceptable_failures,
   mu_link = identity,
@@ -27,6 +28,8 @@ test_rng(
 \item{mu_list}{Metric data used as RNG argument and to be compared to (usually mean or median)}
 
 \item{aux_list}{Auxiliary parameter}
+
+\item{aux2_list}{Auxiliary parameter for second parameter (if applicable).}
 
 \item{mu_eps}{Acceptable difference of |mu - metric_mu(rng_fun)}
 

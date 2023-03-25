@@ -12,9 +12,9 @@ Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
 dsymlognormal(x, mu, sigma, log = FALSE)
 }
 \arguments{
-\item{x}{Value space of the distribution, x e (0, 1)}
+\item{x}{Value space of the distribution, x unbound}
 
-\item{mu}{Median parameter, mu is already symlog-transformed, mu unbound}
+\item{mu}{Median parameter, mu unbound}
 
 \item{sigma}{Sigma shape parameter, sigma >= 0}
 
