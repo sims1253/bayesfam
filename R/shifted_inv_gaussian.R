@@ -2,6 +2,18 @@
 
 
 #pdf
+#' Title
+#'
+#' @param x
+#' @param mu
+#' @param shape
+#' @param shift
+#' @param log
+#'
+#' @return
+#' @export
+#'
+#' @examples
 dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
   if(!isLogic_len(log)) {
     stop("The log argument has to be a boolean")
@@ -22,6 +34,17 @@ dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
 }
 
 #rng
+#' Title
+#'
+#' @param n
+#' @param mu
+#' @param shape
+#' @param shift
+#'
+#' @return
+#' @export
+#'
+#' @examples
 rshifted_inv_gaussian <- function(n, mu = 1, shape = 1, shift = 0) {
   if(!isNat_len(n)) {
     stop("n has to be a natural scalar")
@@ -58,13 +81,23 @@ log_lik_shifted_inv_gaussian <- function(i, prep) {
     dshifted_inv_gaussian(y, mu, shape, ndt, log = TRUE)
 }
 
-shifted_inv_gaussian <- function(link = "1/mu^2", link_shape = "log", link_ndt = "log"){
+#' Title
+#'
+#' @param link
+#' @param link_shape
+#' @param link_ndt
+#'
+#' @return
+#' @export
+#'
+#' @examples
+shifted_inv_gaussian <- function(link = "1/mu^2", link_shape = "log", link_ndt = "identity"){
   family <- brms::custom_family(
       "shifted_inv_gaussian",
       dpars = c("mu", "shape", "ndt"),
       links = c(link, link_shape, link_ndt),
-      lb = c(0, 0, NA),
-      ub = c(NA, NA, NA),
+      lb = c(0, 0, -NA),
+      ub = c(NA, NA, 0),
       type = "real",
       log_lik = log_lik_shifted_inv_gaussian,
       posterior_predict = posterior_predict_shifted_inv_gaussian,

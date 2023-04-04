@@ -1,10 +1,33 @@
 test_that("shifted-inverse-gauss", {
 
-  n <- 10
-  x <- seq(from=0.1, to=0.9, length.out=n)
+  n <- 10000
+  n_small <- 10
+  eps <- 1e-6
+  x <- seq(from=eps, to=100, length.out=n)
+  mu_list <- seq(from=eps, to=100, length.out=n_small)
+  shape_list <- seq(from=eps, to=20, length.out=n_small)
+  shift_list <- seq(from=-10, to=0, length.out=n_small)
+  accepted_relative_error <- 1e-6
+
   # Check lengths
   expect_equal(n, length(dshifted_inv_gaussian(x, 0.5, 0.5, -0.5)))
   expect_equal(n, length(rshifted_inv_gaussian(n, 0.5, 0.5, 0.5)))
+
+  #warning("no reference shifted_inv_gauss to check against")
+
+  for (mu in mu_list) {
+    for (aux1 in shape_list) {
+      for(aux2 in shift_list) {
+        expect_eps(
+          dshifted_inv_gaussian(x, mu, aux1, aux2),
+          extraDistr::dwald(x - aux2, mu, aux1),
+          eps = accepted_relative_error,
+          relative = TRUE
+
+        )
+      }
+    }
+  }
 
   # Check density function for errors
   expect_error(dshifted_inv_gaussian(0.5, 0.5, 0.5)) # to few arguments
@@ -23,8 +46,23 @@ test_that("shifted-inverse-gauss", {
   expect_error(rshifted_inv_gaussian(1, -0.5, 0.5, -0.5)) # mu > 0
   expect_error(rshifted_inv_gaussian(1, 0.5, -0.5, -0.5)) # sigma > 0
 
-  data <- list(y = rshifted_inv_gaussian(n = 1000, mu = exp(1), shape = exp(3), shift = -1))
-  fit <- brms::brm(formula = y ~ 1, data = data,
+  intercept <- 1
+  shape <- 2
+  shift <- -1
+  thresh <- 0.05
+  data <- list(y = rshifted_inv_gaussian(n = 1000, mu = exp(intercept), shape = shape, shift = shift))
+  posterior_fit <- brms::brm(formula = y ~ 1, data = data,
                    family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
                    refresh = 0)
+
+  intercept_recovered <- test_brms_quantile(
+    posterior_fit, "b_Intercept", intercept, thresh
+  )
+  shape_par_recovered <- test_brms_quantile(
+    posterior_fit, "shape", shape, thresh
+  )
+  shift_par_recovered <- test_brms_quantile(
+    posterior_fit, "shift", shift, thresh
+  )
+  expect_true(intercept_recovered && shape_recovered && shift_recovered)
 })

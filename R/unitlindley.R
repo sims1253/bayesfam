@@ -87,4 +87,5 @@ unit_lindley <- function(link = "logit") {
     ",
     block = "functions"
   )
+  return(family)
 }

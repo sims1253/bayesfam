@@ -27,4 +27,9 @@ test_that("unit-lindley", {
   expect_error(runit_lindley(-1, mu = 0.8)) # number of drawn samples cannot be smaller 0
   expect_error(runit_lindley("r", mu = 0.8)) # non-numeric arguments are disallowed
   expect_error(runit_lindley(0.5, mu = -1)) # unit mu
+
+  data <- list(y = runit_lindley(n = 1000, mu = 0.2))
+  fit <- brms::brm(formula = y ~ 1, data = data,
+                   family = unit_lindley(), stanvars = unit_lindley()$stanvars,
+                   refresh = 0)
 })
