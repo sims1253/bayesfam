@@ -44,6 +44,8 @@ expect_brms_family(
 
 \item{aux_name}{BRMS string of aux_par argument name. Single string.}
 
+\item{aux2_name}{BRMS string of aux2_par argument name, if applicable. Single string.}
+
 \item{seed}{Seed argument, so that input data is always the same in each test.
 BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.
 Seed is stored before test and restored after it finished. If wants not to use a seed set to NA.}

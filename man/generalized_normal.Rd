@@ -10,6 +10,8 @@ generalized_normal(link = "identity", link_sigma = "log", link_b = "log")
 \item{link}{Link function for function}
 
 \item{link_sigma}{Link function for sigma argument}
+
+\item{link_b}{Link function for beta argument}
 }
 \value{
 BRMS generalized_normal distribution family

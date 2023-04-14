@@ -35,8 +35,7 @@ dgeneralized_normal <- function(x, mu, sigma, beta, log = FALSE) {
 
 
   z <- (x - mu) / sigma
-
-  lpdf <- log(beta) - (log(2) + log(sigma) + log(gamma(1/beta))) - abs(z)^beta
+  lpdf <- log(beta) - (log(2) + log(sigma) + lgamma(1/beta)) - abs(abs(x - mu) / sigma)^beta
 
   #return either the log or the pdf itself, given the log-value
   if (log) {
@@ -164,8 +163,8 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
   family$stanvars <- brms::stanvar(
     scode = "
       real generalized_normal_lpdf(real y, real mu, real sigma, real beta) {
-        return log(beta) - (log(2) + log(sigma) + log(tgamma(1/beta)))
-          - abs((y - mu) / sigma)^beta;
+        return log(beta) - (log(2) + log(sigma) + lgamma(1/beta))
+          - (abs(y - mu) / sigma)^beta;
       }
 
       int sign(real x) {

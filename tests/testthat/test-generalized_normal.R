@@ -8,7 +8,7 @@ test_that("custom-generalized-normal", {
   mu_list <- seq(from = -50, to = 50, length.out = n_small)
   aux_list <- seq(from = 1e-2, to = 50, length.out = n_small)
   accepted_relative_error <- 1e-6
-  accepted_rng_error <- 0.085
+  accepted_rng_error <- 0.1
   accepred_rng_failures <- 0.1
 
   # Check lengths

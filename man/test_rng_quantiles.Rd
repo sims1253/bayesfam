@@ -30,6 +30,8 @@ test_rng_quantiles(
 
 \item{aux_list}{Auxiliary parameter value list.}
 
+\item{aux2_list}{Auxiliary parameter value list for applicable distributions.}
+
 \item{eps}{Acceptable difference of |mu - metric_mu(rng_fun)}
 
 \item{quantiles}{Quantiles to test for recovery.}

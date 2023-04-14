@@ -23,6 +23,8 @@ construct_brms(
 
 \item{aux_par}{aux_par argument of each distribution.}
 
+\item{aux2_par}{aux2_par argument applicable distribution}
+
 \item{rng_link}{Link function pointer used data. For positive bounded uses exp as example.}
 
 \item{family}{BRMS family under test.}
