@@ -31,7 +31,6 @@ dlogistic <- function(x, mu, sigma, log = FALSE) {
 
 
   z <- (x - mu) / sigma
-
   lpdf <- -z - log(sigma) - 2 * log1p(exp(-z))
 
   #return either the log or the pdf itself, given the log-value
@@ -143,7 +142,7 @@ logistic <- function(link = "identity", link_sigma = "log") {
     "logistic_r",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
-    lb = c(NA, 0),
+    lb = c(-NA, 0),
     ub = c(NA, NA),
     type = "real",
     log_lik = log_lik_logistic,

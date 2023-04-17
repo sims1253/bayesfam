@@ -87,7 +87,7 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
 #' @return Random numbers from the generalized_normal distribution.
 #' @export
 #'
-#' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2))
+#' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2, beta = 2))
 rgeneralized_normal <- function(n, mu = 0, sigma = 1, beta = 1) {
   # check the arguments
   if (!isNat_len(n)) {
@@ -153,7 +153,7 @@ generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "
     "generalized_normal",
     dpars = c("mu", "sigma", "beta"),
     links = c(link, link_sigma, link_b),
-    lb = c(NA, 0, 0),
+    lb = c(-NA, 0, 0),
     ub = c(NA, NA, NA),
     type = "real",
     log_lik = log_lik_generalized_normal,

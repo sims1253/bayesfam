@@ -22,5 +22,5 @@ Random numbers from the generalized_normal distribution.
 RNG for the generalized_normal distribution
 }
 \examples{
-hist(rgeneralized_normal(100, mu = 2, sigma = 2))
+hist(rgeneralized_normal(100, mu = 2, sigma = 2, beta = 2))
 }

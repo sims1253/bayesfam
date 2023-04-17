@@ -27,6 +27,6 @@ Normal distribution density with symlog link function
 symlognormal density function
 }
 \examples{
-x <- seq(from = 0.01, to = 0.99, length.out = 1000)
-plot(x, dsymlognormal(x, mu = 0.5, sigma = 2), type = "l")
+x <- seq(from = -5, to = 5, length.out = 1000)
+plot(x, dsymlognormal(x, mu = -0.2, sigma = 0.4), type = "l")
 }

@@ -34,8 +34,7 @@ dgumbel_mean <- function(x, mu, sigma, log = FALSE) {
   }
 
   # location <- mu - sigma * euler_mascheroni
-  # z <- (x - location) / sigma
-  z <- (x - mu) / sigma + euler_mascheroni # same but optimized
+  z <- (x - mu) / sigma + euler_mascheroni
   lpdf <- -log(sigma) - (z + exp(-z))
 
   #return either the log or the pdf itself, given the log-value
@@ -70,7 +69,6 @@ qgumbel_mean <- function(p, mu, sigma) {
          or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
   }
 
-  # may be optimized. Although the accuracy of Quantile and RNG are not that critical.
   location <- mu - sigma * euler_mascheroni
   return(location - sigma * log(-log(p)))
 }
@@ -149,7 +147,7 @@ gumbel_mean <- function(link = "identity", link_sigma = "log") {
     "gumbel_mean",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
-    lb = c(NA, 0),
+    lb = c(-NA, 0),
     ub = c(NA, NA),
     type = "real",
     log_lik = log_lik_gumbel_mean,
