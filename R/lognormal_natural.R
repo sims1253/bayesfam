@@ -14,7 +14,7 @@ log_lik_lognormal_natural <- function(i, prep) {
   y <- prep$data$Y[i]
   #common_term = log1p(sigma^2/mu^2)
   #Vectorize(dlnorm)(y, log(mu)-common_term/2, sqrt(common_term), log = TRUE)
-  return(dlognormal_natural(y, mu, sigma))
+  return(dlognormal_natural(y, mu, sigma, log=TRUE))
 }
 
 

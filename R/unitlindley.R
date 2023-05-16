@@ -1,14 +1,11 @@
 # suggested in doi:10.1080/02664763.2018.1511774 for data on the unit interval
 # https://www.tandfonline.com/doi/full/10.1080/02664763.2018.1511774
 
-#library(brms)
-#library(lamW) # for the quantile function in posterior_predict
-
-# helper functions for post-processing of the family
 log_lik_unitlindley <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   y <- prep$data$Y[i]
-  2*log(1-mu)-log(mu)-3*log(1-y)-y*(1-mu)/(mu*(1-y))
+  #2*log(1-mu)-log(mu)-3*log(1-y)-y*(1-mu)/(mu*(1-y))
+  return(dunit_lindley(y, mu, log=TRUE))
 }
 
 posterior_epred_unitlindley <- function(prep) {
@@ -18,8 +15,9 @@ posterior_epred_unitlindley <- function(prep) {
 
 posterior_predict_unitlindley <- function(i, prep, ...) {
   mu <- prep$dpars$mu[, i]
-  lambert <- lamW::lambertWm1((runif(1, 0, 1)-1)/mu*exp(-1/mu))
-  return((1/mu+lambert)/(1+lambert))
+  #lambert <- lamW::lambertWm1((runif(1, 0, 1)-1)/mu*exp(-1/mu))
+  #return((1/mu+lambert)/(1+lambert))
+  return(runit_lindley(prep$ndraws, mu))
 }
 
 dunit_lindley <- function(x, mu, log=FALSE) {
@@ -33,7 +31,7 @@ dunit_lindley <- function(x, mu, log=FALSE) {
     stop("The log argument has to be a single boolean value")
   }
 
-  lpdf <- 2*log(1-mu)-log(mu)-3*log(1-x)-x*(1-mu)/(mu*(1-x))
+  lpdf <- 2*log1p(-mu)-log(mu)-3*log1p(-x)-x*(1-mu)/(mu*(1-x))
   if(log) {
     return(lpdf)
   }
@@ -82,7 +80,7 @@ unit_lindley <- function(link = "logit") {
   family$stanvars <- brms::stanvar(
     scode = "
       real unit_lindley_lpdf(real y, real mu) {
-        return 2*log(1-mu)-log(mu)-3*log(1-y)-y*(1-mu)/(mu*(1-y));
+        return 2*log1m(mu)-log(mu)-3*log1m(y)-y*(1-mu)/(mu*(1-y));
       }
     ",
     block = "functions"
