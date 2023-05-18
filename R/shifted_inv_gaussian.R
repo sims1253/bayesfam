@@ -1,5 +1,3 @@
-#library(brms)
-
 
 #pdf
 #' Title
@@ -15,9 +13,6 @@
 #'
 #' @examples
 dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
-  if(!isLogic_len(log)) {
-    stop("The log argument has to be a boolean")
-  }
   if(isTRUE(any(x <= 0))) {
     stop("Argument has to be > 0")
   }
@@ -27,9 +22,9 @@ dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
   if(isTRUE(any(shape <= 0))) {
     stop("Argument has to be > 0")
   }
-  if(!lenEqual(list(x, mu, shape, shift), type_check=is.numeric, scalars_allowed = TRUE)) {
-    stop("Either type error, or length missmatch")
-  }
+  # if(isTRUE(any(shift < 0))) {
+  #   stop("Shift has to be >= 0")
+  # }
   brms::dinv_gaussian(x-shift, mu, shape, log)
 }
 
@@ -46,23 +41,22 @@ dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
 #'
 #' @examples
 rshifted_inv_gaussian <- function(n, mu = 1, shape = 1, shift = 0) {
-  if(!isNat_len(n)) {
-    stop("n has to be a natural scalar")
-  }
   if(isTRUE(any(mu <= 0))) {
     stop("Argument has to be > 0")
   }
   if(isTRUE(any(shape <= 0))) {
     stop("Argument has to be > 0")
   }
-  if(!lenEqual(list(mu, shape, shift), type_check=is.numeric, scalars_allowed = TRUE)) {
-    stop("Either type error, or length missmatch")
-  }
+  # if(isTRUE(any(shift < 0))) {
+  #   stop("Shift has to be >= 0")
+  # }
   brms::rinv_gaussian(n, mu, shape) + shift
 }
 
 posterior_epred_shifted_inv_gaussian <- function(prep) {
-    with(prep$dpars, mu + ndt)
+    #with(prep$dpars, mu - ndt)
+  return(brms::get_dpar(prep, "mu", i = i))
+  # I think?
 }
 
 posterior_predict_shifted_inv_gaussian <- function(i, prep, ...) {
@@ -90,14 +84,20 @@ log_lik_shifted_inv_gaussian <- function(i, prep) {
 #' @return
 #' @export
 #'
-#' @examples
-shifted_inv_gaussian <- function(link = "1/mu^2", link_shape = "log", link_ndt = "identity"){
+#' @examples a <- rnorm(1000)
+#' data <- list(a = a, y = rshifted_inv_gaussian(n=1000, mu=exp(0.5*a + 1), shape=1, shift=1))
+#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#'  family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
+#'  refresh = 0)
+#' plot(fit)
+shifted_inv_gaussian <- function(link = "log", link_shape = "log", link_ndt = "log"){
+  # test as in BRMS additional families
   family <- brms::custom_family(
       "shifted_inv_gaussian",
       dpars = c("mu", "shape", "ndt"),
       links = c(link, link_shape, link_ndt),
-      lb = c(0, 0, -NA),
-      ub = c(NA, NA, 0),
+      lb = c(0, 0, 0),
+      ub = c(NA, NA, NA),
       type = "real",
       log_lik = log_lik_shifted_inv_gaussian,
       posterior_predict = posterior_predict_shifted_inv_gaussian,

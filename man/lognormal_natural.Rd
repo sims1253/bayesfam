@@ -14,7 +14,7 @@ Title
 }
 \examples{
 a <- rnorm(n = 1000)
-data <- list(a = a, y = rlognormal_natural(n = 1000, mu = exp(0.5 * a + 1), sigma = 2))
+data <- list(a = a, y = rlognormal_natural(n = 1000, mu = exp(0.5 * a + 1), sigma = exp(2)))
 fit <- brms::brm(formula = y ~ 1 + a, data = data,
  family = lognormal_natural(), stanvars = lognormal_natural()$stanvars,
  refresh = 0)

@@ -1,45 +1,4 @@
 
-# helper functions for post-processing of the family
-log_lik_lognormal_natural <- function(i, prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  sigma <- brms::get_dpar(prep, "sigma", i=i)
-
-  # if(NCOL(brms::get_dpar(prep, "sigma"))==1){
-  #   sigma <- brms::get_dpar(prep, "sigma")
-  # }else{
-  #   # is this really necassary?
-  #   sigma <- brms::get_dpar(prep, "sigma", i=i)
-  # }
-
-  y <- prep$data$Y[i]
-  #common_term = log1p(sigma^2/mu^2)
-  #Vectorize(dlnorm)(y, log(mu)-common_term/2, sqrt(common_term), log = TRUE)
-  return(dlognormal_natural(y, mu, sigma, log=TRUE))
-}
-
-
-posterior_predict_lognormal_natural <- function(i, prep, ...) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  sigma <- brms::get_dpar(prep, "sigma", i=i)
-
-  # if(NCOL(brms::get_dpar(prep, "sigma"))==1){
-  #   sigma <- brms::get_dpar(prep, "sigma")
-  # }else{
-  #   # is this really necassary?
-  #   sigma <- brms::get_dpar(prep, "sigma", i=i)
-  # }   ## [, i] if sigma is modelled, without otherwise
-
-  #common_term = log(1+sigma^2/mu^2)
-  #rlnorm(n, log(mu)-common_term/2, sqrt(common_term))
-  return(rlognormal_natural(prep$ndraws, mu, sigma))
-}
-
-posterior_epred_lognormal_natural <- function(prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  return(mu)
-}
-
-
 #' Title
 #'
 #' @param x Value space, x > 0
@@ -77,6 +36,26 @@ rlognormal_natural <- function(n, mu = 0, sigma = 1) {
   return(rlognormal(n, log(mu)-common_term/2, sqrt(common_term)))
 }
 
+log_lik_lognormal_natural <- function(i, prep) {
+  mu <- brms::get_dpar(prep, "mu", i = i)
+  sigma <- brms::get_dpar(prep, "sigma", i=i)
+
+  y <- prep$data$Y[i]
+  return(dlognormal_natural(y, mu, sigma, log=TRUE))
+}
+
+
+posterior_predict_lognormal_natural <- function(i, prep, ...) {
+  mu <- brms::get_dpar(prep, "mu", i = i)
+  sigma <- brms::get_dpar(prep, "sigma", i=i)
+  return(rlognormal_natural(prep$ndraws, mu, sigma))
+}
+
+posterior_epred_lognormal_natural <- function(prep) {
+  mu <- brms::get_dpar(prep, "mu", i = i)
+  return(mu)
+}
+
 #' Title
 #'
 #' @param link
@@ -86,7 +65,7 @@ rlognormal_natural <- function(n, mu = 0, sigma = 1) {
 #' @export
 #'
 #' @examples a <- rnorm(n = 1000)
-#' data <- list(a = a, y = rlognormal_natural(n = 1000, mu = exp(0.5 * a + 1), sigma = 2))
+#' data <- list(a = a, y = rlognormal_natural(n = 1000, mu = exp(0.5 * a + 1), sigma = exp(2)))
 #' fit <- brms::brm(formula = y ~ 1 + a, data = data,
 #'  family = lognormal_natural(), stanvars = lognormal_natural()$stanvars,
 #'  refresh = 0)

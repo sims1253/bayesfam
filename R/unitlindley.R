@@ -1,24 +1,6 @@
 # suggested in doi:10.1080/02664763.2018.1511774 for data on the unit interval
 # https://www.tandfonline.com/doi/full/10.1080/02664763.2018.1511774
 
-log_lik_unitlindley <- function(i, prep) {
-  mu <- brms::get_dpar(prep, "mu", i = i)
-  y <- prep$data$Y[i]
-  #2*log(1-mu)-log(mu)-3*log(1-y)-y*(1-mu)/(mu*(1-y))
-  return(dunit_lindley(y, mu, log=TRUE))
-}
-
-posterior_epred_unitlindley <- function(prep) {
-  mu <- prep$dpars$mu
-  return(mu)
-}
-
-posterior_predict_unitlindley <- function(i, prep, ...) {
-  mu <- prep$dpars$mu[, i]
-  #lambert <- lamW::lambertWm1((runif(1, 0, 1)-1)/mu*exp(-1/mu))
-  #return((1/mu+lambert)/(1+lambert))
-  return(runit_lindley(prep$ndraws, mu))
-}
 
 dunit_lindley <- function(x, mu, log=FALSE) {
   if(isTRUE(any(x <= 0 | x >= 1))) {
@@ -26,9 +8,6 @@ dunit_lindley <- function(x, mu, log=FALSE) {
   }
   if(isTRUE(any(mu <= 0 | mu >= 1))) {
     stop("The mu argument has to be in the interval (0, 1)")
-  }
-  if(!isLogic_len(log)) {
-    stop("The log argument has to be a single boolean value")
   }
 
   lpdf <- 2*log1p(-mu)-log(mu)-3*log1p(-x)-x*(1-mu)/(mu*(1-x))
@@ -39,8 +18,6 @@ dunit_lindley <- function(x, mu, log=FALSE) {
     return(exp(lpdf))
   }
 }
-
-# theta = 1/mu - 1
 
 qunit_lindley <- function(p, mu) {
   if(isTRUE(any(p <= 0 | p >= 1))) {
@@ -59,10 +36,23 @@ qunit_lindley <- function(p, mu) {
 }
 
 runit_lindley <- function(n, mu) {
-  if(!isNat_len(n)) {
-    stop("n has to be a single natural number")
-  }
   return(qunit_lindley(runif(n), mu))
+}
+
+log_lik_unitlindley <- function(i, prep) {
+  mu <- brms::get_dpar(prep, "mu", i = i)
+  y <- prep$data$Y[i]
+  return(dunit_lindley(y, mu, log=TRUE))
+}
+
+posterior_epred_unitlindley <- function(prep) {
+  mu <- prep$dpars$mu
+  return(mu)
+}
+
+posterior_predict_unitlindley <- function(i, prep, ...) {
+  mu <- prep$dpars$mu[, i]
+  return(runit_lindley(prep$ndraws, mu))
 }
 
 unit_lindley <- function(link = "logit") {

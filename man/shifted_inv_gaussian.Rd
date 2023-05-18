@@ -4,15 +4,19 @@
 \alias{shifted_inv_gaussian}
 \title{Title}
 \usage{
-shifted_inv_gaussian(
-  link = "1/mu^2",
-  link_shape = "log",
-  link_ndt = "identity"
-)
+shifted_inv_gaussian(link = "log", link_shape = "log", link_ndt = "log")
 }
 \arguments{
 \item{link_ndt}{}
 }
 \description{
 Title
+}
+\examples{
+a <- rnorm(1000)
+data <- list(a = a, y = rshifted_inv_gaussian(n=1000, mu=exp(0.5*a + 1), shape=1, shift=1))
+fit <- brms::brm(formula = y ~ 1 + a, data = data,
+ family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
+ refresh = 0)
+plot(fit)
 }
