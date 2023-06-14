@@ -2,7 +2,7 @@
 % Please edit documentation in R/lognormal_natural.R
 \name{dlognormal_natural}
 \alias{dlognormal_natural}
-\title{Title}
+\title{Lognormal Natural Density function with value space parameterisation (mu same as x)}
 \usage{
 dlognormal_natural(x, mu, sigma, log = FALSE)
 }
@@ -15,6 +15,13 @@ dlognormal_natural(x, mu, sigma, log = FALSE)
 
 \item{log}{boolean value to return log-pdf, default FALSE}
 }
+\value{
+Density of the Lognormal Natural given x, mu and sigma.
+}
 \description{
-Title
+Lognormal Natural Density function with value space parameterisation (mu same as x)
+}
+\examples{
+x <- seq(from=0.1, to=5, length.out=100)
+plot(x, dlognormal_natural(x, 1, 2))
 }

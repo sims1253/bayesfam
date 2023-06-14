@@ -1,15 +1,16 @@
 
-#' Title
+#' Lognormal Natural Density function with value space parameterisation (mu same as x)
 #'
 #' @param x Value space, x > 0
 #' @param mu Mean parameter, mu > 0
 #' @param sigma Shape parameter, sigma unbound
 #' @param log boolean value to return log-pdf, default FALSE
 #'
-#' @return
+#' @return Density of the Lognormal Natural given x, mu and sigma.
 #' @export
 #'
-#' @examples
+#' @examples x <- seq(from=0.1, to=5, length.out=100)
+#' plot(x, dlognormal_natural(x, 1, 2))
 dlognormal_natural <- function(x, mu, sigma, log = FALSE) {
   if(isTRUE(any(mu <= 0))) {
     stop("Mu has to be > 0")
@@ -18,16 +19,16 @@ dlognormal_natural <- function(x, mu, sigma, log = FALSE) {
   return(dlognormal(x, log(mu)-common_term/2, sqrt(common_term), log))
 }
 
-#' Title
+#' Lognormal Natural RNG function
 #'
-#' @param n
-#' @param mu
-#' @param sigma
+#' @param n N number of samples to draw, n is a scalar natural number
+#' @param mu mean argument, mu > 0
+#' @param sigma shape argument, sigma > 0
 #'
-#' @return
+#' @return N samples distributed as Lognormal Natural Likelihood
 #' @export
 #'
-#' @examples
+#' @examples hist(rlognormal_natural(100, 1, 2))
 rlognormal_natural <- function(n, mu = 0, sigma = 1) {
   if(isTRUE(any(mu <= 0))) {
     stop("Mu has to be > 0")
@@ -36,6 +37,13 @@ rlognormal_natural <- function(n, mu = 0, sigma = 1) {
   return(rlognormal(n, log(mu)-common_term/2, sqrt(common_term)))
 }
 
+#' Logarithmic Density BRMS vignette of Lognormal Natural Likelihood
+#'
+#' @param i Indices of BRMS data
+#' @param prep BRMS data
+#'
+#' @return Log-Likelihood of BRMS data
+#' @export
 log_lik_lognormal_natural <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i=i)
@@ -45,23 +53,37 @@ log_lik_lognormal_natural <- function(i, prep) {
 }
 
 
+#' Posterior Prediction BRMS Vignette of Lognormal Natural Likelihood
+#'
+#' @param i Indices of BRMS data
+#' @param prep BRMS data
+#' @param ... Catchall argument
+#'
+#' @return  Draws from the Posterior Predictive Distribution
+#' @export
 posterior_predict_lognormal_natural <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i=i)
   return(rlognormal_natural(prep$ndraws, mu, sigma))
 }
 
+#' Posterior mean BRMS vingette of Lognormal Natural Likelihood
+#'
+#' @param prep BRMS data
+#'
+#' @return Mean of the Lognormal natural posterior
+#' @export
 posterior_epred_lognormal_natural <- function(prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   return(mu)
 }
 
-#' Title
+#' Lognormal Natural BRMS family
 #'
-#' @param link
-#' @param link_sigma
+#' @param link link for the mean argument, default = log
+#' @param link_sigma link for the shape argument, default = log
 #'
-#' @return
+#' @return BRMS model object
 #' @export
 #'
 #' @examples a <- rnorm(n = 1000)

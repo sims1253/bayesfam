@@ -2,15 +2,20 @@
 % Please edit documentation in R/lognormal_natural.R
 \name{lognormal_natural}
 \alias{lognormal_natural}
-\title{Title}
+\title{Lognormal Natural BRMS family}
 \usage{
 lognormal_natural(link = "log", link_sigma = "log")
 }
 \arguments{
-\item{link_sigma}{}
+\item{link}{link for the mean argument, default = log}
+
+\item{link_sigma}{link for the shape argument, default = log}
+}
+\value{
+BRMS model object
 }
 \description{
-Title
+Lognormal Natural BRMS family
 }
 \examples{
 a <- rnorm(n = 1000)

@@ -2,15 +2,22 @@
 % Please edit documentation in R/shifted_inv_gaussian.R
 \name{shifted_inv_gaussian}
 \alias{shifted_inv_gaussian}
-\title{Title}
+\title{Shifted Inverse Gauss BRMS function}
 \usage{
 shifted_inv_gaussian(link = "log", link_shape = "log", link_ndt = "log")
 }
 \arguments{
-\item{link_ndt}{}
+\item{link}{Central paramter link function, default="log"}
+
+\item{link_shape}{Shape parameter link function, default="log"}
+
+\item{link_ndt}{Shift parameter link function, default="log"}
+}
+\value{
+Shifted Inverse Gauss BRMS family
 }
 \description{
-Title
+Shifted Inverse Gauss BRMS function
 }
 \examples{
 a <- rnorm(1000)

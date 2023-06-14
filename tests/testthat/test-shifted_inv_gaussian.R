@@ -29,6 +29,8 @@ test_that("shifted-inverse-gauss", {
     }
   }
 
+  warning("RNG test missing")
+
   # Check density function for errors
   expect_error(dshifted_inv_gaussian(0.5, 0.5, 0.5)) # to few arguments
   expect_error(dshifted_inv_gaussian(0.5, 0.5, 0.5, -0.5, 0.5)) # to many arguments

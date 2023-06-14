@@ -2,13 +2,23 @@
 % Please edit documentation in R/lognormal_natural.R
 \name{rlognormal_natural}
 \alias{rlognormal_natural}
-\title{Title}
+\title{Lognormal Natural RNG function}
 \usage{
 rlognormal_natural(n, mu = 0, sigma = 1)
 }
 \arguments{
-\item{sigma}{}
+\item{n}{N number of samples to draw, n is a scalar natural number}
+
+\item{mu}{mean argument, mu > 0}
+
+\item{sigma}{shape argument, sigma > 0}
+}
+\value{
+N samples distributed as Lognormal Natural Likelihood
 }
 \description{
-Title
+Lognormal Natural RNG function
+}
+\examples{
+hist(rlognormal_natural(100, 1, 2))
 }
