@@ -9,7 +9,7 @@ rshifted_inv_gaussian(n, mu = 1, shape = 1, shift = 0)
 \arguments{
 \item{n}{Number samples to draw, natural scalar}
 
-\item{mu}{Mean parameter? of likelihod function, mu > 0}
+\item{mu}{Mean parameter of likelihod function, mu > 0}
 
 \item{shape}{Shape parameter of likelihood, shape unbound}
 

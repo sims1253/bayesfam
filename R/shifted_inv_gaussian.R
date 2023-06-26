@@ -2,7 +2,7 @@
 #' Density of Inverse Gauss Likelihood with shift parameter.
 #'
 #' @param x Value space of likelihood, x > 0
-#' @param mu Mean parameter? of likelihod function, mu > 0
+#' @param mu Mean parameter of likelihod function, mu > 0
 #' @param shape Shape parameter of likelihood, shape unbound
 #' @param shift Shift paramter of likelihood, shift <= 0
 #' @param log Logical paramter, if TRUE returns log PDF, default=FALSE
@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples x <- seq(from=0.1, to=10, length.out=1000)
-#' plot(x, dshifted_inv_gaussian(x, 1, 1, 1))
+#' plot(x, dshifted_inv_gaussian(x, 1, 1, -1))
 dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
   if(isTRUE(any(x <= 0))) {
     stop("Argument has to be > 0")
@@ -22,16 +22,16 @@ dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
   if(isTRUE(any(shape <= 0))) {
     stop("Argument has to be > 0")
   }
-  # if(isTRUE(any(shift > 0))) {
-  #   stop("Shift has to be <= 0")
-  # }
-  brms::dinv_gaussian(x-shift, mu, shape, log)
+  if(isTRUE(any(shift > 0))) {
+    stop("Shift has to be <= 0")
+  }
+  brms::dinv_gaussian(x - shift, mu, shape, log)
 }
 
 #' RNG function of the Shifted Inverse Gauss Likelihood
 #'
 #' @param n Number samples to draw, natural scalar
-#' @param mu Mean parameter? of likelihod function, mu > 0
+#' @param mu Mean parameter of likelihod function, mu > 0
 #' @param shape Shape parameter of likelihood, shape unbound
 #' @param shift Shift paramter of likelihood, shift <= 0
 #'
@@ -46,10 +46,10 @@ rshifted_inv_gaussian <- function(n, mu = 1, shape = 1, shift = 0) {
   if(isTRUE(any(shape <= 0))) {
     stop("Argument has to be > 0")
   }
-  # if(isTRUE(any(shift > 0))) {
-  #   stop("Shift has to be <= 0")
-  # }
-  brms::rinv_gaussian(n, mu, shape) + shift
+  if(isTRUE(any(shift > 0))) {
+    stop("Shift has to be <= 0")
+  }
+  brms::rinv_gaussian(n, mu, shape) - shift
 }
 
 #' Posterior mean BRMS vingette of Shifted Inverse Gauss Likelihood
@@ -59,7 +59,6 @@ rshifted_inv_gaussian <- function(n, mu = 1, shape = 1, shift = 0) {
 #' @return Mean of the shifted inverse Gauss posterior
 #' @export
 posterior_epred_shifted_inv_gaussian <- function(prep) {
-    #with(prep$dpars, mu - ndt)
   mu <- brms::get_dpar(prep, "mu", i = i)
   shift <- brms::get_dpar(prep, "ndt", i = i)
   return(mu + shift)
@@ -100,18 +99,19 @@ log_lik_shifted_inv_gaussian <- function(i, prep) {
 #' @param link Central paramter link function, default="log"
 #' @param link_shape Shape parameter link function, default="log"
 #' @param link_ndt Shift parameter link function, default="log"
+#' @details Open issue: Currently the recovered shift parameter ndt sign is
+#' inverted, otherwise the value seems to recover correctly
 #'
 #' @return Shifted Inverse Gauss BRMS family
 #' @export
 #'
 #' @examples a <- rnorm(1000)
-#' data <- list(a = a, y = rshifted_inv_gaussian(n=1000, mu=exp(0.5*a + 1), shape=1, shift=1))
+#' data <- list(a = a, y = rshifted_inv_gaussian(n=1000, mu=exp(0.5*a + 1), shape=1, shift=-1))
 #' fit <- brms::brm(formula = y ~ 1 + a, data = data,
 #'  family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
 #'  refresh = 0)
 #' plot(fit)
 shifted_inv_gaussian <- function(link = "log", link_shape = "log", link_ndt = "log"){
-  # test as in BRMS additional families
   family <- brms::custom_family(
       "shifted_inv_gaussian",
       dpars = c("mu", "shape", "ndt"),
@@ -125,11 +125,13 @@ shifted_inv_gaussian <- function(link = "log", link_shape = "log", link_ndt = "l
     )
   family$stanvars <- brms::stanvar(
     scode = "
-      real shifted_inv_gaussian_lpdf(real y, real mu, real shape, real ndt) {
+      real inv_gaussian_lpdf(real y, real mu, real shape) {
+        return 0.5 * log(shape / (2 * pi())) - 1.5 * log(y)
+               - 0.5 * shape * square((y - mu) / (mu * sqrt(y)));
+      }
 
-          real x = y - ndt;
-          return 0.5 * log(shape / (2 * pi())) - 1.5 * log(x)
-               - 0.5 * shape * square((x - mu) / (mu * sqrt(x)));
+      real shifted_inv_gaussian_lpdf(real y, real mu, real shape, real ndt) {
+          return inv_gaussian_lpdf(y - ndt | mu, shape);
       }
 
       real shifted_inv_gaussian_rng(real mu, real shape, real ndt) {
@@ -139,9 +141,9 @@ shifted_inv_gaussian <- function(link = "log", link_shape = "log", link_ndt = "l
           real z = uniform_rng(0,1);
 
           if(z <= mu / (mu + x))
-            return x + ndt;
+            return x - ndt;
           else
-            return mu^2 / x + ndt;
+            return mu^2 / x - ndt;
       }",
     block = "functions"
   )

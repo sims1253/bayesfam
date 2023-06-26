@@ -9,7 +9,7 @@ dshifted_inv_gaussian(x, mu, shape, shift, log = FALSE)
 \arguments{
 \item{x}{Value space of likelihood, x > 0}
 
-\item{mu}{Mean parameter? of likelihod function, mu > 0}
+\item{mu}{Mean parameter of likelihod function, mu > 0}
 
 \item{shape}{Shape parameter of likelihood, shape unbound}
 
@@ -25,5 +25,5 @@ Density of Inverse Gauss Likelihood with shift parameter.
 }
 \examples{
 x <- seq(from=0.1, to=10, length.out=1000)
-plot(x, dshifted_inv_gaussian(x, 1, 1, 1))
+plot(x, dshifted_inv_gaussian(x, 1, 1, -1))
 }

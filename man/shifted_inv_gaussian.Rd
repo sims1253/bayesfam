@@ -19,9 +19,13 @@ Shifted Inverse Gauss BRMS family
 \description{
 Shifted Inverse Gauss BRMS function
 }
+\details{
+Open issue: Currently the recovered shift parameter ndt sign is
+inverted, otherwise the value seems to recover correctly
+}
 \examples{
 a <- rnorm(1000)
-data <- list(a = a, y = rshifted_inv_gaussian(n=1000, mu=exp(0.5*a + 1), shape=1, shift=1))
+data <- list(a = a, y = rshifted_inv_gaussian(n=1000, mu=exp(0.5*a + 1), shape=1, shift=-1))
 fit <- brms::brm(formula = y ~ 1 + a, data = data,
  family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
  refresh = 0)
