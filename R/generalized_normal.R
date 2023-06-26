@@ -24,18 +24,8 @@ dgeneralized_normal <- function(x, mu, sigma, beta, log = FALSE) {
   if (isTRUE(any(beta <= 0))) {
     stop("generalized_normal is only defined for beta > 0")
   }
-  # Maybe overkill?
-  if (!lenEqual(list_of_vectors = list(x, mu, sigma, beta), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("generalized_normal argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
-  if (!isLogic_len(log)) {
-    stop("the log argument of a density has to be a scalar boolean")
-  }
 
-
-  z <- (x - mu) / sigma
-  lpdf <- log(beta) - (log(2) + log(sigma) + lgamma(1/beta)) - abs(abs(x - mu) / sigma)^beta
+  lpdf <- log(beta) - (log(2) + log(sigma) + lgamma(1/beta)) - (abs(x - mu) / sigma)^beta
 
   #return either the log or the pdf itself, given the log-value
   if (log) {
@@ -68,13 +58,10 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
   if (isTRUE(any(beta <= 0))) {
     stop("generalized_normal is only defined for beta > 0")
   }
-  if (!lenEqual(list_of_vectors = list(p, mu, sigma, beta), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("generalized_normal argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
 
-  q_part <- ((sigma^beta) * qgamma(2*abs(p - 0.5), 1/beta))^(1/beta)
-  return(sign(p - 0.5) * q_part + mu)
+  return(
+    sign(p - 0.5) * ((sigma^beta) *
+    qgamma(2*abs(p - 0.5), 1/beta))^(1/beta) + mu)
 }
 
 #' RNG for the generalized_normal distribution
@@ -89,10 +76,7 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
 #'
 #' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2, beta = 2))
 rgeneralized_normal <- function(n, mu = 0, sigma = 1, beta = 1) {
-  # check the arguments
-  if (!isNat_len(n)) {
-    stop("The number RNG-samples has to be a scalar natural")
-  }
+
   return(qgeneralized_normal(p = runif(n, min = 0, max = 1), mu = mu, sigma = sigma, beta = beta))
 }
 
@@ -138,7 +122,7 @@ posterior_epred_generalized_normal <- function(prep) {
 #'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
-#' @param link_b Link function for beta argument
+#' @param link_beta Link function for beta argument
 #'
 #' @return BRMS generalized_normal distribution family
 #' @export
@@ -148,11 +132,11 @@ posterior_epred_generalized_normal <- function(prep) {
 #'   family = generalized_normal(), stanvars = generalized_normal()$stanvars,
 #'   init = 0.1)
 #' plot(fit)
-generalized_normal <- function(link = "identity", link_sigma = "log", link_b = "log") {
+generalized_normal <- function(link = "identity", link_sigma = "log", link_beta = "log") {
   family <- brms::custom_family(
     "generalized_normal",
     dpars = c("mu", "sigma", "beta"),
-    links = c(link, link_sigma, link_b),
+    links = c(link, link_sigma, link_beta),
     lb = c(-NA, 0, 0),
     ub = c(NA, NA, NA),
     type = "real",

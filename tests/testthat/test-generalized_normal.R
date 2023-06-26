@@ -22,13 +22,13 @@ test_that("custom-generalized-normal", {
       for(aux2 in aux_list) {
         expect_eps(
           dgeneralized_normal(x, mu = mu, sigma = aux1, beta = aux2),
-          greybox::dgnorm(x, mu = mu, aux1, aux2),
+          gnorm::dgnorm(x, mu = mu, alpha = aux1, beta = aux2),
           eps = accepted_relative_error,
           relative = TRUE
         )
         expect_eps(
           qgeneralized_normal(unit, mu = mu, sigma = aux1, beta = aux2),
-          greybox::qgnorm(unit, mu = mu, aux1, aux2),
+          gnorm::qgnorm(unit, mu = mu, alpha = aux1, beta = aux2),
           eps = accepted_relative_error,
           relative = TRUE
         )

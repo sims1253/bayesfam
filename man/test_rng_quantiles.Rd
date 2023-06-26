@@ -9,7 +9,7 @@ test_rng_quantiles(
   quantile_fun,
   n,
   mu_list,
-  aux_list,
+  aux_list = NA,
   aux2_list = NA,
   eps,
   quantiles,

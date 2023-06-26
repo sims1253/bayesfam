@@ -9,7 +9,7 @@ test_rng(
   metric_mu,
   n,
   mu_list,
-  aux_list,
+  aux_list = NA,
   aux2_list = NA,
   mu_eps,
   p_acceptable_failures,

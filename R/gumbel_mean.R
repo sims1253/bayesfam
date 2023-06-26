@@ -1,5 +1,3 @@
-# Euler-Mascheroni constant used in a few equations in Gumbel
-euler_mascheroni <- 0.57721566490153
 
 #' Probability density function for the gumbel distribution
 #'
@@ -24,17 +22,9 @@ dgumbel_mean <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(sigma <= 0))) {
     stop("gumbel is only defined for sigma > 0")
   }
-  # Maybe overkill?
-  if (!lenEqual(list_of_vectors = list(x, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("Gumbel argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
-  if (!isLogic_len(log)) {
-    stop("the log argument of a density has to be a scalar boolean")
-  }
 
-  # location <- mu - sigma * euler_mascheroni
-  z <- (x - mu) / sigma + euler_mascheroni
+  # -digamma(1) == Euler-Mascheroni constant
+  z <- (x - mu) / sigma - digamma(1)
   lpdf <- -log(sigma) - (z + exp(-z))
 
   #return either the log or the pdf itself, given the log-value
@@ -64,13 +54,10 @@ qgumbel_mean <- function(p, mu, sigma) {
   if (isTRUE(any(sigma <= 0))) {
     stop("gumbel is only defined for sigma > 0")
   }
-  if (!lenEqual(list_of_vectors = list(p, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("Gumbel argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
 
-  location <- mu - sigma * euler_mascheroni
-  return(location - sigma * log(-log(p)))
+  return(
+    (mu - sigma * (-digamma(1)))
+         - sigma * log(-log(p)))
 }
 
 #' RNG for the gumbel distribution
@@ -84,10 +71,7 @@ qgumbel_mean <- function(p, mu, sigma) {
 #'
 #' @examples hist(rgumbel_mean(100, mu = 2, sigma = 2))
 rgumbel_mean <- function(n, mu = 0, sigma = 1) {
-  # check the arguments
-  if (!isNat_len(n)) {
-    stop("The number RNG-samples has to be a scalar natural")
-  }
+
   return(qgumbel_mean(runif(n, min = 0, max = 1), mu, sigma))
 }
 

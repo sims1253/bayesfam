@@ -7,7 +7,7 @@
 construct_brms(
   n_data_sampels,
   intercept,
-  aux_par,
+  aux_par = NA,
   aux2_par = NA,
   rng_link,
   family,

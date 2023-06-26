@@ -4,14 +4,14 @@
 \alias{generalized_normal}
 \title{Generalized Normal BRMS family}
 \usage{
-generalized_normal(link = "identity", link_sigma = "log", link_b = "log")
+generalized_normal(link = "identity", link_sigma = "log", link_beta = "log")
 }
 \arguments{
 \item{link}{Link function for function}
 
 \item{link_sigma}{Link function for sigma argument}
 
-\item{link_b}{Link function for beta argument}
+\item{link_beta}{Link function for beta argument}
 }
 \value{
 BRMS generalized_normal distribution family

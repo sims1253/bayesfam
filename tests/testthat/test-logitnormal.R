@@ -19,7 +19,7 @@ test_that("custom-logitnormal", {
     for (aux in sigma_list) {
       expect_eps(
         dlogitnormal(x, mu = mu, sigma = aux),
-        greybox::dlogitnorm(x, mu, aux),
+        logitnorm::dlogitnorm(x, mu = mu, sigma = aux),
         eps = accepted_relative_error,
         relative = TRUE
       )

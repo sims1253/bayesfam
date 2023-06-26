@@ -20,15 +20,6 @@ dlogistic <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(sigma <= 0))) {
     stop("logistic is only defined for sigma > 0")
   }
-  # Maybe overkill?
-  if (!lenEqual(list_of_vectors = list(x, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("logistic argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
-  if (!isLogic_len(log)) {
-    stop("the log argument of a density has to be a scalar boolean")
-  }
-
 
   z <- (x - mu) / sigma
   lpdf <- -z - log(sigma) - 2 * log1p(exp(-z))
@@ -60,10 +51,6 @@ qlogistic <- function(p, mu, sigma) {
   if (isTRUE(any(sigma <= 0))) {
     stop("logistic is only defined for sigma > 0")
   }
-  if (!lenEqual(list_of_vectors = list(p, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("logistic argument vectors could not be matched. May be due to wrong type,
-         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
-  }
 
   return(mu + sigma * (log(p) - log1p(-p)))
 }
@@ -79,10 +66,7 @@ qlogistic <- function(p, mu, sigma) {
 #'
 #' @examples hist(rlogistic(100, mu = 2, sigma = 2))
 rlogistic <- function(n, mu = 0, sigma = 1) {
-  # check the arguments
-  if (!isNat_len(n)) {
-    stop("The number RNG-samples has to be a scalar natural")
-  }
+
   return(qlogistic(runif(n, min = 0, max = 1), mu, sigma))
 }
 

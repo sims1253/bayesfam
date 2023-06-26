@@ -19,12 +19,6 @@ dsymlognormal <- function(x, mu, sigma, log = FALSE) {
     stop("sigma must be above or equal to 0.")
   }
 
-  # I think, the Jacobian adjustment should be 0 in case of x == 0
-  # symlog_jacobian_adjustment <- ifelse(x == 0,
-  #   1,
-  #   log(x * sign(x)) - log((abs(x) + x^2))
-  # )
-
   symlog_jacobian_adjustment <- ifelse(x == 0,
     0,
     log(x * sign(x)) - log((abs(x) + x^2))
@@ -33,6 +27,7 @@ dsymlognormal <- function(x, mu, sigma, log = FALSE) {
     -(log(sigma) + 0.5 * (log(2 * pi))) +
     symlog_jacobian_adjustment +
     (-(symlog(x) - mu)^2 / (2 * sigma^2))
+
   if (log) {
     return(logpdf)
   } else {
@@ -145,19 +140,16 @@ symlognormal <- function(link = "identity", link_sigma = "log") {
       }
 
       real symlog(real x) {
-        //return(sign(x) * log(abs(x)+1));
         return(sign(x) * log1p(abs(x)));
       }
 
       real inv_symlog(real x) {
-        //return sign(x)*(exp(abs(x))-1);
         return sign(x)*(expm1(abs(x)));
       }
 
       real symlognormal_lpdf(real y, real mu, real sigma) {
         real symlog_jacobian_adjustment = 0;
         if (y == 0) {
-          // ok, one might still remove this first check to optimize performance
           symlog_jacobian_adjustment = 0;
         } else {
           symlog_jacobian_adjustment = log(y * sign(y)) - log((abs(y)+y^2));
