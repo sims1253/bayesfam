@@ -4,28 +4,30 @@
 #'         Mastering Diverse Domains through World Models.
 #'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
 #'
-#' @param x Value space of the distribution, x e (0, 1)
-#' @param mu Median parameter, mu is already symlog-transformed, mu unbound
+#' @param x Value space of the distribution, x unbound
+#' @param mu Median parameter, mu unbound
 #' @param sigma Sigma shape parameter, sigma >= 0
 #' @param log Bool argument, if true, returns the logarithmic density
 #'
 #' @return Normal distribution density with symlog link function
 #' @export
 #'
-#' @examples x <- seq(from = 0.01, to = 0.99, length.out = 1000)
-#' plot(x, dsymlognormal(x, mu = 0.5, sigma = 2), type = "l")
+#' @examples x <- seq(from = -5, to = 5, length.out = 1000)
+#' plot(x, dsymlognormal(x, mu = -0.2, sigma = 0.4), type = "l")
 dsymlognormal <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(sigma < 0))) {
     stop("sigma must be above or equal to 0.")
   }
+
   symlog_jacobian_adjustment <- ifelse(x == 0,
-    1,
+    0,
     log(x * sign(x)) - log((abs(x) + x^2))
   )
   logpdf <-
     -(log(sigma) + 0.5 * (log(2 * pi))) +
     symlog_jacobian_adjustment +
     (-(symlog(x) - mu)^2 / (2 * sigma^2))
+
   if (log) {
     return(logpdf)
   } else {
@@ -138,17 +140,17 @@ symlognormal <- function(link = "identity", link_sigma = "log") {
       }
 
       real symlog(real x) {
-        return(sign(x) * log(abs(x)+1));
+        return(sign(x) * log1p(abs(x)));
       }
 
       real inv_symlog(real x) {
-        return sign(x)*(exp(abs(x))-1);
+        return sign(x)*(expm1(abs(x)));
       }
 
       real symlognormal_lpdf(real y, real mu, real sigma) {
         real symlog_jacobian_adjustment = 0;
         if (y == 0) {
-          symlog_jacobian_adjustment = 1;
+          symlog_jacobian_adjustment = 0;
         } else {
           symlog_jacobian_adjustment = log(y * sign(y)) - log((abs(y)+y^2));
         }

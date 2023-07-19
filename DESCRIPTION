@@ -20,7 +20,9 @@ Suggests:
     testthat (>= 3.1.0),
     rmutil,
     extraDistr,
-    posterior (>= 1.3.1)
+    posterior (>= 1.3.1),
+    gnorm,
+    logitnorm
 Remotes:
     paul-buerkner/brms
 RoxygenNote: 7.2.3

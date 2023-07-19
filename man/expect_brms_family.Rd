@@ -9,12 +9,14 @@ expect_brms_family(
   n_data_sampels = 1000,
   intercept,
   ref_intercept = NULL,
-  aux_par,
+  aux_par = NA,
+  aux2_par = NA,
   rng_link,
   parameter_link,
   family,
   rng,
-  aux_name,
+  aux_name = NULL,
+  aux2_name = NULL,
   seed = 1235813,
   data_threshold = NULL,
   thresh = 0.05,
@@ -30,6 +32,8 @@ expect_brms_family(
 
 \item{aux_par}{Auxiliary parameter of each distribution.}
 
+\item{aux2_par}{2nd Auxiliary parameter (if applicable).}
+
 \item{rng_link}{Link function pointer used for data generation. Mainly for transformed normal distributions.}
 
 \item{parameter_link}{Link function pointer for the latent parameters. Used to transform for comparison with ref_intercept}
@@ -39,6 +43,8 @@ expect_brms_family(
 \item{rng}{function pointer of bespoke RNG for the family to be tested.}
 
 \item{aux_name}{BRMS string of aux_par argument name. Single string.}
+
+\item{aux2_name}{BRMS string of aux2_par argument name, if applicable. Single string.}
 
 \item{seed}{Seed argument, so that input data is always the same in each test.
 BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.

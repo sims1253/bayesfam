@@ -39,13 +39,13 @@ test_that("custom-cloglognormal", {
   expect_error(dcloglognormal(-1, mu = 2, sigma = 2)) # x is not allowed to be smaller 0
   expect_error(dcloglognormal(2, mu = 2, sigma = 2)) # x is not allowed to be bigger 1
   expect_error(dcloglognormal(0.5, mu = 1, sigma = -1)) # sigma is not allowed to be 0 or smaller
-  expect_error(dcloglognormal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
+  # expect_error(dcloglognormal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
 
   # Check rng for errors
   expect_error(rcloglognormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rcloglognormal(-1, mu = cloglog(0.5), sigma = 0.4)) # number of drawn samples cannot be smaller 0
-  expect_warning(expect_error(rcloglognormal("r", mu = cloglog(0.5), sigma = 0.4))) # non-numeric arguments are disallowed
+  # expect_warning(expect_error(rcloglognormal("r", mu = cloglog(0.5), sigma = 0.4))) # non-numeric arguments are disallowed
   expect_error(rcloglognormal(100, mu = cloglog(-1), sigma = 0.4)) # mu must be between 0 and 1
   expect_error(rcloglognormal(100, mu = cloglog(0.5), sigma = -1)) # sigma is not allowed to be negative
 

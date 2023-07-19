@@ -12,9 +12,9 @@ Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
 dsymlognormal(x, mu, sigma, log = FALSE)
 }
 \arguments{
-\item{x}{Value space of the distribution, x e (0, 1)}
+\item{x}{Value space of the distribution, x unbound}
 
-\item{mu}{Median parameter, mu is already symlog-transformed, mu unbound}
+\item{mu}{Median parameter, mu unbound}
 
 \item{sigma}{Sigma shape parameter, sigma >= 0}
 
@@ -27,6 +27,6 @@ Normal distribution density with symlog link function
 symlognormal density function
 }
 \examples{
-x <- seq(from = 0.01, to = 0.99, length.out = 1000)
-plot(x, dsymlognormal(x, mu = 0.5, sigma = 2), type = "l")
+x <- seq(from = -5, to = 5, length.out = 1000)
+plot(x, dsymlognormal(x, mu = -0.2, sigma = 0.4), type = "l")
 }

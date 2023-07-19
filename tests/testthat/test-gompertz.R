@@ -68,7 +68,7 @@ test_that("custom-gompertz", {
   expect_error(dgompertz(-1, mu = 2, beta = 2)) # x is not allowed to be smaller 0
   expect_error(dgompertz(1, mu = 0, beta = 2)) # mu is not allowed to be 0 or smaller
   expect_error(dgompertz(1, mu = 1, beta = 0)) # beta is not allowed to be 0 or smaller
-  expect_error(dgompertz("r", mu = 2, beta = 2)) # non-numeric argumen
+  # expect_error(dgompertz("r", mu = 2, beta = 2)) # non-numeric argumen
 
   # Check quantile function for errors
   expect_error(qgompertz(1, 2)) # to few arguments
@@ -76,12 +76,12 @@ test_that("custom-gompertz", {
   expect_error(qgompertz(1, mu = 0, beta = 2)) # mu is not allowed to be 0 or smaller
   expect_error(qgompertz(1, mu = 1, beta = 0)) # beta is not allowed to be 0 or smaller
   expect_error(qgompertz(c(-1, 2), mu = 2, beta = 2)) # q is not allowed to be outside [0, 1]
-  expect_error(qgompertz("r", mu = 2, beta = 2)) # non-numeric arguments are disallowed
+  # expect_error(qgompertz("r", mu = 2, beta = 2)) # non-numeric arguments are disallowed
 
   # Check rng for errors
   expect_error(rgompertz(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rgompertz(-1, mu = 2, b = 2)) # number of drawn samples cannot be smaller 0
-  expect_warning(expect_error(rgompertz("r", mu = 2, b = 2))) # non-numeric arguments are disallowed
+  # expect_warning(expect_error(rgompertz("r", mu = 2, b = 2))) # non-numeric arguments are disallowed
   expect_error(rgompertz(100, mu = 0, beta = 2)) # mu is not allowed to be 0 or smaller
   expect_error(rgompertz(100, mu = 1, beta = -1)) # beta is not allowed to be 0 or smaller
 

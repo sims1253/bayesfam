@@ -7,7 +7,8 @@
 construct_brms(
   n_data_sampels,
   intercept,
-  aux_par,
+  aux_par = NA,
+  aux2_par = NA,
   rng_link,
   family,
   rng,
@@ -21,6 +22,8 @@ construct_brms(
 \item{intercept}{Intercept data argument, real scalar.}
 
 \item{aux_par}{aux_par argument of each distribution.}
+
+\item{aux2_par}{aux2_par argument applicable distribution}
 
 \item{rng_link}{Link function pointer used data. For positive bounded uses exp as example.}
 

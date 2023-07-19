@@ -101,6 +101,9 @@ erf <- function(x) {
   return(2 * pnorm(x * sqrt(2)) - 1)
 }
 
+inv_erf <- function(x) {
+  return(qnorm(x/2 + 1)/sqrt(2))
+}
 
 #' Softplus link function
 #'
@@ -145,7 +148,7 @@ inv_softplus <- function(x) {
 #' symlog(1e10)
 #' symlog(-1e10)
 symlog <- function(x) {
-  return(sign(x) * log(abs(x)+1))
+  return(sign(x) * log1p(abs(x)))
 }
 
 

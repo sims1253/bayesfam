@@ -10,6 +10,7 @@ test_rng_asym(
   n_samples = c(10, 10000),
   mu_list,
   aux_list,
+  aux2_list = NA,
   mu_link = identity,
   allowed_failures = 0.05
 )
@@ -24,6 +25,8 @@ test_rng_asym(
 \item{mu_list}{Metric data used as RNG argument and to be compared to (usually mean or median)}
 
 \item{aux_list}{Auxiliary parameter value list.}
+
+\item{aux2_list}{Auxiliary parameter for second parameter (if applicable).}
 
 \item{mu_link}{Default=identity, optional link-function argument, for example}
 
