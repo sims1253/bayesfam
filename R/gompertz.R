@@ -25,9 +25,11 @@ dgompertz <- function(x, mu, beta, log = FALSE) {
   if (isTRUE(beta <= 0)) {
     stop("dgompertz is only defined for beta > 0")
   }
+
   lpdf <- log(-beta * log(0.5)) -
     log(exp(mu * beta) - 1) +
     (beta * x + (log(0.5) / (exp(mu * beta) - 1)) * (exp(beta * x) - 1))
+
   if (log) {
     return(lpdf)
   } else {

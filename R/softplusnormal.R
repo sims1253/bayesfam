@@ -82,10 +82,6 @@ posterior_predict_softplusnormal <- function(i, prep, ...) {
 #'
 #' @return Mean of Posterior
 posterior_epred_softplusnormal <- function(prep) {
-  #   mu <- brms::get_dpar(prep, "mu")
-  #   sigma <- brms::get_dpar(prep, "sigma")
-  #   return(-0.5 * erf((0.707107 * (mu - log(1 + exp(x)))) / sigma))
-  # }
   stop("No implementation of posterior_epred for the softplus-normal
        available!")
 }

@@ -101,6 +101,9 @@ erf <- function(x) {
   return(2 * pnorm(x * sqrt(2)) - 1)
 }
 
+inv_erf <- function(x) {
+  return(qnorm(x/2 + 1)/sqrt(2))
+}
 
 #' Softplus link function
 #'
@@ -128,3 +131,43 @@ softplus <- function(x) {
 inv_softplus <- function(x) {
   return(log(exp(x) + 1))
 }
+
+#' Symlog link function
+#'
+#' @source Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
+#'         Mastering Diverse Domains through World Models.
+#'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
+#'
+#' @param x value to be transformed, x is unbound
+#'
+#' @return symlog of x, result is unbound
+#' @export
+#'
+#' @examples
+#' symlog(0)
+#' symlog(1e10)
+#' symlog(-1e10)
+symlog <- function(x) {
+  return(sign(x) * log1p(abs(x)))
+}
+
+
+#' Symlog response function
+#'
+#' @source Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
+#'         Mastering Diverse Domains through World Models.
+#'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
+#'
+#' @param x value to be transformed, x is unbound
+#'
+#' @return inv_symlog of x, result is unbound
+#' @export
+#'
+#' @examples
+#' inv_symlog(0)
+#' inv_symlog(10)
+#' inv_symlog(-10)
+inv_symlog <- function(x) {
+  return(sign(x)*(exp(abs(x))-1))
+}
+

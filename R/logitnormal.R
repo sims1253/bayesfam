@@ -41,7 +41,7 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
 #' @examples hist(rlogitnormal(100, 0.5, 2))
 rlogitnormal <- function(n, mu = 0, sigma = 1) {
   if (isTRUE(any(sigma < 0))) {
-    stop("P must be above or equal to 0.")
+    stop("sigma must be above or equal to 0.")
   }
   return(
     inv_logit(rnorm(n, mu, sigma))
@@ -80,7 +80,9 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
 #'
 #' @return Median of Posterior
 posterior_epred_logitnormal <- function(prep) {
-  warning("posterior_epred promises the mean, however with no analytical mean available for the logit-normal distribution, we provide the median in this case. Proceed with caution.")
+  warning("posterior_epred promises the mean, however with no analytical mean
+          available for the logit-normal distribution, we provide the median
+          in this case. Proceed with caution.")
   mu <- brms::get_dpar(prep, "mu")
   return(plogis(mu))
 }

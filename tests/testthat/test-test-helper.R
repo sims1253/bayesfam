@@ -137,13 +137,14 @@ test_that("test the test_rng-wrapper", {
     rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_list = alphas_r,
     mu_eps = accepted_means_eps, p_acceptable_failures = p_acceptable_failures
   ))
-  # if the margins are too low, the function has a high likelyhood to fail (for eps=0, will always fail)
+  # if the margins are too low, the function has a high likelihood to fail
+  # for eps=0, will always fail
   expect_failure(test_rng(
     rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_list = alphas_r,
-    mu_eps = 0, p_acceptable_failures = 0
+    mu_eps = 0, p_acceptable_failures = 0, debug = FALSE
   ))
 
-  # else check all forbidden arguments (jay!)
+  # else check all forbidden arguments
   # non-function type function arguments
   expect_error(test_rng(0,
     metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
@@ -231,7 +232,8 @@ test_that("test_brms_quantile", {
 
   fit <- brms::brm(y ~ 1,
     family = cloglognormal(), stanvars = cloglognormal()$stanvars,
-    backend = "rstan", cores = 2, data = list(y = cloglog_data)
+    data = list(y = cloglog_data),
+    backend = "rstan", cores = 2, chains = 2, silent = 2, refresh = 0, init = 0.1
   )
 
   # OK, after all that preamble, now it is getting interesting!

@@ -11,7 +11,7 @@ dlognormal_natural(x, mu, sigma, log = FALSE)
 
 \item{mu}{Mean, mu > 0}
 
-\item{sigma}{Shape, sigma unbound}
+\item{sigma}{Shape, sigma > 0}
 
 \item{log}{logical; if TRUE, log(pdf) is returned}
 }

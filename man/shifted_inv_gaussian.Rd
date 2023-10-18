@@ -21,7 +21,13 @@ Shifted Inverse Gauss brms family
 }
 \examples{
 a <- rnorm(1000)
-data <- list(a = a, y = rshifted_inv_gaussian(n = 1000, mu = exp(0.5 * a + 1), shape = 1, shift = 1))
+data <- list(
+  a = a,
+  y = rshifted_inv_gaussian(
+    n = 1000, mu = exp(0.5 * a + 1),
+    shape = 1, shift = 1
+  )
+)
 fit <- brms::brm(
   formula = y ~ 1 + a, data = data,
   family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,

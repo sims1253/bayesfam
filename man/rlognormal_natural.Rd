@@ -4,7 +4,7 @@
 \alias{rlognormal_natural}
 \title{Lognormal Natural RNG function}
 \usage{
-rlognormal_natural(n, mu = 0, sigma = 1)
+rlognormal_natural(n, mu = 1, sigma = 1)
 }
 \arguments{
 \item{n}{number of observations}

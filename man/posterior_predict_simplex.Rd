@@ -11,7 +11,7 @@ posterior_predict_simplex(i, prep, ...)
 
 \item{prep}{brms data}
 
-\item{...}{}
+\item{...}{Catchall argument}
 }
 \value{
 Posterior prediction of Simplex, given data in prep

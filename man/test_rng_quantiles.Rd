@@ -9,7 +9,8 @@ test_rng_quantiles(
   quantile_fun,
   n,
   mu_list,
-  aux_list,
+  aux_list = NA,
+  aux2_list = NA,
   eps,
   quantiles,
   p_acceptable_failures,
@@ -28,6 +29,8 @@ test_rng_quantiles(
 (usually mean or median)}
 
 \item{aux_list}{Auxiliary parameter value list.}
+
+\item{aux2_list}{Auxiliary parameter value list for applicable distributions.}
 
 \item{eps}{Acceptable difference of |mu - metric_mu(rng_fun)}
 
