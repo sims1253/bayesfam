@@ -2,18 +2,18 @@
 % Please edit documentation in R/unitlindley.R
 \name{log_lik_unitlindley}
 \alias{log_lik_unitlindley}
-\title{Logarithmic Density BRMS vignette of Unitlindley Likelihood}
+\title{Log-likelihood of the Unit Lindley family}
 \usage{
 log_lik_unitlindley(i, prep)
 }
 \arguments{
-\item{i}{Indices of BRMS data}
+\item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-Log-Likelihood of BRMS data
+Log-Likelihood of brms data
 }
 \description{
-Logarithmic Density BRMS vignette of Unitlindley Likelihood
+Log-likelihood of the Unit Lindley family
 }

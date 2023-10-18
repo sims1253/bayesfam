@@ -2,18 +2,18 @@
 % Please edit documentation in R/shifted_inv_gaussian.R
 \name{log_lik_shifted_inv_gaussian}
 \alias{log_lik_shifted_inv_gaussian}
-\title{Logarithmic Density BRMS vignette of shifted inverse Gauss Likelihood}
+\title{Log-Likelihood of the shifted inverse Gaussian family}
 \usage{
 log_lik_shifted_inv_gaussian(i, prep)
 }
 \arguments{
-\item{i}{Indices of BRMS data}
+\item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-Log-Likelihood of BRMS data
+Log-Likelihood of brms data
 }
 \description{
-Logarithmic Density BRMS vignette of shifted inverse Gauss Likelihood
+Log-Likelihood of the shifted inverse Gaussian family
 }

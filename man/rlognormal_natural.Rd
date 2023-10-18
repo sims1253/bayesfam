@@ -7,14 +7,14 @@
 rlognormal_natural(n, mu = 0, sigma = 1)
 }
 \arguments{
-\item{n}{N number of samples to draw, n is a scalar natural number}
+\item{n}{number of observations}
 
-\item{mu}{mean argument, mu > 0}
+\item{mu}{mean, mu > 0}
 
-\item{sigma}{shape argument, sigma > 0}
+\item{sigma}{sigma, sigma > 0}
 }
 \value{
-N samples distributed as Lognormal Natural Likelihood
+n samples drawn from the Lognormal natural distribution
 }
 \description{
 Lognormal Natural RNG function

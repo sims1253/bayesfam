@@ -7,12 +7,12 @@
 runit_lindley(n, mu)
 }
 \arguments{
-\item{n}{Number of draws, scalar natural number}
+\item{n}{number of observations}
 
-\item{mu}{Mean argument, mu e (0, 1)}
+\item{mu}{Mean, mu e (0, 1)}
 }
 \value{
-N number of samples drawn from Unit-Lindley likelihood
+n samples drawn from the Unit Lindley distribution
 }
 \description{
 Unit-Lindley RNG function

@@ -2,20 +2,20 @@
 % Please edit documentation in R/shifted_inv_gaussian.R
 \name{posterior_predict_shifted_inv_gaussian}
 \alias{posterior_predict_shifted_inv_gaussian}
-\title{Posterior Prediction BRMS Vignette of Shifted Inverse Gauss}
+\title{Posterior Prediction of the Shifted Inverse Gaussian family}
 \usage{
 posterior_predict_shifted_inv_gaussian(i, prep, ...)
 }
 \arguments{
-\item{i}{Indices of BRMS data}
+\item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
 \item{...}{Catchall argument}
 }
 \value{
-Draws from the Posterior Predictive Distribution
+Draws from the posterior predictive distribution
 }
 \description{
-Posterior Prediction BRMS Vignette of Shifted Inverse Gauss
+Posterior Prediction of the Shifted Inverse Gaussian family
 }

@@ -2,16 +2,16 @@
 % Please edit documentation in R/unitlindley.R
 \name{posterior_epred_unitlindley}
 \alias{posterior_epred_unitlindley}
-\title{Posterior mean BRMS vingette of Unitlindley Likelihood}
+\title{Expectations of posterior predictions of the Unit Lindley family}
 \usage{
 posterior_epred_unitlindley(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-Mean of the Unitlindley posterior
+Mean of the posterior predictive distribution
 }
 \description{
-Posterior mean BRMS vingette of Unitlindley Likelihood
+Expectations of posterior predictions of the Unit Lindley family
 }

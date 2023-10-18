@@ -2,24 +2,24 @@
 % Please edit documentation in R/unitlindley.R
 \name{dunit_lindley}
 \alias{dunit_lindley}
-\title{Density of Unit Lindley Likelihood}
+\title{Density of the Unit Lindley likelihood}
 \usage{
 dunit_lindley(x, mu, log = FALSE)
 }
 \arguments{
-\item{x}{Value space of the Unit-Lindley Likelihood family, x e (0, 1)}
+\item{x}{vector of values, x e (0, 1)}
 
-\item{mu}{Mean paraemter of Unit-Lindley Likelihodd, mu e (0, 1)}
+\item{mu}{Mean, mu e (0, 1)}
 
-\item{log}{Logical scalar parameter. if TRUE returns log of PDF, default=FALSE}
+\item{log}{logical; if TRUE, log(pdf) is returned}
 }
 \value{
-density f(x | mu)
+f(x | mu)
 }
 \description{
-Density of Unit Lindley Likelihood
+Density of the Unit Lindley likelihood
 }
 \examples{
-x <- seq(from=0.1, to=0.9, length.out=1000)
+x <- seq(from = 0.1, to = 0.9, length.out = 1000)
 plot(x, dunit_lindley(x, 0.5))
 }

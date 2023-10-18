@@ -2,16 +2,16 @@
 % Please edit documentation in R/lognormal_natural.R
 \name{posterior_epred_lognormal_natural}
 \alias{posterior_epred_lognormal_natural}
-\title{Posterior mean BRMS vingette of Lognormal Natural Likelihood}
+\title{Expectations of posterior predictions of the Lognormal Natural family}
 \usage{
 posterior_epred_lognormal_natural(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-Mean of the Lognormal natural posterior
+Mean of the posterior predictive distribution
 }
 \description{
-Posterior mean BRMS vingette of Lognormal Natural Likelihood
+Expectations of posterior predictions of the Lognormal Natural family
 }

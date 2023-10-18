@@ -17,11 +17,11 @@ test_that("lognormal_natural", {
   # Compare density and to built-in
   for (mu in mu_list) {
     for (sigma in sigma_list) {
-      common_term <- log(1+sigma^2/mu^2)
+      common_term <- log(1 + sigma^2 / mu^2)
       expect_eps(dlognormal_natural(x, mu = mu, sigma = sigma),
-                 dlnorm(x, log(mu)-common_term/2, sqrt(common_term)),
-                 eps = accepted_relative_error,
-                 relative = TRUE
+        dlnorm(x, log(mu) - common_term / 2, sqrt(common_term)),
+        eps = accepted_relative_error,
+        relative = TRUE
       )
     }
   }

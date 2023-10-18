@@ -2,20 +2,20 @@
 % Please edit documentation in R/unitlindley.R
 \name{posterior_predict_unitlindley}
 \alias{posterior_predict_unitlindley}
-\title{Posterior Prediction BRMS Vignette of Unitlindley Distribution}
+\title{Posterior predictions of the Unit Lindley family}
 \usage{
 posterior_predict_unitlindley(i, prep, ...)
 }
 \arguments{
-\item{i}{Indices of BRMS data}
+\item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
 \item{...}{Catchall argument}
 }
 \value{
-Draws from the Posterior Predictive Distribution
+Draws from the posterior predictive distribution
 }
 \description{
-Posterior Prediction BRMS Vignette of Unitlindley Distribution
+Posterior predictions of the Unit Lindley family
 }

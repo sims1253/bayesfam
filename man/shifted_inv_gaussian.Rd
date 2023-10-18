@@ -2,32 +2,30 @@
 % Please edit documentation in R/shifted_inv_gaussian.R
 \name{shifted_inv_gaussian}
 \alias{shifted_inv_gaussian}
-\title{Shifted Inverse Gauss BRMS function}
+\title{Shifted Inverse Gauss brms family}
 \usage{
 shifted_inv_gaussian(link = "log", link_shape = "log", link_ndt = "log")
 }
 \arguments{
-\item{link}{Central paramter link function, default="log"}
+\item{link}{link for mu, default="log"}
 
-\item{link_shape}{Shape parameter link function, default="log"}
+\item{link_shape}{link for the shape, default="log"}
 
-\item{link_ndt}{Shift parameter link function, default="log"}
+\item{link_ndt}{link for the shift, default="log"}
 }
 \value{
-Shifted Inverse Gauss BRMS family
+Shifted Inverse Gauss brms family
 }
 \description{
-Shifted Inverse Gauss BRMS function
-}
-\details{
-Open issue: Currently the recovered shift parameter ndt sign is
-inverted, otherwise the value seems to recover correctly
+Shifted Inverse Gauss brms family
 }
 \examples{
 a <- rnorm(1000)
-data <- list(a = a, y = rshifted_inv_gaussian(n=1000, mu=exp(0.5*a + 1), shape=1, shift=-1))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
- refresh = 0)
+data <- list(a = a, y = rshifted_inv_gaussian(n = 1000, mu = exp(0.5 * a + 1), shape = 1, shift = 1))
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

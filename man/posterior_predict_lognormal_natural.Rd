@@ -2,20 +2,20 @@
 % Please edit documentation in R/lognormal_natural.R
 \name{posterior_predict_lognormal_natural}
 \alias{posterior_predict_lognormal_natural}
-\title{Posterior Prediction BRMS Vignette of Lognormal Natural Likelihood}
+\title{Posterior Prediction of the Lognormal Natural family}
 \usage{
 posterior_predict_lognormal_natural(i, prep, ...)
 }
 \arguments{
-\item{i}{Indices of BRMS data}
+\item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
 \item{...}{Catchall argument}
 }
 \value{
-Draws from the Posterior Predictive Distribution
+Draws from the posterior predictive distribution
 }
 \description{
-Posterior Prediction BRMS Vignette of Lognormal Natural Likelihood
+Posterior Prediction of the Lognormal Natural family
 }

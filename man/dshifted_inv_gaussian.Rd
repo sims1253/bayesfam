@@ -2,28 +2,28 @@
 % Please edit documentation in R/shifted_inv_gaussian.R
 \name{dshifted_inv_gaussian}
 \alias{dshifted_inv_gaussian}
-\title{Density of Inverse Gauss Likelihood with shift parameter.}
+\title{Shifted inverse Gaussian density function}
 \usage{
 dshifted_inv_gaussian(x, mu, shape, shift, log = FALSE)
 }
 \arguments{
 \item{x}{Value space of likelihood, x > 0}
 
-\item{mu}{Mean parameter of likelihod function, mu > 0}
+\item{mu}{Mean , mu > 0}
 
-\item{shape}{Shape parameter of likelihood, shape unbound}
+\item{shape}{Shape, shape unbound}
 
-\item{shift}{Shift paramter of likelihood, shift <= 0}
+\item{shift}{Shift, shift >= 0}
 
-\item{log}{Logical paramter, if TRUE returns log PDF, default=FALSE}
+\item{log}{logical; if TRUE, log(pdf) is returned}
 }
 \value{
 f(x | mu, shape, shift)
 }
 \description{
-Density of Inverse Gauss Likelihood with shift parameter.
+Shifted inverse Gaussian density function
 }
 \examples{
-x <- seq(from=0.1, to=10, length.out=1000)
-plot(x, dshifted_inv_gaussian(x, 1, 1, -1))
+x <- seq(from = 0.1, to = 10, length.out = 1000)
+plot(x, dshifted_inv_gaussian(x, 1, 1, 1))
 }

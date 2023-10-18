@@ -2,26 +2,28 @@
 % Please edit documentation in R/lognormal_natural.R
 \name{lognormal_natural}
 \alias{lognormal_natural}
-\title{Lognormal Natural BRMS family}
+\title{Lognormal Natural brms family}
 \usage{
 lognormal_natural(link = "log", link_sigma = "log")
 }
 \arguments{
-\item{link}{link for the mean argument, default = log}
+\item{link}{link for mu, default = log}
 
-\item{link_sigma}{link for the shape argument, default = log}
+\item{link_sigma}{link for sigma, default = log}
 }
 \value{
-BRMS model object
+lognormal natural brms family
 }
 \description{
-Lognormal Natural BRMS family
+Lognormal Natural brms family
 }
 \examples{
 a <- rnorm(n = 1000)
 data <- list(a = a, y = rlognormal_natural(n = 1000, mu = exp(0.5 * a + 1), sigma = exp(2)))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = lognormal_natural(), stanvars = lognormal_natural()$stanvars,
- refresh = 0)
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = lognormal_natural(), stanvars = lognormal_natural()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

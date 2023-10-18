@@ -2,18 +2,18 @@
 % Please edit documentation in R/lognormal_natural.R
 \name{log_lik_lognormal_natural}
 \alias{log_lik_lognormal_natural}
-\title{Logarithmic Density BRMS vignette of Lognormal Natural Likelihood}
+\title{Log-Likelihood of the Lognormal Natural family}
 \usage{
 log_lik_lognormal_natural(i, prep)
 }
 \arguments{
-\item{i}{Indices of BRMS data}
+\item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-Log-Likelihood of BRMS data
+Log-Likelihood of brms data
 }
 \description{
-Logarithmic Density BRMS vignette of Lognormal Natural Likelihood
+Log-Likelihood of the Lognormal Natural family
 }

@@ -2,24 +2,26 @@
 % Please edit documentation in R/unitlindley.R
 \name{unit_lindley}
 \alias{unit_lindley}
-\title{Unitlindley BRMS family}
+\title{Unit Lindley brms family}
 \usage{
 unit_lindley(link = "logit")
 }
 \arguments{
-\item{link}{link argument of the mean argument, default = log}
+\item{link}{link for mu, default = logit}
 }
 \value{
-Unitlindley BRMS object
+Unit Lindley brms family
 }
 \description{
-Unitlindley BRMS family
+Unit Lindley brms family
 }
 \examples{
 a <- rnorm(n = 1000)
 data <- list(a = a, y = runit_lindley(n = 1000, mu = inv_logit(0.5 * a + 1)))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = unit_lindley(), stanvars = unit_lindley()$stanvars,
- refresh = 0)
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = unit_lindley(), stanvars = unit_lindley()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

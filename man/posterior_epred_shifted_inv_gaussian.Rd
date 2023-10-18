@@ -2,16 +2,16 @@
 % Please edit documentation in R/shifted_inv_gaussian.R
 \name{posterior_epred_shifted_inv_gaussian}
 \alias{posterior_epred_shifted_inv_gaussian}
-\title{Posterior mean BRMS vingette of Shifted Inverse Gauss Likelihood}
+\title{Expectations of posterior predictions of the Shifted Inverse Gaussian family}
 \usage{
 posterior_epred_shifted_inv_gaussian(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-Mean of the shifted inverse Gauss posterior
+Mean of the posterior predictive distribution
 }
 \description{
-Posterior mean BRMS vingette of Shifted Inverse Gauss Likelihood
+Expectations of posterior predictions of the Shifted Inverse Gaussian family
 }
