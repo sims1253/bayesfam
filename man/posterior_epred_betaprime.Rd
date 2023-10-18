@@ -7,7 +7,7 @@
 posterior_epred_betaprime(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Expected Values of the Posterior Predictive Distribution

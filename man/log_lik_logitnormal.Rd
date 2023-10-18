@@ -9,10 +9,10 @@ log_lik_logitnormal(i, prep)
 \arguments{
 \item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-log_likelihood of the Logitnormal distribution, given some BRMS data.
+log_likelihood of the Logitnormal distribution, given some brms data.
 }
 \description{
 Log-Likelihood vignette for the Logitnormal distribution, in Median parametrization.

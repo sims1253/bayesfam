@@ -7,7 +7,7 @@
 posterior_epred_softplusnormal(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Mean of Posterior

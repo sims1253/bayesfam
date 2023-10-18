@@ -7,7 +7,7 @@
 posterior_epred_simplex(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Recover the given mean of data prep

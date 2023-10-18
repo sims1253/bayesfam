@@ -9,7 +9,7 @@ posterior_predict_cloglognormal(i, prep, ...)
 \arguments{
 \item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
 \item{...}{}
 }

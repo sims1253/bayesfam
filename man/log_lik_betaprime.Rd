@@ -7,9 +7,9 @@
 log_lik_betaprime(i, prep)
 }
 \arguments{
-\item{i}{BRMS indices}
+\item{i}{brms indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Log-Likelihood of beta prime given data in prep

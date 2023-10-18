@@ -9,10 +9,10 @@ log_lik_softplusnormal(i, prep)
 \arguments{
 \item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-log_likelihood of the Softplus distribution, given some BRMS data.
+log_likelihood of the Softplus distribution, given some brms data.
 }
 \description{
 Log-Likelihood vignette for the Softplus distribution, in Median parametrization.

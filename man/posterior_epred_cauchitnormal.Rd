@@ -7,7 +7,7 @@
 posterior_epred_cauchitnormal(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Nothing

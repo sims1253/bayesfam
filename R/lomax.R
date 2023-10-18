@@ -85,8 +85,8 @@ rlomax <- function(n, mu = 1, alpha = 10) {
 
 #' Log-Likelihood vignette for the Lomax distribution, with Mean parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
+#' @param i brms indices
+#' @param prep brms data
 #'
 #' @return Log-Likelihood of Lomax given data in prep
 log_lik_lomax <- function(i, prep) {
@@ -98,9 +98,9 @@ log_lik_lomax <- function(i, prep) {
 
 #' Posterior-Prediction vignette for the Lomax distribution, with Mean parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
-#' @param ...
+#' @param i brms indices
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
 #' @return Posterior prediction of Lomax, given data in prep
 posterior_predict_lomax <- function(i, prep, ...) {
@@ -111,7 +111,7 @@ posterior_predict_lomax <- function(i, prep, ...) {
 
 #' Expectation-Predict vignette for the Lomax distribution, with Mean parametrization.
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Recover the given mean of data prep
 posterior_epred_lomax <- function(prep) {
@@ -124,14 +124,16 @@ posterior_epred_lomax <- function(prep) {
 #' @param link Link function for function
 #' @param link_alpha Link function for eta argument
 #'
-#' @return BRMS Lomax distribution family
+#' @return brms Lomax distribution family
 #' @export
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rlomax(1000, exp(0.5 * a + 1), 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = lomax(), stanvars = lomax()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = lomax(), stanvars = lomax()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 lomax <- function(link = "log", link_alpha = "log1p") {
   family <- brms::custom_family(

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cauchitnormal.R
 \name{cauchitnormal}
 \alias{cauchitnormal}
-\title{Custom BRMS family Cauchitnormal}
+\title{Custom brms family Cauchitnormal}
 \usage{
 cauchitnormal(link = "identity", link_sigma = "log")
 }
@@ -12,16 +12,18 @@ cauchitnormal(link = "identity", link_sigma = "log")
 \item{link_sigma}{Link function argument (as string) for Shape argument}
 }
 \value{
-Cauchitnormal BRMS model-object
+Cauchitnormal brms model-object
 }
 \description{
-Custom BRMS family Cauchitnormal
+Custom brms family Cauchitnormal
 }
 \examples{
 a <- rnorm(1000)
 data <- list(a = a, y = rcauchitnormal(1000, 0.5 * a + 1, 2))
-fit1 <- brms::brm(formula = y ~ 1 + a, data = data,
- family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
- refresh = 0)
+fit1 <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
+  refresh = 0
+)
 plot(fit1)
 }

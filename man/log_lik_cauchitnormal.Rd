@@ -9,10 +9,10 @@ log_lik_cauchitnormal(i, prep)
 \arguments{
 \item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
-log_likelihood of the Cauchitnormal Distribution, given some BRMS data.
+log_likelihood of the Cauchitnormal Distribution, given some brms data.
 }
 \description{
 Log-Likelihood vignette for the Cauchitnormal Distribution

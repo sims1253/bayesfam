@@ -7,7 +7,7 @@
 posterior_epred_logitnormal(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Median of Posterior

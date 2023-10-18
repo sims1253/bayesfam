@@ -2,7 +2,7 @@
 % Please edit documentation in R/gompertz.R
 \name{gompertz}
 \alias{gompertz}
-\title{Custom Gompertz BRMS-implementation in median parametrization.}
+\title{Custom Gompertz brms-implementation in median parametrization.}
 \usage{
 gompertz(link = "log", link_b = "log")
 }
@@ -12,16 +12,18 @@ gompertz(link = "log", link_b = "log")
 \item{link_b}{Link function for eta argument}
 }
 \value{
-BRMS gompertz distribution family
+brms gompertz distribution family
 }
 \description{
-Custom Gompertz BRMS-implementation in median parametrization.
+Custom Gompertz brms-implementation in median parametrization.
 }
 \examples{
 a <- rnorm(1000)
 data <- list(a = a, y = rgompertz(1000, mu = exp(0.5 * a + 1), beta = 0.1))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = gompertz(), stanvars = gompertz()$stanvars,
- refresh = 0)
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = gompertz(), stanvars = gompertz()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

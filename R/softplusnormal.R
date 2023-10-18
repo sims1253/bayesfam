@@ -53,9 +53,9 @@ rsoftplusnormal <- function(n, mu = 1, sigma = 1) {
 #' Log-Likelihood vignette for the Softplus distribution, in Median parametrization.
 #'
 #' @param i Indices
-#' @param prep BRMS data
+#' @param prep brms data
 #'
-#' @return log_likelihood of the Softplus distribution, given some BRMS data.
+#' @return log_likelihood of the Softplus distribution, given some brms data.
 log_lik_softplusnormal <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -66,10 +66,10 @@ log_lik_softplusnormal <- function(i, prep) {
 #' Posterior-predict vignette for the Softplus distribution, with Median parametrization.
 #'
 #' @param i Indices
-#' @param prep BRMS data
-#' @param ...
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
-#' @return The posterior prediction of the Softplus distribution, given some BRMS data.
+#' @return The posterior prediction of the Softplus distribution, given some brms data.
 posterior_predict_softplusnormal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -78,7 +78,7 @@ posterior_predict_softplusnormal <- function(i, prep, ...) {
 
 #' Posterior expected value prediction vignette for Softplus distribution.
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Mean of Posterior
 posterior_epred_softplusnormal <- function(prep) {
@@ -90,19 +90,21 @@ posterior_epred_softplusnormal <- function(prep) {
        available!")
 }
 
-#' Custom BRMS family Softplus in median parametrization.
+#' Custom brms family Softplus in median parametrization.
 #'
 #' @param link Link function argument (as string) for Median argument. Left as identity!
 #' @param link_sigma Link function argument (as string) for Shape argument
 #'
-#' @return Softplus BRMS model-object
+#' @return Softplus brms model-object
 #' @export
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rsoftplusnormal(1000, 0.5 * a + 1, 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = softplusnormal(), stanvars = softplusnormal()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = softplusnormal(), stanvars = softplusnormal()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 softplusnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

@@ -8,7 +8,7 @@ Not defined for the Gompertz family.}
 posterior_epred_gompertz(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Nothing

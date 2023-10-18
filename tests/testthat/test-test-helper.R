@@ -1,4 +1,3 @@
-
 test_that("test custom expect_eps function", {
   # wrong amount of arguments
   expect_error(expect_eps(1, 1))
@@ -211,7 +210,7 @@ test_that("test the test_rng-wrapper", {
 })
 
 test_that("test_brms_quantile", {
-  # To test this, first construct a BRMS model with Cloglognormal
+  # To test this, first construct a brms model with Cloglognormal
   n_brms <- 1000
   intercept <- 0.3
   sigma <- 0.6
@@ -219,13 +218,13 @@ test_that("test_brms_quantile", {
 
   # save old seed, to reset it later
   old_seed <- .Random.seed
-  # Set predefined seed. Generating correct and "random" RNG data is not part of the BRMS recovery test.
+  # Set predefined seed. Generating correct and "random" RNG data is not part of the brms recovery test.
   set.seed(9001)
   cloglog_data <- rcloglognormal(n_brms, intercept, sigma)
   set.seed(old_seed)
   # Now that the data was generated, reset the old seed (as if nothing ever happened)
 
-  # limit the interval. Cloglognormal BRMS is very sensitive for data at the boundary.
+  # limit the interval. Cloglognormal brms is very sensitive for data at the boundary.
   eps_brms <- 1e-12
   allowed_interval <- c(eps_brms, 1 - eps_brms)
   cloglog_data <- limit_data(cloglog_data, allowed_interval)
@@ -248,7 +247,7 @@ test_that("test_brms_quantile", {
   expect_error(test_brms_quantile())
   # wrong amount of arguments
   expect_error(test_brms_quantile(c(1, 2, 3), "sigma", sigma, tresh))
-  # vector is not type BRMS (which is a R list)
+  # vector is not type brms (which is a R list)
   expect_error(test_brms_quantile(fit, sigma, sigma, tresh))
   # sigma is not a string
   expect_error(test_brms_quantile(fit, c("sigma", "b_Intercept"), sigma, tresh))

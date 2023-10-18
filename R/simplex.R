@@ -145,9 +145,9 @@ rsimplex <-
 
 #' Posterior prediction vignette for the Simplex distribution, in Median parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
-#' @param ...
+#' @param i brms indices
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
 #' @return Posterior prediction of Simplex, given data in prep
 posterior_predict_simplex <- function(i, prep, ...) {
@@ -159,8 +159,8 @@ posterior_predict_simplex <- function(i, prep, ...) {
 
 #' Log-Likelihood vignette for the Simplex distribution, in Median parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
+#' @param i brms indices
+#' @param prep brms data
 #'
 #' @return Log-Likelihood of Simplex given data in prep
 log_lik_simplex <- function(i, prep) {
@@ -173,7 +173,7 @@ log_lik_simplex <- function(i, prep) {
 
 #' Posterior expected value prediction of the Simplex implementation.
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Recover the given mean of data prep
 posterior_epred_simplex <- function(prep) {
@@ -181,19 +181,21 @@ posterior_epred_simplex <- function(prep) {
 }
 
 
-#' Simplex BRMS-implementation in median parametrization.
+#' Simplex brms-implementation in median parametrization.
 #'
 #' @param link Link function for function
 #' @param link_sigma Link function for sigma argument
 #'
-#' @return BRMS Beta-Custom distribution family
+#' @return brms Beta-Custom distribution family
 #' @export
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rsimplex(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = simplex(), stanvars = simplex()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = simplex(), stanvars = simplex()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 simplex <- function(link = "logit", link_sigma = "identity") {
   family <- brms::custom_family(

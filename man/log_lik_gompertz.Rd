@@ -7,9 +7,9 @@
 log_lik_gompertz(i, prep)
 }
 \arguments{
-\item{i}{BRMS indices}
+\item{i}{brms indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Log-Likelihood of gompertz given data in prep

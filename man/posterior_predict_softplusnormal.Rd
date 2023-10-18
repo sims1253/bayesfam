@@ -9,12 +9,12 @@ posterior_predict_softplusnormal(i, prep, ...)
 \arguments{
 \item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
 \item{...}{}
 }
 \value{
-The posterior prediction of the Softplus distribution, given some BRMS data.
+The posterior prediction of the Softplus distribution, given some brms data.
 }
 \description{
 Posterior-predict vignette for the Softplus distribution, with Median parametrization.

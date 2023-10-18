@@ -21,6 +21,6 @@ Data limit function
 }
 \examples{
 input <- c(1, 2, 3, 4)
-print(bayesfam:::limit_data(input, c(2, 3)))   # lower and upper bounds
-print(bayesfam:::limit_data(input, c(2, NA)))  # only lower bound
+print(bayesfam:::limit_data(input, c(2, 3))) # lower and upper bounds
+print(bayesfam:::limit_data(input, c(2, NA))) # only lower bound
 }

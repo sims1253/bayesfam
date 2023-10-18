@@ -7,13 +7,13 @@
 dkumaraswamy(x, mu, p, log = FALSE)
 }
 \arguments{
-\item{x}{value space, x e (0, 1)}
+\item{x}{vector of quantiles, x e (0, 1)}
 
-\item{mu}{Median parameter of pdf, mu e (0, 1)}
+\item{mu}{Median, mu e (0, 1)}
 
-\item{p}{shape parameter, p > 0}
+\item{p}{shape, p > 0}
 
-\item{log}{if true, returns log(pdf). Normally FALSE.}
+\item{log}{logical; if TRUE, log(pdf) is returned}
 }
 \value{
 f(x | mu, p)

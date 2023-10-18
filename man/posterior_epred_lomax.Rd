@@ -7,7 +7,7 @@
 posterior_epred_lomax(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Recover the given mean of data prep
