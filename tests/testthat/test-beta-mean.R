@@ -7,8 +7,7 @@ test_that("test-custom-beta", {
   mu_list <- seq(from = eps, to = 1 - eps, length.out = n_small)
   phi_list <- seq(from = 0.001, to = 10, length.out = n_small)
   accepted_relative_error <- 1e-6
-  accepted_rng_error <- 0.15
-  warning("current accepted rng_error is high at 0.15")
+  accepted_rng_error <- 0.1
   accepred_rng_failures <- 0.1
 
   # Check lengths
@@ -31,7 +30,7 @@ test_that("test-custom-beta", {
   test_rng(
     rng_fun = rbeta_mean,
     metric_mu = mean,
-    n = 5 * n,
+    n = 50 * n,
     mu_list = mu_list,
     aux_list = phi_list,
     mu_eps = accepted_rng_error,

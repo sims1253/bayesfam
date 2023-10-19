@@ -9,12 +9,12 @@ posterior_predict_cauchitnormal(i, prep, ...)
 \arguments{
 \item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
-\item{...}{catchall}
+\item{...}{Catchall argument}
 }
 \value{
-The posterior prediction of the Cauchitnormal Distribution, given some BRMS data.
+The posterior prediction of the Cauchitnormal Distribution, given some brms data.
 }
 \description{
 Posterior-predict vignette for the Cauchitnormal Distribution

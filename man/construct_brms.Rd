@@ -2,7 +2,7 @@
 % Please edit documentation in R/test-helper.R
 \name{construct_brms}
 \alias{construct_brms}
-\title{Construct BRMS family for simple linear y ~ 1 model.}
+\title{Construct brms family for simple linear y ~ 1 model.}
 \usage{
 construct_brms(
   n_data_sampels,
@@ -27,12 +27,12 @@ construct_brms(
 
 \item{rng_link}{Link function pointer used data. For positive bounded uses exp as example.}
 
-\item{family}{BRMS family under test.}
+\item{family}{brms family under test.}
 
 \item{rng}{function pointer of bespoke RNG for the family to be tested.}
 
 \item{seed}{Seed argument, so that input data is always the same in each test.
-BRMS test does not test RNG and is not guaranteed to fit on all data.
+brms test does not test RNG and is not guaranteed to fit on all data.
 Positive Integer scalar, Default = NA will do nothing. Seed is stored before and restored after.}
 
 \item{data_threshold}{Usually unused. But in rare cases, data too close at the boundary may cause trouble.
@@ -40,10 +40,10 @@ If so, set a two entry real vector c(lower, upper). If one of them is NA, the da
 Default = Null, will be in R terms "invisible" and will not cap any input data.}
 }
 \value{
-BRMS model for the specified family.
+brms model for the specified family.
 }
 \description{
-Construct BRMS family for simple linear y ~ 1 model.
+Construct brms family for simple linear y ~ 1 model.
 }
 \examples{
 posterior_fit <- bayesfam:::construct_brms(

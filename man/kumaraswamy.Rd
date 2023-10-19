@@ -2,26 +2,28 @@
 % Please edit documentation in R/kumaraswamy.R
 \name{kumaraswamy}
 \alias{kumaraswamy}
-\title{Kumaraswamy BRMS-implementation in median parametrization.}
+\title{Kumaraswamy brms-implementation in median parametrization.}
 \usage{
 kumaraswamy(link = "logit", link_p = "log")
 }
 \arguments{
-\item{link}{Link function for function}
+\item{link}{Link function for mu}
 
 \item{link_p}{Link function for p argument}
 }
 \value{
-BRMS Beta-Custom distribution family
+brms Beta-Custom distribution family
 }
 \description{
-Kumaraswamy BRMS-implementation in median parametrization.
+Kumaraswamy brms-implementation in median parametrization.
 }
 \examples{
 a <- rnorm(1000)
 data <- list(a = a, y = rkumaraswamy(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = kumaraswamy(), stanvars = kumaraswamy()$stanvars,
- refresh = 0)
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = kumaraswamy(), stanvars = kumaraswamy()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

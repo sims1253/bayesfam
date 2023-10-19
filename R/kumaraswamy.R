@@ -1,9 +1,9 @@
 #' Kumaraswamy density function in median parametrisation.
 #'
-#' @param x value space, x e (0, 1)
-#' @param mu Median parameter of pdf, mu e (0, 1)
-#' @param p shape parameter, p > 0
-#' @param log if true, returns log(pdf). Normally FALSE.
+#' @param x vector of quantiles, x e (0, 1)
+#' @param mu Median, mu e (0, 1)
+#' @param p shape, p > 0
+#' @param log logical; if TRUE, log(pdf) is returned
 #'
 #' @details \deqn{q(\mu, p) = -\frac{log(2)}{log(1-\mu^p)}}
 #' @details \deqn{f(y | \mu, p) = pqx^{p-1}(1-x^p)^{q-1}}
@@ -40,7 +40,7 @@ dkumaraswamy <- function(x, mu, p, log = FALSE) {
 
 #' Kumaraswamy RNG function in Median parametrization.
 #'
-#' @param n Number of samples to draw, as a natural number scalar.
+#' @param n number of observations
 #' @param mu Median parameter, mu e (0, 1)
 #' @param p Phi shape parameter, Phi > 0
 #'
@@ -61,9 +61,9 @@ rkumaraswamy <- function(n, mu = 0.5, p = 2) {
   return(
     (1 - (1 - runif(n, min = 0, max = 1))^(1 / q))^(1 / p)
   )
-  # TODO: Kumaraswamy BRMS does not like RNG values at the boundary.
+  # TODO: Kumaraswamy brms does not like RNG values at the boundary.
   # maybe one might also clip them in the RNG return already?
-  # (Instead of clipping them before feeding the BRMS)
+  # (Instead of clipping them before feeding the brms)
 }
 
 #' Quantile function of the Kumaraswamy distribution in Median parametrisation.
@@ -122,8 +122,8 @@ pkumaraswamy <- function(x, mu = 0.5, p = 1) {
 
 #' Log-Likelihood vignette for the Kumaraswamy distribution, in Median parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
+#' @param i brms indices
+#' @param prep brms data
 #'
 #' @return Log-Likelihood of Kumaraswamy given data in prep
 log_lik_kumaraswamy <- function(i, prep) {
@@ -135,9 +135,9 @@ log_lik_kumaraswamy <- function(i, prep) {
 
 #' Posterior prediction vignette for the Kumaraswamy distribution, in Median parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
-#' @param ... catchall
+#' @param i brms indices
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
 #' @return Posterior prediction of Kumaraswamy, given data in prep
 posterior_predict_kumaraswamy <- function(i, prep, ...) {
@@ -148,7 +148,7 @@ posterior_predict_kumaraswamy <- function(i, prep, ...) {
 
 #' Posterior expected value prediction of the Kumaraswamy implementation.
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Recover the given mean of data prep
 posterior_epred_kumaraswamy <- function(prep) {
@@ -158,19 +158,21 @@ posterior_epred_kumaraswamy <- function(prep) {
   return(q * beta((1 + 1 / p), q))
 }
 
-#' Kumaraswamy BRMS-implementation in median parametrization.
+#' Kumaraswamy brms-implementation in median parametrization.
 #'
-#' @param link Link function for function
+#' @param link Link function for mu
 #' @param link_p Link function for p argument
 #'
-#' @return BRMS Beta-Custom distribution family
+#' @return brms Beta-Custom distribution family
 #' @export
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rkumaraswamy(1000, brms::inv_logit_scaled(0.5 * a + 1), 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = kumaraswamy(), stanvars = kumaraswamy()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = kumaraswamy(), stanvars = kumaraswamy()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 kumaraswamy <- function(link = "logit", link_p = "log") {
   family <- brms::custom_family(

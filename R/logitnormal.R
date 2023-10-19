@@ -30,7 +30,7 @@ dlogitnormal <- function(x, mu, sigma, log = FALSE) {
 
 #' Logitnormal RNG-function in median parametrization.
 #'
-#' @param n Number of draws
+#' @param n number of observations
 #' @param mu Median parameter, mu unbound, mu already logit transformed
 #' @param sigma Sigma shape parameter, sigma > 0
 #'
@@ -51,9 +51,9 @@ rlogitnormal <- function(n, mu = 0, sigma = 1) {
 #' Log-Likelihood vignette for the Logitnormal distribution, in Median parametrization.
 #'
 #' @param i Indices
-#' @param prep BRMS data
+#' @param prep brms data
 #'
-#' @return log_likelihood of the Logitnormal distribution, given some BRMS data.
+#' @return log_likelihood of the Logitnormal distribution, given some brms data.
 log_lik_logitnormal <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -64,10 +64,10 @@ log_lik_logitnormal <- function(i, prep) {
 #' Posterior-predict vignette for the Logitnormal distribution, with Median parametrization.
 #'
 #' @param i Indices
-#' @param prep BRMS data
-#' @param ... catchall
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
-#' @return The posterior prediction of the Logitnormal distribution, given some BRMS data.
+#' @return The posterior prediction of the Logitnormal distribution, given some brms data.
 posterior_predict_logitnormal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -76,7 +76,7 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
 
 #' Posterior expected value prediction vignette for Logitnormal distribution.
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Median of Posterior
 posterior_epred_logitnormal <- function(prep) {
@@ -87,19 +87,21 @@ posterior_epred_logitnormal <- function(prep) {
   return(plogis(mu))
 }
 
-#' Custom BRMS family Logit-Normal in median parametrization.
+#' Custom brms family Logit-Normal in median parametrization.
 #'
 #' @param link Link function argument (as string) for Median argument. Left as identity!
 #' @param link_sigma Link function argument (as string) for Shape argument
 #'
-#' @return Logitnormal BRMS model-object
+#' @return Logitnormal brms model-object
 #' @export
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rlogitnormal(1000, 0.5 * a + 1, 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = logitnormal(), stanvars = logitnormal()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = logitnormal(), stanvars = logitnormal()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 logitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

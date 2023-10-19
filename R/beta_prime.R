@@ -100,8 +100,8 @@ rbetaprime <- function(n, mu = 1, phi = 1) {
 
 #' Log-Likelihood of the beta prime distribution
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
+#' @param i brms indices
+#' @param prep brms data
 #'
 #' @return Log-Likelihood of beta prime given data in prep
 log_lik_betaprime <- function(i, prep) {
@@ -114,9 +114,9 @@ log_lik_betaprime <- function(i, prep) {
 
 #' posterior_predict for the beta prime distribution
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
-#' @param ... catchall
+#' @param i brms indices
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
 #' @return Draws from the Posterior Predictive Distribution
 posterior_predict_betaprime <- function(i, prep, ...) {
@@ -127,7 +127,7 @@ posterior_predict_betaprime <- function(i, prep, ...) {
 
 #' posterior_epred for the beta prime distribution
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Expected Values of the Posterior Predictive Distribution
 posterior_epred_betaprime <- function(prep) {
@@ -145,9 +145,11 @@ posterior_epred_betaprime <- function(prep) {
 #'
 #' @examples a <- rnorm(n = 1000)
 #' data <- list(a = a, y = rbetaprime(n = 1000, mu = exp(0.5 * a + 1), phi = 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = betaprime(), stanvars = betaprime()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = betaprime(), stanvars = betaprime()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 betaprime <- function(link = "log", link_phi = "log") {
   family <- brms::custom_family(

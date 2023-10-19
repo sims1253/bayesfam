@@ -50,7 +50,7 @@ rcloglognormal <- function(n, mu = -0.36, sigma = 0.75) {
 #' Log-Likelihood vignette for the Chauchitnormal distribution, with Median parametrization.
 #'
 #' @param i indices
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return log_lik
 log_lik_cloglognormal <- function(i, prep) {
@@ -63,8 +63,8 @@ log_lik_cloglognormal <- function(i, prep) {
 #' Posterior-predict vignette for the Chauchitnormal distribution, with Median parametrization.
 #'
 #' @param i Indices
-#' @param prep BRMS data
-#' @param ... catchall
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
 #' @return Posterior prediction of the data
 posterior_predict_cloglognormal <- function(i, prep, ...) {
@@ -75,7 +75,7 @@ posterior_predict_cloglognormal <- function(i, prep, ...) {
 
 #' Posterior expected value prediction. Mean undefined for Cloglog-Normal
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Nothing
 posterior_epred_cloglognormal <- function(prep) {
@@ -84,20 +84,22 @@ posterior_epred_cloglognormal <- function(prep) {
         distribution, posterior_epred is currently not supported.")
 }
 
-#' Custom BRMS family Cloglog-Normal in median parametrization.
+#' Custom brms family Cloglog-Normal in median parametrization.
 #'
 #' @param link Link function argument (as string) for Median argument. Left as identity!
 #' @param link_sigma Link function argument (as string) for Shape argument
 #'
-#' @return Cloglog BRMS model-object
+#' @return Cloglog brms model-object
 #' @export
 #'
 #' @examples data <- rcloglognormal(1000, 0.5, 2)
 #' # cloglognormal does not like values to close to the boundary
 #' data <- limit_data(data, c(1e-12, 1 - 1e-12))
-#' fit <- brms::brm(formula = y ~ 1, data = list(y = data),
-#'  family = cloglognormal(), stanvars = cloglognormal()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1, data = list(y = data),
+#'   family = cloglognormal(), stanvars = cloglognormal()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 cloglognormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

@@ -9,7 +9,7 @@ log_lik_cloglognormal(i, prep)
 \arguments{
 \item{i}{indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 log_lik

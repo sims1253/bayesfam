@@ -1,4 +1,3 @@
-
 # used only for an internal function
 
 #' Check that |a - b| < eps. Works with scalars and vectors on any input.
@@ -274,11 +273,8 @@ test_rng_asym <- function(rng_fun,
                           aux2_list = NA,
                           mu_link = identity,
                           allowed_failures = 0.05) {
-
-  # Issue: Incompatible with likelihoods w/o aux-par.
-  # Issue was ignored, because this function is not used.
   len_n <- length(n_samples)
-  if(len_n < 2 || !isNat_len(n_samples, len = len_n)) {
+  if (len_n < 2 || !isNat_len(n_samples, len = len_n)) {
     stop("n_samples to be a vector of at least two positive integer entries")
   }
 
@@ -326,14 +322,14 @@ test_rng_asym <- function(rng_fun,
 
   num_tests <- length(mu_list) * length(aux_list)
   allowed_failures_abs <- ceiling(num_tests * allowed_failures)
-  if(num_failures <= allowed_failures_abs) {
+  if (num_failures <= allowed_failures_abs) {
     testthat::succeed()
-  }
-  else {
+  } else {
     testthat::fail(paste(
       "Number of allowed failures in asymp test was violated\n",
       "Allowed were", allowed_failures_abs, "of", num_tests, "to fail\n",
-      "but actually", num_failures, "number of tests did fail"))
+      "but actually", num_failures, "number of tests did fail"
+    ))
   }
 }
 
@@ -362,15 +358,15 @@ test_rng_asym <- function(rng_fun,
 #' phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
 #' # if working as expected, this test should not print any errors
 #' bayesfam:::test_rng_quantiles(
-#'    rng_fun = rbetaprime,
-#'    quantile_fun = qbetaprime,
-#'    n = 10000,
-#'    mu_list = mu_list,
-#'    aux_list = phi_list,
-#'    eps = 0.1,
-#'    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
-#'    p_acceptable_failures = 0.1,
-#'    relative = TRUE
+#'   rng_fun = rbetaprime,
+#'   quantile_fun = qbetaprime,
+#'   n = 10000,
+#'   mu_list = mu_list,
+#'   aux_list = phi_list,
+#'   eps = 0.1,
+#'   quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+#'   p_acceptable_failures = 0.1,
+#'   relative = TRUE
 #' )
 test_rng_quantiles <- function(rng_fun,
                                quantile_fun,
@@ -442,7 +438,7 @@ test_rng_quantiles <- function(rng_fun,
   }
 }
 
-#' BRMS family expect recovery. Tries linear baysian model y ~ 1.
+#' brms family expect recovery. Tries linear baysian model y ~ 1.
 #' Checking of the arguments done in construct_brms.
 #'
 #' @param n_data_sampels How many samples per chain. Positive integer scalar. Default = 1000.
@@ -452,12 +448,12 @@ test_rng_quantiles <- function(rng_fun,
 #' @param aux2_par 2nd Auxiliary parameter (if applicable).
 #' @param rng_link Link function pointer used for data generation. Mainly for transformed normal distributions.
 #' @param parameter_link Link function pointer for the latent parameters. Used to transform for comparison with ref_intercept
-#' @param family BRMS family under test.
+#' @param family brms family under test.
 #' @param rng function pointer of bespoke RNG for the family to be tested.
 #' @param aux_name BRMS string of aux_par argument name. Single string.
 #' @param aux2_name BRMS string of aux2_par argument name, if applicable. Single string.
 #' @param seed Seed argument, so that input data is always the same in each test.
-#' BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.
+#' brms test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.
 #' Seed is stored before test and restored after it finished. If wants not to use a seed set to NA.
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 #' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
@@ -551,23 +547,23 @@ expect_brms_family <- function(n_data_sampels = 1000,
   }
 }
 
-#' Construct BRMS family for simple linear y ~ 1 model.
+#' Construct brms family for simple linear y ~ 1 model.
 #'
 #' @param n_data_sampels How many samples per chain. Positive integer scalar.
 #' @param intercept Intercept data argument, real scalar.
 #' @param aux_par aux_par argument of each distribution.
 #' @param aux2_par aux2_par argument applicable distribution
 #' @param rng_link Link function pointer used data. For positive bounded uses exp as example.
-#' @param family BRMS family under test.
+#' @param family brms family under test.
 #' @param rng function pointer of bespoke RNG for the family to be tested.
 #' @param seed Seed argument, so that input data is always the same in each test.
-#' BRMS test does not test RNG and is not guaranteed to fit on all data.
+#' brms test does not test RNG and is not guaranteed to fit on all data.
 #' Positive Integer scalar, Default = NA will do nothing. Seed is stored before and restored after.
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 #' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 #' Default = Null, will be in R terms "invisible" and will not cap any input data.
 #'
-#' @return BRMS model for the specified family.
+#' @return brms model for the specified family.
 #'
 #' @examples posterior_fit <- bayesfam:::construct_brms(
 #'   n_data_sampels = 1000,
@@ -587,8 +583,7 @@ construct_brms <- function(n_data_sampels,
                            family,
                            rng,
                            seed = NULL,
-                           data_threshold = NULL
-                           ) {
+                           data_threshold = NULL) {
   if (!(is.function(family) && is.function(rng) && is.function(rng_link))) {
     stop("family, rng or rng_link argument were not a function!")
   }
@@ -651,7 +646,7 @@ construct_brms <- function(n_data_sampels,
 
 #' Check, that data of the posterior is close enough to the reference data.
 #'
-#' @param posterior_data Data fitted and drawn, a BRMS object, which is a list in R terms
+#' @param posterior_data Data fitted and drawn, a brms object, which is a list in R terms
 #' @param arg_name Name of the argument variable to check, as single string
 #' @param reference Reference value to check against, single real scalar
 #' @param thresh real scalar or 2-length vector of quantile bounds.
@@ -670,12 +665,13 @@ construct_brms <- function(n_data_sampels,
 #'   rng = rbetaprime
 #' )
 #' result <- bayesfam:::test_brms_quantile(
-#'   posterior_data = fit, arg_name = "phi", 2.0, 0.025)
+#'   posterior_data = fit, arg_name = "phi", 2.0, 0.025
+#' )
 #' plot(fit)
 #' # beta_prime uses log-link for Intercept
 test_brms_quantile <- function(posterior_data, arg_name, reference, thresh, debug = FALSE) {
   if (!is.list(posterior_data)) {
-    stop("The posterior_data frame has to be BRMS data, which itself is in R of type list")
+    stop("The posterior_data frame has to be brms data, which itself is in R of type list")
   }
   if (!isSingleString(arg_name)) {
     stop("The variable arg_name argument has to be a single string")
@@ -839,8 +835,8 @@ isSingleString <- function(input) {
 #' @examples va <- c(1, 2, 3)
 #' vb <- c(4, 5, 6)
 #' vc <- c(7, 8)
-#' bayesfam:::lenEqual(list(va, vb))  # both got 3 entries
-#' bayesfam:::lenEqual(list(va, vb, vc))  # not all vectors have the same number of entries
+#' bayesfam:::lenEqual(list(va, vb)) # both got 3 entries
+#' bayesfam:::lenEqual(list(va, vb, vc)) # not all vectors have the same number of entries
 lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL, na_allowed = FALSE) {
   if (!isLogic_len(scalars_allowed)) {
     stop("scalars_allowed has to be a single boolean value")
@@ -897,8 +893,8 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
 #' @export
 #'
 #' @examples input <- c(1, 2, 3, 4)
-#' print(bayesfam:::limit_data(input, c(2, 3)))   # lower and upper bounds
-#' print(bayesfam:::limit_data(input, c(2, NA)))  # only lower bound
+#' print(bayesfam:::limit_data(input, c(2, 3))) # lower and upper bounds
+#' print(bayesfam:::limit_data(input, c(2, NA))) # only lower bound
 limit_data <- function(data, limits) {
   # check that the limit is usable
   if (length(limits) != 2) {

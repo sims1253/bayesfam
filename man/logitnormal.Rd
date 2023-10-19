@@ -2,7 +2,7 @@
 % Please edit documentation in R/logitnormal.R
 \name{logitnormal}
 \alias{logitnormal}
-\title{Custom BRMS family Logit-Normal in median parametrization.}
+\title{Custom brms family Logit-Normal in median parametrization.}
 \usage{
 logitnormal(link = "identity", link_sigma = "log")
 }
@@ -12,16 +12,18 @@ logitnormal(link = "identity", link_sigma = "log")
 \item{link_sigma}{Link function argument (as string) for Shape argument}
 }
 \value{
-Logitnormal BRMS model-object
+Logitnormal brms model-object
 }
 \description{
-Custom BRMS family Logit-Normal in median parametrization.
+Custom brms family Logit-Normal in median parametrization.
 }
 \examples{
 a <- rnorm(1000)
 data <- list(a = a, y = rlogitnormal(1000, 0.5 * a + 1, 2))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
- family = logitnormal(), stanvars = logitnormal()$stanvars,
- refresh = 0)
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
+  family = logitnormal(), stanvars = logitnormal()$stanvars,
+  refresh = 0
+)
 plot(fit)
 }

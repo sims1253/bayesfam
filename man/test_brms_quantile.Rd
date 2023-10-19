@@ -7,7 +7,7 @@
 test_brms_quantile(posterior_data, arg_name, reference, thresh, debug = FALSE)
 }
 \arguments{
-\item{posterior_data}{Data fitted and drawn, a BRMS object, which is a list in R terms}
+\item{posterior_data}{Data fitted and drawn, a brms object, which is a list in R terms}
 
 \item{arg_name}{Name of the argument variable to check, as single string}
 
@@ -35,7 +35,8 @@ fit <- bayesfam:::construct_brms(
   rng = rbetaprime
 )
 result <- bayesfam:::test_brms_quantile(
-  posterior_data = fit, arg_name = "phi", 2.0, 0.025)
+  posterior_data = fit, arg_name = "phi", 2.0, 0.025
+)
 plot(fit)
 # beta_prime uses log-link for Intercept
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/test-helper.R
 \name{expect_brms_family}
 \alias{expect_brms_family}
-\title{BRMS family expect recovery. Tries linear baysian model y ~ 1.
+\title{brms family expect recovery. Tries linear baysian model y ~ 1.
 Checking of the arguments done in construct_brms.}
 \usage{
 expect_brms_family(
@@ -38,7 +38,7 @@ expect_brms_family(
 
 \item{parameter_link}{Link function pointer for the latent parameters. Used to transform for comparison with ref_intercept}
 
-\item{family}{BRMS family under test.}
+\item{family}{brms family under test.}
 
 \item{rng}{function pointer of bespoke RNG for the family to be tested.}
 
@@ -47,7 +47,7 @@ expect_brms_family(
 \item{aux2_name}{BRMS string of aux2_par argument name, if applicable. Single string.}
 
 \item{seed}{Seed argument, so that input data is always the same in each test.
-BRMS test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.
+brms test does not test RNG and is not guaranteed to fit on all data. Positive Integer scalar, Default = 1235813.
 Seed is stored before test and restored after it finished. If wants not to use a seed set to NA.}
 
 \item{data_threshold}{Usually unused. But in rare cases, data too close at the boundary may cause trouble.
@@ -65,7 +65,7 @@ Default = 0.05}
 None
 }
 \description{
-BRMS family expect recovery. Tries linear baysian model y ~ 1.
+brms family expect recovery. Tries linear baysian model y ~ 1.
 Checking of the arguments done in construct_brms.
 }
 \examples{

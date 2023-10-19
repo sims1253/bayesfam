@@ -29,6 +29,8 @@ jobs:
         with:
           extra-packages: |
             any::covr
+            any::BH
+            any::RcppEigen
           needs: coverage
 
       - name: Test coverage

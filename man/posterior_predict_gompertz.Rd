@@ -7,11 +7,11 @@
 posterior_predict_gompertz(i, prep, ...)
 }
 \arguments{
-\item{i}{BRMS indices}
+\item{i}{brms indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
-\item{...}{catchall}
+\item{...}{Catchall argument}
 }
 \value{
 Posterior prediction of gompertz, given data in prep

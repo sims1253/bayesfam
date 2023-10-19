@@ -7,7 +7,7 @@
 rlogitnormal(n, mu = 0, sigma = 1)
 }
 \arguments{
-\item{n}{Number of draws}
+\item{n}{number of observations}
 
 \item{mu}{Median parameter, mu unbound, mu already logit transformed}
 

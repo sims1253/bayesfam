@@ -9,12 +9,12 @@ posterior_predict_logitnormal(i, prep, ...)
 \arguments{
 \item{i}{Indices}
 
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 
-\item{...}{catchall}
+\item{...}{Catchall argument}
 }
 \value{
-The posterior prediction of the Logitnormal distribution, given some BRMS data.
+The posterior prediction of the Logitnormal distribution, given some brms data.
 }
 \description{
 Posterior-predict vignette for the Logitnormal distribution, with Median parametrization.

@@ -51,9 +51,9 @@ rcauchitnormal <- function(n, mu = 0, sigma = 1) {
 #' Log-Likelihood vignette for the Cauchitnormal Distribution
 #'
 #' @param i Indices
-#' @param prep BRMS data
+#' @param prep brms data
 #'
-#' @return log_likelihood of the Cauchitnormal Distribution, given some BRMS data.
+#' @return log_likelihood of the Cauchitnormal Distribution, given some brms data.
 log_lik_cauchitnormal <- function(i, prep) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -64,10 +64,10 @@ log_lik_cauchitnormal <- function(i, prep) {
 #' Posterior-predict vignette for the Cauchitnormal Distribution
 #'
 #' @param i Indices
-#' @param prep BRMS data
-#' @param ... catchall
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
-#' @return The posterior prediction of the Cauchitnormal Distribution, given some BRMS data.
+#' @return The posterior prediction of the Cauchitnormal Distribution, given some brms data.
 posterior_predict_cauchitnormal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
@@ -76,7 +76,7 @@ posterior_predict_cauchitnormal <- function(i, prep, ...) {
 
 #' Posterior expected value prediction. Mean undefined for Cauchitnormal.
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Nothing
 posterior_epred_cauchitnormal <- function(prep) {
@@ -85,19 +85,21 @@ posterior_epred_cauchitnormal <- function(prep) {
         distribution, posterior_epred is currently not supported.")
 }
 
-#' Custom BRMS family Cauchitnormal
+#' Custom brms family Cauchitnormal
 #'
 #' @param link Link function argument (as string) for Median argument. Left as identity!
 #' @param link_sigma Link function argument (as string) for Shape argument
 #'
-#' @return Cauchitnormal BRMS model-object
+#' @return Cauchitnormal brms model-object
 #' @export
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rcauchitnormal(1000, 0.5 * a + 1, 2))
-#' fit1 <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
-#'  refresh = 0)
+#' fit1 <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = cauchitnormal(), stanvars = cauchitnormal()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit1)
 cauchitnormal <- function(link = "identity", link_sigma = "log") {
   stopifnot(link == "identity")

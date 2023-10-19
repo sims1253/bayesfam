@@ -56,14 +56,14 @@ mu_list <- seq(from = 1 + eps, to = 20, length.out = 10)
 phi_list <- seq(from = 2 + eps, to = 20, length.out = 10)
 # if working as expected, this test should not print any errors
 bayesfam:::test_rng_quantiles(
-   rng_fun = rbetaprime,
-   quantile_fun = qbetaprime,
-   n = 10000,
-   mu_list = mu_list,
-   aux_list = phi_list,
-   eps = 0.1,
-   quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
-   p_acceptable_failures = 0.1,
-   relative = TRUE
+  rng_fun = rbetaprime,
+  quantile_fun = qbetaprime,
+  n = 10000,
+  mu_list = mu_list,
+  aux_list = phi_list,
+  eps = 0.1,
+  quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+  p_acceptable_failures = 0.1,
+  relative = TRUE
 )
 }

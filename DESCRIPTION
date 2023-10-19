@@ -1,7 +1,7 @@
 Package: bayesfam
 Type: Package
 Title: brms Custom Families
-Version: 0.2.4
+Version: 0.3.0
 Date: 2022-10-26
 Authors@R:
     c(person("Maximilian", "Scholz", email = "research.scholz@mailbox.org",
@@ -15,7 +15,8 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     brms (>= 2.18.1),
-    stats
+    stats,
+    lamW
 Suggests:
     testthat (>= 3.1.0),
     rmutil,

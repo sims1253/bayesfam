@@ -89,8 +89,8 @@ rgompertz <- function(n, mu = 1, beta = 0.5) {
 
 #' Log-Likelihood vignette for the Gompertz distribution, with Median parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
+#' @param i brms indices
+#' @param prep brms data
 #'
 #' @return Log-Likelihood of gompertz given data in prep
 log_lik_gompertz <- function(i, prep) {
@@ -102,9 +102,9 @@ log_lik_gompertz <- function(i, prep) {
 
 #' Posterior-Prediction vignette for the Gompertz distribution, with Median parametrization.
 #'
-#' @param i BRMS indices
-#' @param prep BRMS data
-#' @param ... catchall
+#' @param i brms indices
+#' @param prep brms data
+#' @param ... Catchall argument
 #'
 #' @return Posterior prediction of gompertz, given data in prep
 posterior_predict_gompertz <- function(i, prep, ...) {
@@ -116,7 +116,7 @@ posterior_predict_gompertz <- function(i, prep, ...) {
 #' Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.
 #' Not defined for the Gompertz family.
 #'
-#' @param prep BRMS data
+#' @param prep brms data
 #'
 #' @return Nothing
 posterior_epred_gompertz <- function(prep) {
@@ -124,19 +124,21 @@ posterior_epred_gompertz <- function(prep) {
 }
 
 
-#' Custom Gompertz BRMS-implementation in median parametrization.
+#' Custom Gompertz brms-implementation in median parametrization.
 #'
 #' @param link Link function for function
 #' @param link_b Link function for eta argument
 #'
-#' @return BRMS gompertz distribution family
+#' @return brms gompertz distribution family
 #' @export
 #'
 #' @examples a <- rnorm(1000)
 #' data <- list(a = a, y = rgompertz(1000, mu = exp(0.5 * a + 1), beta = 0.1))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
-#'  family = gompertz(), stanvars = gompertz()$stanvars,
-#'  refresh = 0)
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
+#'   family = gompertz(), stanvars = gompertz()$stanvars,
+#'   refresh = 0
+#' )
 #' plot(fit)
 gompertz <- function(link = "log", link_b = "log") {
   family <- brms::custom_family(

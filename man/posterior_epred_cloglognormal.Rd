@@ -7,7 +7,7 @@
 posterior_epred_cloglognormal(prep)
 }
 \arguments{
-\item{prep}{BRMS data}
+\item{prep}{brms data}
 }
 \value{
 Nothing

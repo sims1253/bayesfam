@@ -1,4 +1,3 @@
-
 test_that("custom-simplex", {
   # Setup of testing space
   n <- 10000

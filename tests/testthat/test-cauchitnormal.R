@@ -1,14 +1,12 @@
 test_that("custom-cauchitnormal", {
   # Setup of testing space
   n <- 10000
-  eps <- 1e-6
+  eps <- 1e-3
   x <- seq(from = eps, to = 1 - eps, length.out = n)
   n_small <- 10
-  mu_list <- seq(from = eps, to = 1 - eps, length.out = n_small)
-  sigma_list <- seq(from = 0.01, to = 10, length.out = n_small)
-  accepted_relative_error <- 1e-6
-  accepted_rng_error <- 0.2
-  warning("current accepted rng_error is high at 0.2")
+  mu_list <- seq(from = 0.1, to = 0.9, length.out = 9)
+  sigma_list <- seq(from = 0.1, to = 10, length.out = n_small)
+  accepted_rng_error <- 0.01
   accepred_rng_failures <- 0.11
 
   # Check lengths
@@ -19,16 +17,16 @@ test_that("custom-cauchitnormal", {
   warning("No reference density available to test against!")
 
   # check if the RNG is close enough to the true mean in most cases
-  test_rng(
+  bayesfam:::test_rng(
     rng_fun = rcauchitnormal,
     metric_mu = median,
-    n = 20 * n,
+    n = 50 * n,
     mu_list = mu_list,
     aux_list = sigma_list,
     mu_eps = accepted_rng_error,
     p_acceptable_failures = accepred_rng_failures,
     relative = TRUE,
-    mu_link = cloglog
+    mu_link = cauchit
   )
 
   # Check if the RNG can recover the quantiles

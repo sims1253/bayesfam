@@ -18,6 +18,15 @@ dlognormal <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(sigma <= 0)) {
     stop("lognormal is only defined for sigma > 0")
   }
+  # Maybe overkill?
+  if (!lenEqual(list_of_vectors = list(x, mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
+    stop("Lognormal_natural argument vectors could not be matched. May be due to wrong type,
+         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
+  }
+  if (!isLogic_len(log)) {
+    stop("the log argument of a density has to be a scalar boolean")
+  }
+
   logpdf <-
     -(log(sigma) + 0.5 * (log(2 * pi))) +
     -log(x) +
@@ -45,6 +54,15 @@ rlognormal <- function(n, mu = 0, sigma = 1) {
   if (isTRUE(sigma <= 0)) {
     stop("lognormal is only defined for sigma > 0")
   }
+  # Maybe overkill?
+  if (!lenEqual(list_of_vectors = list(mu, sigma), scalars_allowed = TRUE, type_check = is.numeric)) {
+    stop("lognormal argument vectors could not be matched. May be due to wrong type,
+         or different lengths. Note: len=1 is always allowed, even if the other vectors are len!=1.")
+  }
+  if (!isNat_len(n)) {
+    stop("n has to be a natural scalar number")
+  }
+
   return(
     exp(rnorm(n, mu, sigma))
   )
