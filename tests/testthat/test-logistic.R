@@ -64,7 +64,7 @@ test_that("custom-logistic", {
   expect_error(dlogistic(1, 2)) # to few arguments
   expect_error(dlogistic(1, 2, 3, 4, 5)) # to many arguments
   expect_error(dlogistic(1, mu = 1, sigma = 0)) # aux is not allowed to be 0 or smaller
-  #expect_error(dlogistic("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
+  # expect_error(dlogistic("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
   # Check quantile function for errors
   expect_error(qlogistic(1, 2)) # to few arguments

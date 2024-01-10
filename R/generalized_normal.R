@@ -25,9 +25,9 @@ dgeneralized_normal <- function(x, mu, sigma, beta, log = FALSE) {
     stop("generalized_normal is only defined for beta > 0")
   }
 
-  lpdf <- log(beta) - (log(2) + log(sigma) + lgamma(1/beta)) - (abs(x - mu) / sigma)^beta
+  lpdf <- log(beta) - (log(2) + log(sigma) + lgamma(1 / beta)) - (abs(x - mu) / sigma)^beta
 
-  #return either the log or the pdf itself, given the log-value
+  # return either the log or the pdf itself, given the log-value
   if (log) {
     return(lpdf)
   } else {
@@ -61,7 +61,8 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
 
   return(
     sign(p - 0.5) * ((sigma^beta) *
-    qgamma(2*abs(p - 0.5), 1/beta))^(1/beta) + mu)
+      qgamma(2 * abs(p - 0.5), 1 / beta))^(1 / beta) + mu
+  )
 }
 
 #' RNG for the generalized_normal distribution
@@ -76,7 +77,6 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
 #'
 #' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2, beta = 2))
 rgeneralized_normal <- function(n, mu = 0, sigma = 1, beta = 1) {
-
   return(qgeneralized_normal(p = runif(n, min = 0, max = 1), mu = mu, sigma = sigma, beta = beta))
 }
 
@@ -128,9 +128,11 @@ posterior_epred_generalized_normal <- function(prep) {
 #' @export
 #'
 #' @examples data <- list(y = rgeneralized_normal(n = 1000, mu = 2, sigma = 2, beta = 4))
-#' fit <- brms::brm(formula = y ~ 1, data = data,
+#' fit <- brms::brm(
+#'   formula = y ~ 1, data = data,
 #'   family = generalized_normal(), stanvars = generalized_normal()$stanvars,
-#'   init = 0.1)
+#'   init = 0.1
+#' )
 #' plot(fit)
 generalized_normal <- function(link = "identity", link_sigma = "log", link_beta = "log") {
   family <- brms::custom_family(
