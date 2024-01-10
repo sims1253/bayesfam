@@ -8,39 +8,42 @@ test_that("Generalized Gamma", {
   mu_list <- seq(from = -1, to = 100, length.out = n_small)
   sigma_list <-seq(from = 0.1, to = 100, length.out = n_small)
   Q_list <- seq(from = -1, to = 100, length.out = n_small)
+  Q_list[2] <- 0
 
-  accepted_relative_error <- 1e-6
-  accepted_rng_error <- 0.085
-  accepred_rng_failures <- 0.1
+  accepted_relative_error  <- 1e-6
 
   # Check lengths
   expect_equal(n, length(dgeneralized_gamma(x, mu = 1, sigma = 2, Q = 2)))
   expect_equal(n, length(rgeneralized_gamma(n,  mu = 1, sigma = 2, Q = 2)))
 
+  # Test density function
+
+  for (mu in mu_list) {
+    for (sigma in sigma_list) {
+      for (Q in Q_list) {
+        expect_eps(
+          dgeneralized_gamma(x, mu = mu, sigma = sigma, Q = Q),
+          flexsurv::dgengamma(x, mu = mu, sigma = sigma, Q = Q),
+          eps = accepted_relative_error,
+          relative = TRUE
+        )
+      }
+    }
+  }
+
  # Currently not checking the rng
 
   # Check density function for errors
-  expect_error(dbetaprime(1, 2)) # to few arguments
-  expect_error(dbetaprime(1, 2, 3, 4, 5)) # to many arguments
-  expect_error(dbetaprime(-1, mu = 2, phi = 2)) # x is not allowed to be smaller 0
-  expect_error(dbetaprime(1, mu = 0, phi = 2)) # mu is not allowed to be 0 or smaller
-  expect_error(dbetaprime(1, mu = 1, phi = 0)) # phi is not allowed to be 0 or smaller
-  # expect_error(dbetaprime("r", mu = 2, phi = 2)) # non-numeric arguments are disallowed
-
-  # Check quantile function for errors
-  expect_error(qbetaprime(1, 2)) # to few arguments
-  expect_error(qbetaprime(1, 2, 3, 4, 5)) # to many arguments
-  expect_error(qbetaprime(1, mu = 0, phi = 2)) # mu is not allowed to be 0 or smaller
-  expect_error(qbetaprime(1, mu = 1, phi = 0)) # phi is not allowed to be 0 or smaller
-  expect_error(qbetaprime(c(-1, 2), mu = 2, phi = 2)) # q is not allowed to be outside [0, 1]
-  # expect_error(qbetaprime("r", mu = 2, phi = 2)) # non-numeric arguments are disallowed
+  expect_error(dgeneralized_gamma(1, 2)) # to few arguments
+  expect_error(dgeneralized_gamma(1, 2, 3, 4, 5, 6)) # to many arguments
+  expect_error(dgeneralized_gamma(-1, mu = 2, sigma = 2, Q = 2)) # x is not allowed to be smaller 0
+  expect_error(dgeneralized_gamma(-1, mu = 2, sigma = -2, Q = 2)) # sigma is not allowed to be 0 or smaller
 
   # Check rng for errors
-  expect_error(rbetaprime(10, 2, 3, 4, 5)) # to many arguments
-  expect_error(rbetaprime(-1, mu = 2, phi = 2)) # number of drawn samples cannot be smaller 0
-  # expect_warning(expect_error(rbetaprime("r", mu = 2, phi = 2))) # non-numeric arguments are disallowed
-  expect_error(rbetaprime(100, mu = 0, phi = 2)) # mu is not allowed to be 0 or smaller
-  expect_error(rbetaprime(100, mu = 1, phi = 0)) # phi is not allowed to be 0 or smaller
+  expect_error(rgeneralized_gamma(10, 2, 3, 4, 5)) # to many arguments
+  expect_error(rgeneralized_gamma(-1, mu = 2, sigma = 2, Q = 2)) # number of drawn samples cannot be smaller 0
+  # expect_warning(expect_error(generalized_gamma("r", mu = 2, phi = 2))) # non-numeric arguments are disallowed
+  expect_error(rgeneralized_gamma(100, mu = 2, sigma = 0, Q = 2)) # sigma is not allowed to be 0 or smaller
 
   # Check of brms can fit the custom family and recover the intercept and shape
   expect_brms_family(
