@@ -179,7 +179,7 @@ test_rng <- function(rng_fun,
   # As opposed to using a matrix, which would just complicate implementation and comparison.
 
   len_mu <- length(mu_list)
-  if(any(is.na(aux_list))) {
+  if (any(is.na(aux_list))) {
     # added case for likelihoods w/o aux-arguments, like unit-lindley likelihood
     rng_mu_list <-
       metric_mu(
@@ -188,7 +188,7 @@ test_rng <- function(rng_fun,
           mu = mu_link(mu_list)
         )
       )
-  } else if(any(is.na(aux2_list))) {
+  } else if (any(is.na(aux2_list))) {
     len_aux <- length(aux_list)
     expected_mus <- rep(mu_list, times = len_aux)
     rng_mu_list <- vector(mode = "numeric", length = len_aux * len_mu)
@@ -285,7 +285,7 @@ test_rng_asym <- function(rng_fun,
   # Generate a list of mus per mu, aux combination for growing sample sizes
   for (mu in mu_list) {
     for (aux in aux_list) {
-      if(any(is.na(aux2_list))) {
+      if (any(is.na(aux2_list))) {
         loop_mu_list <- vector(mode = "numeric", length = len_n)
         for (i in seq_along(n)) {
           loop_mu_list[i] <- mu_link(
@@ -379,7 +379,7 @@ test_rng_quantiles <- function(rng_fun,
                                p_acceptable_failures,
                                mu_link = identity,
                                relative = FALSE) {
-  if(any(is.na(aux_list))) {
+  if (any(is.na(aux_list))) {
     for (mu in mu_list) {
       sample <- rng_fun(
         n,
@@ -394,7 +394,7 @@ test_rng_quantiles <- function(rng_fun,
         relative = relative
       )
     }
-  } else if(any(is.na(aux2_list))) {
+  } else if (any(is.na(aux2_list))) {
     for (mu in mu_list) {
       for (aux in aux_list) {
         sample <- rng_fun(
@@ -416,15 +416,17 @@ test_rng_quantiles <- function(rng_fun,
     # aux2-list not empty
     for (mu in mu_list) {
       for (aux in aux_list) {
-        for(aux2 in aux2_list) {
+        for (aux2 in aux2_list) {
           sample <- rng_fun(
             n,
             mu = mu_link(mu),
             aux,
             aux2
           )
-          true_quantiles <- do.call(quantile_fun,
-                                    list(quantiles, mu_link(mu), aux, aux2))
+          true_quantiles <- do.call(
+            quantile_fun,
+            list(quantiles, mu_link(mu), aux, aux2)
+          )
           expect_eps(
             a = true_quantiles,
             b = quantile(sample, quantiles),
@@ -492,7 +494,6 @@ expect_brms_family <- function(n_data_sampels = 1000,
                                data_threshold = NULL,
                                thresh = 0.05,
                                debug = FALSE) {
-
   if (is.null(ref_intercept)) {
     ref_intercept <- intercept
   }
@@ -511,13 +512,13 @@ expect_brms_family <- function(n_data_sampels = 1000,
     posterior_fit, "b_Intercept", parameter_link(ref_intercept), thresh, debug
   )
 
-  if(!is.na(aux_par)) {
+  if (!is.na(aux_par)) {
     # logical and with first aux, if it exists
     success <- success && test_brms_quantile(
-        posterior_fit, aux_name, aux_par, thresh, debug
+      posterior_fit, aux_name, aux_par, thresh, debug
     )
   }
-  if(!is.na(aux2_par)) {
+  if (!is.na(aux2_par)) {
     success <- success && test_brms_quantile(
       posterior_fit, aux2_name, aux2_par, thresh, debug
     )
@@ -531,10 +532,10 @@ expect_brms_family <- function(n_data_sampels = 1000,
       " expect_brms_family failed with inputs intercept = ",
       intercept
     )
-    if(!is.na(aux_par)) {
+    if (!is.na(aux_par)) {
       debug <- paste0(debug, " and aux_par = ", aux_par)
     }
-    if(!is.na(aux2_par)) {
+    if (!is.na(aux2_par)) {
       debug <- paste0(debug, " and aux2_par = ", aux2_par)
     }
     plot(posterior_fit, main = debug)
@@ -610,10 +611,10 @@ construct_brms <- function(n_data_sampels,
     set.seed(seed)
   }
 
-  if(is.na(aux_par)) {
+  if (is.na(aux_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept))
   }
-  if(is.na(aux2_par)) {
+  if (is.na(aux2_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par)
   } else {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par, aux2_par)

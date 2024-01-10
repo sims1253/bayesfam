@@ -19,7 +19,7 @@ test_that("custom-generalized-normal", {
   # Compare density and quantile functions to extraDistr
   for (mu in mu_list) {
     for (aux1 in aux_list) {
-      for(aux2 in aux_list) {
+      for (aux2 in aux_list) {
         expect_eps(
           dgeneralized_normal(x, mu = mu, sigma = aux1, beta = aux2),
           gnorm::dgnorm(x, mu = mu, alpha = aux1, beta = aux2),
@@ -81,7 +81,7 @@ test_that("custom-generalized-normal", {
   # Check rng for errors
   expect_error(rgeneralized_normal(10, 2, 3, 4, 5, 6)) # to many arguments
   expect_error(rgeneralized_normal(-1, mu = 2, sigma = 2, beta = 1)) # number of drawn samples cannot be smaller 0
-  #expect_error(rgeneralized_normal("r", mu = 2, sigma = 2, beta = 1)) # non-numeric arguments are disallowed
+  # expect_error(rgeneralized_normal("r", mu = 2, sigma = 2, beta = 1)) # non-numeric arguments are disallowed
   expect_error(rgeneralized_normal(1, mu = 1, sigma = 0, beta = 1)) # aux is not allowed to be 0 or smaller
   expect_error(rgeneralized_normal(1, mu = 1, sigma = 1, beta = 0)) # aux is not allowed to be 0 or smaller
 

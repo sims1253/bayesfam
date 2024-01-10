@@ -24,7 +24,7 @@ dlogistic <- function(x, mu, sigma, log = FALSE) {
   z <- (x - mu) / sigma
   lpdf <- -z - log(sigma) - 2 * log1p(exp(-z))
 
-  #return either the log or the pdf itself, given the log-value
+  # return either the log or the pdf itself, given the log-value
   if (log) {
     return(lpdf)
   } else {
@@ -66,7 +66,6 @@ qlogistic <- function(p, mu, sigma) {
 #'
 #' @examples hist(rlogistic(100, mu = 2, sigma = 2))
 rlogistic <- function(n, mu = 0, sigma = 1) {
-
   return(qlogistic(runif(n, min = 0, max = 1), mu, sigma))
 }
 
@@ -117,9 +116,11 @@ posterior_epred_logistic <- function(prep) {
 #'
 #' @examples a <- rnorm(n = 1000)
 #' data <- list(a = a, y = rlogistic(n = 1000, mu = a + 2, sigma = 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
 #'   family = logistic(), stanvars = logistic()$stanvars,
-#'   refresh = 0)
+#'   refresh = 0
+#' )
 #' plot(fit)
 logistic <- function(link = "identity", link_sigma = "log") {
   family <- brms::custom_family(

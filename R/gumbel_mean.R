@@ -1,4 +1,3 @@
-
 #' Probability density function for the gumbel distribution
 #'
 #' @details The gumbel distribution has density
@@ -27,7 +26,7 @@ dgumbel_mean <- function(x, mu, sigma, log = FALSE) {
   z <- (x - mu) / sigma - digamma(1)
   lpdf <- -log(sigma) - (z + exp(-z))
 
-  #return either the log or the pdf itself, given the log-value
+  # return either the log or the pdf itself, given the log-value
   if (log) {
     return(lpdf)
   } else {
@@ -57,7 +56,8 @@ qgumbel_mean <- function(p, mu, sigma) {
 
   return(
     (mu - sigma * (-digamma(1)))
-         - sigma * log(-log(p)))
+    - sigma * log(-log(p))
+  )
 }
 
 #' RNG for the gumbel distribution
@@ -71,7 +71,6 @@ qgumbel_mean <- function(p, mu, sigma) {
 #'
 #' @examples hist(rgumbel_mean(100, mu = 2, sigma = 2))
 rgumbel_mean <- function(n, mu = 0, sigma = 1) {
-
   return(qgumbel_mean(runif(n, min = 0, max = 1), mu, sigma))
 }
 
@@ -122,9 +121,11 @@ posterior_epred_gumbel_mean <- function(prep) {
 #'
 #' @examples a <- rnorm(n = 1000)
 #' data <- list(a = a, y = rgumbel_mean(n = 1000, mu = a + 2, sigma = 2))
-#' fit <- brms::brm(formula = y ~ 1 + a, data = data,
+#' fit <- brms::brm(
+#'   formula = y ~ 1 + a, data = data,
 #'   family = gumbel_mean(), stanvars = gumbel_mean()$stanvars,
-#'   refresh = 0)
+#'   refresh = 0
+#' )
 #' plot(fit)
 gumbel_mean <- function(link = "identity", link_sigma = "log") {
   family <- brms::custom_family(

@@ -20,8 +20,10 @@ Gumbel brms custom family, custom implementation vs Stan
 \examples{
 a <- rnorm(n = 1000)
 data <- list(a = a, y = rgumbel_mean(n = 1000, mu = a + 2, sigma = 2))
-fit <- brms::brm(formula = y ~ 1 + a, data = data,
+fit <- brms::brm(
+  formula = y ~ 1 + a, data = data,
   family = gumbel_mean(), stanvars = gumbel_mean()$stanvars,
-  refresh = 0)
+  refresh = 0
+)
 plot(fit)
 }

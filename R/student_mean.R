@@ -11,11 +11,11 @@
 #' @export
 #'
 #' @examples hist(rstudent_mean(100, 1, 2, 1))
-rstudent_mean <- function(n, mu = 0, df = 1,  sigma = 1) {
-  if(isTRUE(any(df <= 0))) {
+rstudent_mean <- function(n, mu = 0, df = 1, sigma = 1) {
+  if (isTRUE(any(df <= 0))) {
     stop("df has to be bigger than 0")
   }
-  if(isTRUE(any(sigma <= 0))) {
+  if (isTRUE(any(sigma <= 0))) {
     stop("sigma has to be bigger than 0")
   }
 

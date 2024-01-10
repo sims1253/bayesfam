@@ -21,8 +21,10 @@ Generalized Normal BRMS family
 }
 \examples{
 data <- list(y = rgeneralized_normal(n = 1000, mu = 2, sigma = 2, beta = 4))
-fit <- brms::brm(formula = y ~ 1, data = data,
+fit <- brms::brm(
+  formula = y ~ 1, data = data,
   family = generalized_normal(), stanvars = generalized_normal()$stanvars,
-  init = 0.1)
+  init = 0.1
+)
 plot(fit)
 }

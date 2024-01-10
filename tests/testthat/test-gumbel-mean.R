@@ -81,7 +81,7 @@ test_that("custom-gumbel", {
   # expect_error(rgumbel_mean("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
   expect_error(rgumbel_mean(100, mu = 1, sigma = 0)) # phi is not allowed to be 0 or smaller
 
-  #skip("not implemented")
+  # skip("not implemented")
 
   # Check of brms can fit the custom family and recover the intercept and shape
   expect_brms_family(
