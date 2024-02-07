@@ -31,7 +31,14 @@ NULL
 
 #' @rdname shifted_lognormal_uniform_distribution
 #' @export
-rshifted_lognormal_uniform <- function(n, meanlog, sdlog, mix, shift, max_uniform) {
+rshifted_lognormal_uniform <- function(n, meanlog = 0, sdlog = 1, mix = 0.1, shift = 0, max_uniform = 100) {
+  stopifnot(is.numeric(n) & length(n) == 1 & n >= 0)
+  n <- as.integer(n)
+  stopifnot(all(sdlog > 0))
+  stopifnot(all(mix >= 0 & mix <= 1))
+  stopifnot(all(shift >= 0))
+  stopifnot(all(max_uniform > 0))
+
   ifelse(runif(n) < mix,
          runif(n, 0, max_uniform),
          shift + rlnorm(n, meanlog = meanlog, sdlog = sdlog))
@@ -40,7 +47,13 @@ rshifted_lognormal_uniform <- function(n, meanlog, sdlog, mix, shift, max_unifor
 
 #' @rdname shifted_lognormal_uniform_distribution
 #' @export
-dshifted_lognormal_uniform <- function(y, meanlog, sdlog, mix, shift, max_uniform) {
+dshifted_lognormal_uniform <- function(y, meanlog = 0, sdlog = 1, mix = 0.1, shift = 0, max_uniform = 100) {
+  stopifnot(all(y > 0))
+  stopifnot(all(sdlog > 0))
+  stopifnot(all(mix >= 0 & mix <= 1))
+  stopifnot(all(shift >= 0))
+  stopifnot(all(max_uniform > 0))
+
   unif_llh = dunif(y , min = 0, max = max_uniform, log = TRUE)
   lognormal_llh = dlnorm(y - shift, meanlog = meanlog, sdlog = sdlog, log = TRUE) -
     plnorm(max_uniform - shift, meanlog = meanlog, sdlog = sdlog, log.p = TRUE)
@@ -191,7 +204,7 @@ shifted_lognormal_uniform <- function(link = "identity", link_sigma = "log",
     log_lik = log_lik_shifted_lognormal_uniform
   )
 
-  fam$stanvars <- stanvar(block = "functions", scode = "
+  fam$stanvars <- brms::stanvar(block = "functions", scode = "
   real shifted_lognormal_uniform_lpdf(real y, real mu, real sigma, real mix,
                       real shiftprop, real max_shift, real max_uniform) {
     real shift = shiftprop * max_shift;
