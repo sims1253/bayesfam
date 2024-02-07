@@ -4,9 +4,6 @@ test_that("custom-shifted_lognormal_uniform", {
   eps <- 1e-6
   x <- exp(seq(from = eps, to = 200, length.out = n)) # testset, exp(200) comes close to Max-Double
   unit <- seq(from = eps, to = 1 - eps, length.out = n)
-  accepted_relative_error <- 1e-6
-  accepted_rng_error <- 0.085
-  accepred_rng_failures <- 0.1
 
   # Check lengths
   expect_equal(n, length(
