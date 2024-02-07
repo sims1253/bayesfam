@@ -170,3 +170,16 @@ symlog <- function(x) {
 inv_symlog <- function(x) {
   return(sign(x) * (exp(abs(x)) - 1))
 }
+
+#' Logarithm of the sum of exponentials.
+#'
+#' A more numerically stable equivalent to \code{log(sum(exp(x)))}
+#'
+#' @source http://tr.im/hH5A
+#' @param x a vector of values
+#' @return log(sum(exp(x)))
+#' @export
+logsumexp <- function (x) {
+  y = max(x)
+  y + log(sum(exp(x - y)))
+}
