@@ -465,6 +465,8 @@ test_rng_quantiles <- function(rng_fun,
 #' Vector is used as is, scalar will be interpreted as c(thresh, 1-thresh).
 #' Default = 0.05
 #' @param debug Scalar Boolean argument, whether debug info is printed or not. Default = False.
+#' @param formula the formula used in the brms fit
+#' @param prior any priors for brms
 #'
 #' @return None
 #'
@@ -493,7 +495,9 @@ expect_brms_family <- function(n_data_sampels = 1000,
                                seed = 1235813,
                                data_threshold = NULL,
                                thresh = 0.05,
-                               debug = FALSE) {
+                               debug = FALSE,
+                               formula = y ~ 1,
+                               prior = NULL) {
   if (is.null(ref_intercept)) {
     ref_intercept <- intercept
   }
@@ -505,7 +509,9 @@ expect_brms_family <- function(n_data_sampels = 1000,
     family,
     rng,
     seed = seed,
-    data_threshold = data_threshold
+    data_threshold = data_threshold,
+    formula = formula,
+    prior = prior
   )
 
   success <- test_brms_quantile(
@@ -563,6 +569,8 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #' @param data_threshold Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 #' If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 #' Default = Null, will be in R terms "invisible" and will not cap any input data.
+#' @param formula the formula used in the brms fit
+#' @param prior any priors for brms
 #'
 #' @return brms model for the specified family.
 #'
@@ -584,7 +592,9 @@ construct_brms <- function(n_data_sampels,
                            family,
                            rng,
                            seed = NULL,
-                           data_threshold = NULL) {
+                           data_threshold = NULL,
+                           formula = y ~ 1,
+                           prior = NULL) {
   if (!(is.function(family) && is.function(rng) && is.function(rng_link))) {
     stop("family, rng or rng_link argument were not a function!")
   }
@@ -631,8 +641,9 @@ construct_brms <- function(n_data_sampels,
   data <- list(y = y_data)
 
   posterior_fit <- brms::brm(
-    y ~ 1,
+    formula,
     data = data,
+    prior = prior,
     family = family(),
     stanvars = family()$stanvars,
     chains = 2,
