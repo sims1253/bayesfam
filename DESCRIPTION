@@ -27,7 +27,7 @@ Suggests:
     flexsurv
 Remotes:
     paul-buerkner/brms
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 NeedsCompilation: no
 URL: https://github.com/sims1253/bayesfam
 BugReports: https://github.com/sims1253/bayesfam/issues
