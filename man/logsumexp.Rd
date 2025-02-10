@@ -4,7 +4,7 @@
 \alias{logsumexp}
 \title{Logarithm of the sum of exponentials.}
 \source{
-http://tr.im/hH5A
+https://en.wikipedia.org/wiki/LogSumExp#log-sum-exp_trick_for_log-domain_calculations
 }
 \usage{
 logsumexp(x)
