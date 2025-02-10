@@ -175,7 +175,7 @@ inv_symlog <- function(x) {
 #'
 #' A more numerically stable equivalent to \code{log(sum(exp(x)))}
 #'
-#' @source http://tr.im/hH5A
+#' @source https://en.wikipedia.org/wiki/LogSumExp#log-sum-exp_trick_for_log-domain_calculations
 #' @param x a vector of values
 #' @return log(sum(exp(x)))
 #' @export
