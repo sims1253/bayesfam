@@ -17,7 +17,11 @@ dunit_lindley <- function(x, mu, log = FALSE) {
     stop("The mu argument has to be in the interval (0, 1)")
   }
 
-  lpdf <- 2 * log1p(-mu) - log(mu) - 3 * log1p(-x) - x * (1 - mu) / (mu * (1 - x))
+  lpdf <- 2 *
+    log1p(-mu) -
+    log(mu) -
+    3 * log1p(-x) -
+    x * (1 - mu) / (mu * (1 - x))
   if (log) {
     return(lpdf)
   } else {

@@ -20,7 +20,8 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
   }
   logpdf <-
     -(log(sigma) + 0.5 * log(2 * pi)) +
-    x - log(exp(x) - 1) +
+    x -
+    log(exp(x) - 1) +
     -0.5 * ((log(exp(x) - 1) - mu) / sigma)^2
   if (log) {
     return(logpdf)
@@ -82,8 +83,10 @@ posterior_predict_softplusnormal <- function(i, prep, ...) {
 #'
 #' @return Mean of Posterior
 posterior_epred_softplusnormal <- function(prep) {
-  stop("No implementation of posterior_epred for the softplus-normal
-       available!")
+  stop(
+    "No implementation of posterior_epred for the softplus-normal
+       available!"
+  )
 }
 
 #' Custom brms family Softplus in median parametrization.

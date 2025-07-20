@@ -40,7 +40,6 @@ test_that("custom-cauchitnormal", {
   expect_error(dcauchitnormal(0.5, mu = 1, sigma = -1)) # sigma is not allowed to be 0 or smaller
   # expect_error(dcauchitnormal("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
 
-
   # Check rng for errors
   expect_error(rcauchitnormal(10, 2, 3, 4, 5)) # to many arguments
   expect_error(rcauchitnormal(-1, mu = cauchit(0.5), sigma = 0.4)) # number of drawn samples cannot be smaller 0

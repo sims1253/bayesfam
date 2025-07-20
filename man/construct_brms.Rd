@@ -13,7 +13,9 @@ construct_brms(
   family,
   rng,
   seed = NULL,
-  data_threshold = NULL
+  data_threshold = NULL,
+  formula = y ~ 1,
+  prior = NULL
 )
 }
 \arguments{
@@ -38,6 +40,10 @@ Positive Integer scalar, Default = NA will do nothing. Seed is stored before and
 \item{data_threshold}{Usually unused. But in rare cases, data too close at the boundary may cause trouble.
 If so, set a two entry real vector c(lower, upper). If one of them is NA, the data will not be capped for that boundary.
 Default = Null, will be in R terms "invisible" and will not cap any input data.}
+
+\item{formula}{the formula used in the brms fit}
+
+\item{prior}{any priors for brms}
 }
 \value{
 brms model for the specified family.

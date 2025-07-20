@@ -6,15 +6,15 @@ test_that("Generalized Gamma", {
   unit <- seq(from = eps, to = 1 - eps, length.out = n)
   n_small <- 10
   mu_list <- seq(from = -1, to = 100, length.out = n_small)
-  sigma_list <-seq(from = 0.1, to = 100, length.out = n_small)
+  sigma_list <- seq(from = 0.1, to = 100, length.out = n_small)
   Q_list <- seq(from = -1, to = 100, length.out = n_small)
   Q_list[2] <- 0
 
-  accepted_relative_error  <- 1e-6
+  accepted_relative_error <- 1e-6
 
   # Check lengths
   expect_equal(n, length(dgeneralized_gamma(x, mu = 1, sigma = 2, Q = 2)))
-  expect_equal(n, length(rgeneralized_gamma(n,  mu = 1, sigma = 2, Q = 2)))
+  expect_equal(n, length(rgeneralized_gamma(n, mu = 1, sigma = 2, Q = 2)))
 
   # Test density function
 
@@ -31,7 +31,7 @@ test_that("Generalized Gamma", {
     }
   }
 
- # Currently not checking the rng
+  # Currently not checking the rng
 
   # Check density function for errors
   expect_error(dgeneralized_gamma(1, 2)) # to few arguments

@@ -18,6 +18,15 @@ shifted_lognormal_uniform(
   link_shiftprop = "logit"
 )
 }
+\arguments{
+\item{link}{Link function for the location parameter (default: "identity")}
+
+\item{link_sigma}{Link function for the scale parameter (default: "log")}
+
+\item{link_mix}{Link function for the mixture parameter (default: "logit")}
+
+\item{link_shiftprop}{Link function for the shift proportion parameter (default: "logit")}
+}
 \description{
 A contaminated response time distribution. The mixture can be described as
 \deqn{y_i =

@@ -2,7 +2,7 @@
 #'  uniform distributions.
 #'
 #' @source Some background, discussion and examples at
-#' \url{http://www.martinmodrak.cz/2021/04/01/using-brms-to-model-reaction-times-contaminated-with-errors/}
+#' <http://www.martinmodrak.cz/2021/04/01/using-brms-to-model-reaction-times-contaminated-with-errors/>
 #'
 #' @details The  mixture of shifted lognormal and uniform can be described as
 #' \deqn{y_i =
@@ -16,8 +16,8 @@
 #'   P(z_i = 0) = \theta}
 #'
 #'
-#' Where θ corresponds to  \code{mix}, α to  \code{max_uniform}
-#' and \eqn{s_i} to  \code{shift}.
+#' Where θ corresponds to  `mix`, α to  `max_uniform`
+#' and \eqn{s_i} to  `shift`.
 #'
 #' @param n the number of values to draw from the RNG
 #' @param y the observed value
@@ -31,7 +31,14 @@ NULL
 
 #' @rdname shifted_lognormal_uniform_distribution
 #' @export
-rshifted_lognormal_uniform <- function(n, meanlog = 0, sdlog = 1, mix = 0.1, shift = 0, max_uniform = 100) {
+rshifted_lognormal_uniform <- function(
+  n,
+  meanlog = 0,
+  sdlog = 1,
+  mix = 0.1,
+  shift = 0,
+  max_uniform = 100
+) {
   stopifnot(is.numeric(n) & length(n) == 1 & n >= 0)
   n <- as.integer(n)
   stopifnot(all(sdlog > 0))
@@ -39,37 +46,55 @@ rshifted_lognormal_uniform <- function(n, meanlog = 0, sdlog = 1, mix = 0.1, shi
   stopifnot(all(shift >= 0))
   stopifnot(all(max_uniform > 0))
 
-  ifelse(runif(n) < mix,
-         runif(n, 0, max_uniform),
-         shift + rlnorm(n, meanlog = meanlog, sdlog = sdlog))
+  ifelse(
+    runif(n) < mix,
+    runif(n, 0, max_uniform),
+    shift + rlnorm(n, meanlog = meanlog, sdlog = sdlog)
+  )
 }
 
 
 #' @rdname shifted_lognormal_uniform_distribution
 #' @export
-dshifted_lognormal_uniform <- function(y, meanlog = 0, sdlog = 1, mix = 0.1, shift = 0, max_uniform = 100) {
+dshifted_lognormal_uniform <- function(
+  y,
+  meanlog = 0,
+  sdlog = 1,
+  mix = 0.1,
+  shift = 0,
+  max_uniform = 100
+) {
   stopifnot(all(y > 0))
   stopifnot(all(sdlog > 0))
   stopifnot(all(mix >= 0 & mix <= 1))
   stopifnot(all(shift >= 0))
   stopifnot(all(max_uniform > 0))
 
-  unif_llh = dunif(y , min = 0, max = max_uniform, log = TRUE)
-  lognormal_llh = dlnorm(y - shift, meanlog = meanlog, sdlog = sdlog, log = TRUE) -
+  unif_llh = dunif(y, min = 0, max = max_uniform, log = TRUE)
+  lognormal_llh = dlnorm(
+    y - shift,
+    meanlog = meanlog,
+    sdlog = sdlog,
+    log = TRUE
+  ) -
     plnorm(max_uniform - shift, meanlog = meanlog, sdlog = sdlog, log.p = TRUE)
-
 
   # Computing logsumexp(log(mix) + unif_llh, log1p(-mix) + lognormal_llh)
   # but vectorized
-  llh_matrix <- array(NA_real_, dim = c(2, max(length(unif_llh), length(lognormal_llh))))
-  llh_matrix[1,] <- log(mix) + unif_llh
-  llh_matrix[2,] <- log1p(-mix) + lognormal_llh
+  llh_matrix <- array(
+    NA_real_,
+    dim = c(2, max(length(unif_llh), length(lognormal_llh)))
+  )
+  llh_matrix[1, ] <- log(mix) + unif_llh
+  llh_matrix[2, ] <- log1p(-mix) + lognormal_llh
   return(apply(llh_matrix, MARGIN = 2, FUN = logsumexp))
 }
 
 posterior_predict_shifted_lognormal_uniform <- function(i, prep, ...) {
-  if((!is.null(prep$data$lb) && prep$data$lb[i] > 0) ||
-     (!is.null(prep$data$ub) && prep$data$ub[i] < Inf)) {
+  if (
+    (!is.null(prep$data$lb) && prep$data$lb[i] > 0) ||
+      (!is.null(prep$data$ub) && prep$data$ub[i] < Inf)
+  ) {
     stop("Predictions for truncated distributions not supported")
   }
 
@@ -83,15 +108,23 @@ posterior_predict_shifted_lognormal_uniform <- function(i, prep, ...) {
   shift = shiftprop * max_shift
 
   return(
-    rshifted_lognormal_uniform(prep$ndraws, meanlog = mu, sdlog = sigma,
-                             mix = mix, shift = shift, max_uniform = max_uniform)
+    rshifted_lognormal_uniform(
+      prep$ndraws,
+      meanlog = mu,
+      sdlog = sigma,
+      mix = mix,
+      shift = shift,
+      max_uniform = max_uniform
+    )
   )
 }
 
 
 posterior_epred_shifted_lognormal_uniform <- function(prep) {
-  if((!is.null(prep$data$lb) && prep$data$lb[i] > 0) ||
-     (!is.null(prep$data$ub) && prep$data$ub[i] < Inf)) {
+  if (
+    (!is.null(prep$data$lb) && any(prep$data$lb > 0)) ||
+      (!is.null(prep$data$ub) && any(prep$data$ub < Inf))
+  ) {
     stop("Predictions for truncated distributions not supported")
   }
 
@@ -124,9 +157,14 @@ log_lik_shifted_lognormal_uniform <- function(i, prep) {
   shift = shiftprop * max_shift
 
   y <- prep$data$Y[i]
-  dshifted_lognormal_uniform(y, meanlog = mu, sdlog = sigma,
-                             mix = mix, shift = shift, max_uniform = max_uniform)
-
+  dshifted_lognormal_uniform(
+    y,
+    meanlog = mu,
+    sdlog = sigma,
+    mix = mix,
+    shift = shift,
+    max_uniform = max_uniform
+  )
 }
 
 
@@ -145,21 +183,26 @@ log_lik_shifted_lognormal_uniform <- function(i, prep) {
 #'   P(z_i = 0) = \theta \\
 #'   0 < p_i < 1
 #'   }
-#' Here \eqn{\mu, \sigma, \theta} (\code{mix}) and \eqn{p} (\code{shiftprop})
-#' are estimated, whereas \eqn{s_i} (\code{max_shift})
-#' and \eqn{\alpha} (\code{max_uniform}) are given as data via \code{vreal()}.
+#' Here \eqn{\mu, \sigma, \theta} (`mix`) and \eqn{p} (`shiftprop`)
+#' are estimated, whereas \eqn{s_i} (`max_shift`)
+#' and \eqn{\alpha} (`max_uniform`) are given as data via `vreal()`.
 #'
 #' @details
 #' Note that you cannot build this distribution with the built-in support
-#' for mixtures in \code{brms},
+#' for mixtures in `brms`,
 #' because the uniform component is effectively a zero-parameter distribution
-#' which cannot be expressed in  \code{brms}.
+#' which cannot be expressed in  `brms`.
 #'
 
 #' @source Idea by
 #' Nathaniel Haines (https://twitter.com/Nate__Haines), code by Martin Modrák.
 #' Some background, discussion and examples at
-#' \url{http://www.martinmodrak.cz/2021/04/01/using-brms-to-model-reaction-times-contaminated-with-errors/}
+#' <http://www.martinmodrak.cz/2021/04/01/using-brms-to-model-reaction-times-contaminated-with-errors/>
+#'
+#' @param link Link function for the location parameter (default: "identity")
+#' @param link_sigma Link function for the scale parameter (default: "log")
+#' @param link_mix Link function for the mixture parameter (default: "logit")
+#' @param link_shiftprop Link function for the shift proportion parameter (default: "logit")
 #'
 #' @examples library(brms)
 #' set.seed(31546522)
@@ -189,8 +232,12 @@ log_lik_shifted_lognormal_uniform <- function(i, prep) {
 #'                prior = c(prior(beta(1, 5), class = "mix")))
 #' plot(fit_mix)
 #' @export
-shifted_lognormal_uniform <- function(link = "identity", link_sigma = "log",
-                      link_mix = "logit", link_shiftprop = "logit") {
+shifted_lognormal_uniform <- function(
+  link = "identity",
+  link_sigma = "log",
+  link_mix = "logit",
+  link_shiftprop = "logit"
+) {
   fam <- brms::custom_family(
     "shifted_lognormal_uniform",
     dpars = c("mu", "sigma", "mix", "shiftprop"), # Those will be estimated
@@ -204,7 +251,9 @@ shifted_lognormal_uniform <- function(link = "identity", link_sigma = "log",
     log_lik = log_lik_shifted_lognormal_uniform
   )
 
-  fam$stanvars <- brms::stanvar(block = "functions", scode = "
+  fam$stanvars <- brms::stanvar(
+    block = "functions",
+    scode = "
   real shifted_lognormal_uniform_lpdf(real y, real mu, real sigma, real mix,
                       real shiftprop, real max_shift, real max_uniform) {
     real shift = shiftprop * max_shift;
@@ -253,7 +302,7 @@ shifted_lognormal_uniform <- function(link = "identity", link_sigma = "log",
     }
 
   }
-")
+"
+  )
   return(fam)
 }
-

@@ -1,0 +1,117 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+
+name: pkgdown
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+  pkgdown:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+      
+    steps:
+      - uses: actions/checkout@v4
+        
+      - uses: r-lib/actions/setup-pandoc@v2
+        if: github.event.action != 'closed'
+      
+      - uses: r-lib/actions/setup-r@v2
+        if: github.event.action != 'closed'
+        with:
+          use-public-rspm: true
+          
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        if: github.event.action != 'closed'
+        with:
+          extra-packages: any::pkgdown, local::.
+          needs: website
+
+      - name: Create _pkgdown.yml
+        if: github.event.action != 'closed'
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            cat << EOF > _pkgdown.yml
+          url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/branch/${{ github.head_ref }}
+          template:
+            bootstrap: 5
+          EOF
+          else
+            cat << EOF > _pkgdown.yml
+          url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          template:
+            bootstrap: 5
+          EOF
+          fi
+
+      - name: Build site (main branch)
+        if: github.event_name != 'pull_request'
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+
+      - name: Build site (PR branch)
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        run: pkgdown::build_site(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+
+      - name: Deploy to GitHub pages
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs
+
+      - name: Deploy PR preview
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs
+          target-folder: branch/${{ github.head_ref }}
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = '${{ github.head_ref }}';
+            const url = `https://sims1253.github.io/bayesfam/branch/${branch}`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Documentation preview for this PR is available at: ${url}`
+            });
+
+      - name: Clean up PR preview 🗑️
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git clone --single-branch --branch gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages-repo
+          cd gh-pages-repo
+          if [ -d "branch/${{ github.head_ref }}" ]; then
+            rm -rf "branch/${{ github.head_ref }}"
+            echo "Removed documentation for closed PR: ${{ github.head_ref }}"
+            git add .
+            git commit -m "Remove documentation for closed PR: ${{ github.head_ref }}" || exit 0
+            git push
+          else
+            echo "No documentation found for PR: ${{ github.head_ref }}"
+          fi

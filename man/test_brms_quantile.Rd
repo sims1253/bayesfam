@@ -14,7 +14,7 @@ test_brms_quantile(posterior_data, arg_name, reference, thresh, debug = FALSE)
 \item{reference}{Reference value to check against, single real scalar}
 
 \item{thresh}{real scalar or 2-length vector of quantile bounds.
-For scalar constructs bound as [thresh, 1-thresh]
+For scalar constructs bound as \verb{[thresh, 1-thresh]}
 thresh has to be inside the Unit-Interval.}
 
 \item{debug}{True for verbose output of test results.}

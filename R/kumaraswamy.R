@@ -90,8 +90,7 @@ qkumaraswamy <- function(u, mu = 0.5, p = 1) {
   return(
     (1 -
       (1 - u)^(1 /
-        (-(log(2) / log1p(-mu^p))))
-    )^(1 / p)
+        (-(log(2) / log1p(-mu^p)))))^(1 / p)
   )
 }
 

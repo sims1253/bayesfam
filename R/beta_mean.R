@@ -28,7 +28,8 @@ dbeta_mean <- function(x, mu, phi, log = FALSE) {
   lpdf <- (log(gamma(phi)) -
     log(gamma(mu * phi)) -
     log(gamma((1 - mu) * phi))) +
-    log(x) * (mu * phi - 1) + log1p(-x) * ((1 - mu) * phi - 1)
+    log(x) * (mu * phi - 1) +
+    log1p(-x) * ((1 - mu) * phi - 1)
   if (log) {
     return(lpdf)
   } else {

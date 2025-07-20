@@ -25,7 +25,9 @@ dgeneralized_normal <- function(x, mu, sigma, beta, log = FALSE) {
     stop("generalized_normal is only defined for beta > 0")
   }
 
-  lpdf <- log(beta) - (log(2) + log(sigma) + lgamma(1 / beta)) - (abs(x - mu) / sigma)^beta
+  lpdf <- log(beta) -
+    (log(2) + log(sigma) + lgamma(1 / beta)) -
+    (abs(x - mu) / sigma)^beta
 
   # return either the log or the pdf itself, given the log-value
   if (log) {
@@ -60,8 +62,10 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
   }
 
   return(
-    sign(p - 0.5) * ((sigma^beta) *
-      qgamma(2 * abs(p - 0.5), 1 / beta))^(1 / beta) + mu
+    sign(p - 0.5) *
+      ((sigma^beta) *
+        qgamma(2 * abs(p - 0.5), 1 / beta))^(1 / beta) +
+      mu
   )
 }
 
@@ -77,7 +81,12 @@ qgeneralized_normal <- function(p, mu, sigma, beta) {
 #'
 #' @examples hist(rgeneralized_normal(100, mu = 2, sigma = 2, beta = 2))
 rgeneralized_normal <- function(n, mu = 0, sigma = 1, beta = 1) {
-  return(qgeneralized_normal(p = runif(n, min = 0, max = 1), mu = mu, sigma = sigma, beta = beta))
+  return(qgeneralized_normal(
+    p = runif(n, min = 0, max = 1),
+    mu = mu,
+    sigma = sigma,
+    beta = beta
+  ))
 }
 
 #' Log-Likelihood of the generalized_normal distribution
@@ -91,7 +100,13 @@ log_lik_generalized_normal <- function(i, prep) {
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   beta <- brms::get_dpar(prep, "beta", i = i)
   y <- prep$data$Y[i]
-  return(dgeneralized_normal(x = y, mu = mu, sigma = sigma, beta = beta, log = TRUE))
+  return(dgeneralized_normal(
+    x = y,
+    mu = mu,
+    sigma = sigma,
+    beta = beta,
+    log = TRUE
+  ))
 }
 
 
@@ -106,7 +121,12 @@ posterior_predict_generalized_normal <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   sigma <- brms::get_dpar(prep, "sigma", i = i)
   beta <- brms::get_dpar(prep, "beta", i = i)
-  return(rgeneralized_normal(n = prep$ndraws, mu = mu, sigma = sigma, beta = beta))
+  return(rgeneralized_normal(
+    n = prep$ndraws,
+    mu = mu,
+    sigma = sigma,
+    beta = beta
+  ))
 }
 
 #' posterior_epred for the generalized_normal distribution
@@ -134,7 +154,11 @@ posterior_epred_generalized_normal <- function(prep) {
 #'   init = 0.1
 #' )
 #' plot(fit)
-generalized_normal <- function(link = "identity", link_sigma = "log", link_beta = "log") {
+generalized_normal <- function(
+  link = "identity",
+  link_sigma = "log",
+  link_beta = "log"
+) {
   family <- brms::custom_family(
     "generalized_normal",
     dpars = c("mu", "sigma", "beta"),

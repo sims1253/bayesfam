@@ -17,7 +17,8 @@ test_that("lognormal", {
   # Compare density and to built-in
   for (mu in mu_list) {
     for (sigma in sigma_list) {
-      expect_eps(dlognormal(x, mu = log(mu), sigma = sigma),
+      expect_eps(
+        dlognormal(x, mu = log(mu), sigma = sigma),
         dlnorm(x, log(mu), sigma),
         eps = accepted_relative_error,
         relative = TRUE
@@ -46,7 +47,21 @@ test_that("lognormal", {
     mu_list = mu_list,
     aux_list = sigma_list,
     eps = accepted_rng_error,
-    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+    quantiles = c(
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      0.95,
+      0.99
+    ),
     p_acceptable_failures = accepred_rng_failures,
     relative = TRUE,
     mu_link = log

@@ -58,7 +58,6 @@ test_that("custom-simplex", {
   expect_error(rsimplex(100, mu = 1, sigma = 2)) # mu is not allowed to be 1 or bigger
   expect_error(rsimplex(100, mu = 0.8, sigma = 0)) # p is not allowed to be 0 or smaller
 
-
   # Check of brms can fit the custom family and recover the intercept and shape
   expect_brms_family(
     intercept = 0.5,

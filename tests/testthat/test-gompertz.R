@@ -22,14 +22,22 @@ test_that("custom-gompertz", {
     for (beta in beta_list) {
       expect_eps(
         dgompertz(x, mu = mu, beta = beta),
-        extraDistr::dgompertz(x, a = -(beta * log(0.5)) / (exp(mu * beta) - 1), b = beta),
+        extraDistr::dgompertz(
+          x,
+          a = -(beta * log(0.5)) / (exp(mu * beta) - 1),
+          b = beta
+        ),
         eps = accepted_relative_error,
         r = accepted_failure_rate,
         relative = TRUE
       )
       expect_eps(
         qgompertz(unit, mu = mu, beta = beta),
-        extraDistr::qgompertz(unit, a = -(beta * log(0.5)) / (exp(mu * beta) - 1), b = beta),
+        extraDistr::qgompertz(
+          unit,
+          a = -(beta * log(0.5)) / (exp(mu * beta) - 1),
+          b = beta
+        ),
         eps = accepted_relative_error,
         r = accepted_failure_rate,
         relative = TRUE
@@ -57,7 +65,21 @@ test_that("custom-gompertz", {
     mu_list = mu_list,
     aux_list = beta_list,
     eps = accepted_rng_error,
-    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+    quantiles = c(
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      0.95,
+      0.99
+    ),
     p_acceptable_failures = accepred_rng_failures,
     relative = TRUE
   )

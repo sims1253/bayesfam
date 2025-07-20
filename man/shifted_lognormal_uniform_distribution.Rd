@@ -5,15 +5,29 @@
 \alias{rshifted_lognormal_uniform}
 \alias{dshifted_lognormal_uniform}
 \title{Probability density and RNG function for the mixture of shifted lognormal and
- uniform distributions.}
+uniform distributions.}
 \source{
 Some background, discussion and examples at
 \url{http://www.martinmodrak.cz/2021/04/01/using-brms-to-model-reaction-times-contaminated-with-errors/}
 }
 \usage{
-rshifted_lognormal_uniform(n, meanlog, sdlog, mix, shift, max_uniform)
+rshifted_lognormal_uniform(
+  n,
+  meanlog = 0,
+  sdlog = 1,
+  mix = 0.1,
+  shift = 0,
+  max_uniform = 100
+)
 
-dshifted_lognormal_uniform(y, meanlog, sdlog, mix, shift, max_uniform)
+dshifted_lognormal_uniform(
+  y,
+  meanlog = 0,
+  sdlog = 1,
+  mix = 0.1,
+  shift = 0,
+  max_uniform = 100
+)
 }
 \arguments{
 \item{n}{the number of values to draw from the RNG}
@@ -32,7 +46,7 @@ dshifted_lognormal_uniform(y, meanlog, sdlog, mix, shift, max_uniform)
 }
 \description{
 Probability density and RNG function for the mixture of shifted lognormal and
- uniform distributions.
+uniform distributions.
 }
 \details{
 The  mixture of shifted lognormal and uniform can be described as
@@ -45,7 +59,6 @@ The  mixture of shifted lognormal and uniform can be described as
   u_i \sim Uniform(0, \alpha) \\
   \log(r_i) \sim Normal(\mu_i, \sigma) \\
   P(z_i = 0) = \theta}
-
 
 Where θ corresponds to  \code{mix}, α to  \code{max_uniform}
 and \eqn{s_i} to  \code{shift}.

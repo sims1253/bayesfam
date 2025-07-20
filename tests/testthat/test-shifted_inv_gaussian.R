@@ -50,21 +50,40 @@ test_that("shifted-inverse-gauss", {
   shape <- 2
   shift <- 3
   thresh <- 0.05
-  data <- list(y = rshifted_inv_gaussian(n = 1000, mu = exp(intercept), shape = shape, shift = shift))
+  data <- list(
+    y = rshifted_inv_gaussian(
+      n = 1000,
+      mu = exp(intercept),
+      shape = shape,
+      shift = shift
+    )
+  )
   posterior_fit <- brms::brm(
-    formula = y ~ 1, data = data,
-    family = shifted_inv_gaussian(), stanvars = shifted_inv_gaussian()$stanvars,
-    refresh = 0, silent = 2
+    formula = y ~ 1,
+    data = data,
+    family = shifted_inv_gaussian(),
+    stanvars = shifted_inv_gaussian()$stanvars,
+    refresh = 0,
+    silent = 2
   )
 
   intercept_recovered <- test_brms_quantile(
-    posterior_fit, "b_Intercept", intercept, thresh
+    posterior_fit,
+    "b_Intercept",
+    intercept,
+    thresh
   )
   shape_par_recovered <- test_brms_quantile(
-    posterior_fit, "shape", shape, thresh
+    posterior_fit,
+    "shape",
+    shape,
+    thresh
   )
   shift_par_recovered <- test_brms_quantile(
-    posterior_fit, "ndt", shift, thresh
+    posterior_fit,
+    "ndt",
+    shift,
+    thresh
   )
   expect_true(intercept_recovered && shape_par_recovered && shift_par_recovered)
 })

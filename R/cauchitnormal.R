@@ -19,7 +19,8 @@ dcauchitnormal <- function(x, mu, sigma, log = FALSE) {
   }
   logpdf <-
     -(log(sigma) + 0.5 * (log(2 * pi))) +
-    log(2 * pi) - log(cos(2 * pi * (x - 0.5)) + 1) +
+    log(2 * pi) -
+    log(cos(2 * pi * (x - 0.5)) + 1) +
     -(cauchit(x) - mu)^2 / (2 * sigma^2)
   if (log) {
     return(logpdf)
@@ -81,8 +82,10 @@ posterior_predict_cauchitnormal <- function(i, prep, ...) {
 #' @return Nothing
 posterior_epred_cauchitnormal <- function(prep) {
   # https://doi.org/10.1080/03610926.2020.1752723 might solve this
-  stop("Due to the mean not having an analytical solution for the cauchit-normal
-        distribution, posterior_epred is currently not supported.")
+  stop(
+    "Due to the mean not having an analytical solution for the cauchit-normal
+        distribution, posterior_epred is currently not supported."
+  )
 }
 
 #' Custom brms family Cauchitnormal
@@ -123,7 +126,7 @@ cauchitnormal <- function(link = "identity", link_sigma = "log") {
       }
 
       real cauchitnormal_rng(real mu, real sigma) {
-        return cauchy_cdf(normal_rng(mu, sigma), 0, 1);
+        return cauchy_cdf(normal_rng(mu, sigma) | 0, 1);
       }",
     block = "functions"
   )
