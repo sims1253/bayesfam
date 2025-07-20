@@ -30,10 +30,20 @@
 #' @examples print(bayesfam:::expect_eps(1, 1.1, 0.2)) # should pass
 #' # print(expect_error(bayesfam:::expect_eps(c(0, 1, 3), c(1, 1, 2), 1e-4, 1 / 3)))
 #' # should fail (2/3 were wrong, but only 1/3 was allowed)
-expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = FALSE) {
+expect_eps <- function(
+  a,
+  b,
+  eps,
+  r = 0,
+  relative = FALSE,
+  note = NULL,
+  debug = FALSE
+) {
   # then check, that r is only a scalar. Also check, that r is in range [0, 1)
   if (isFALSE(isNum_len(r) && r >= 0 && r < 1)) {
-    stop("The relative number of tolerated deviances r has to be a scalar in [0, 1).")
+    stop(
+      "The relative number of tolerated deviances r has to be a scalar in [0, 1)."
+    )
   }
   if (!isLogic_len(relative)) {
     stop("The relative argument has to be a single boolean value")
@@ -47,8 +57,12 @@ expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = 
     stop("In relative mode, the eps should be in [0, 1)")
   }
   # then check, if vectors are of same length or length 1
-  if (!lenEqual(list(a, b, eps), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("Used different length of numeric vectors in test. (Or vectors containing NAs)")
+  if (
+    !lenEqual(list(a, b, eps), scalars_allowed = TRUE, type_check = is.numeric)
+  ) {
+    stop(
+      "Used different length of numeric vectors in test. (Or vectors containing NAs)"
+    )
   }
   if (!is.null(note) && !isSingleString(note)) {
     stop("If note is to be used, it has to be a single string argument")
@@ -79,21 +93,34 @@ expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = 
     # in case of a failure, print how many entries have been incorrect and how many were allowed.
     if (isTRUE(tolerated_deviances > 0)) {
       message <- paste0(
-        "In expect_eps: ", toString(number_deviances), " of ",
-        toString(vector_length), " were bigger, then eps. Only ",
-        toString(tolerated_deviances), " allowed!"
+        "In expect_eps: ",
+        toString(number_deviances),
+        " of ",
+        toString(vector_length),
+        " were bigger, then eps. Only ",
+        toString(tolerated_deviances),
+        " allowed!"
       )
     } else {
       message <- paste0(
-        "In expect_eps: ", toString(number_deviances), " of ",
-        toString(vector_length), " were bigger, then eps. None were allowed!"
+        "In expect_eps: ",
+        toString(number_deviances),
+        " of ",
+        toString(vector_length),
+        " were bigger, then eps. None were allowed!"
       )
     }
     if (debug) {
       print(paste0("relative: ", relative))
       print(paste0("a: ", a, " b: ", b, " dif: ", difference, " eps: ", eps))
     }
-    testthat::fail(paste(message, "\nWith relative:", relative, "the max difference was:", max(difference)))
+    testthat::fail(paste(
+      message,
+      "\nWith relative:",
+      relative,
+      "the max difference was:",
+      max(difference)
+    ))
   }
 }
 
@@ -107,8 +134,12 @@ expect_eps <- function(a, b, eps, r = 0, relative = FALSE, note = NULL, debug = 
 #'
 #' @examples print(bayesfam:::normale_difference(c(1, 1, 1, 1, 1), c(-1, 0, 1, 2, 3)))
 normale_difference <- function(va, vb) {
-  if (!lenEqual(list(va, vb), scalars_allowed = TRUE, type_check = is.numeric)) {
-    stop("In normale_difference function, both vector va and vb have to be numeric and of same len (or scalar)")
+  if (
+    !lenEqual(list(va, vb), scalars_allowed = TRUE, type_check = is.numeric)
+  ) {
+    stop(
+      "In normale_difference function, both vector va and vb have to be numeric and of same len (or scalar)"
+    )
   }
   difference <- abs(va - vb)
   denominator <- (va^2 + vb^2)^0.5
@@ -147,20 +178,26 @@ normale_difference <- function(va, vb) {
 #'   aux_list = phis, mu_eps = 0.2, p_acceptable_failures = 0.05
 #' )
 #' print(result)
-test_rng <- function(rng_fun,
-                     metric_mu,
-                     n,
-                     mu_list,
-                     aux_list = NA,
-                     aux2_list = NA,
-                     mu_eps,
-                     p_acceptable_failures,
-                     mu_link = identity,
-                     relative = FALSE,
-                     debug = TRUE) {
+test_rng <- function(
+  rng_fun,
+  metric_mu,
+  n,
+  mu_list,
+  aux_list = NA,
+  aux2_list = NA,
+  mu_eps,
+  p_acceptable_failures,
+  mu_link = identity,
+  relative = FALSE,
+  debug = TRUE
+) {
   # check, that all function arguments are actually functions
   # TODO: (Is it possible, to check, if they also take the correct arguments?)
-  if (isFALSE(is.function(rng_fun) && is.function(metric_mu) && is.function(mu_link))) {
+  if (
+    isFALSE(
+      is.function(rng_fun) && is.function(metric_mu) && is.function(mu_link)
+    )
+  ) {
     stop("RNG-, Metric- or mu_link-function argument was not a function!")
   }
   # check the number of samples to be generated and cecked
@@ -199,7 +236,8 @@ test_rng <- function(rng_fun,
           metric_mu(
             rng_fun(
               n,
-              mu = mu_link(mu_list[j]), aux_list[i]
+              mu = mu_link(mu_list[j]),
+              aux_list[i]
             )
           )
       }
@@ -265,14 +303,16 @@ test_rng <- function(rng_fun,
 #'   aux_list = phis,
 #' )
 #' print(result)
-test_rng_asym <- function(rng_fun,
-                          metric_mu,
-                          n_samples = c(10, 10000),
-                          mu_list,
-                          aux_list,
-                          aux2_list = NA,
-                          mu_link = identity,
-                          allowed_failures = 0.05) {
+test_rng_asym <- function(
+  rng_fun,
+  metric_mu,
+  n_samples = c(10, 10000),
+  mu_list,
+  aux_list,
+  aux2_list = NA,
+  mu_link = identity,
+  allowed_failures = 0.05
+) {
   len_n <- length(n_samples)
   if (len_n < 2 || !isNat_len(n_samples, len = len_n)) {
     stop("n_samples to be a vector of at least two positive integer entries")
@@ -292,7 +332,8 @@ test_rng_asym <- function(rng_fun,
             metric_mu(
               rng_fun(
                 n[i],
-                mu = mu, aux
+                mu = mu,
+                aux
               )
             )
           )
@@ -311,10 +352,12 @@ test_rng_asym <- function(rng_fun,
         }
       }
       # Tests if the resulting distances to the true mu reduce with growing sample size
-      if (!identical(
-        abs(loop_mu_list - mu),
-        sort(abs(loop_mu_list - mu), decreasing = TRUE)
-      )) {
+      if (
+        !identical(
+          abs(loop_mu_list - mu),
+          sort(abs(loop_mu_list - mu), decreasing = TRUE)
+        )
+      ) {
         num_failures <- num_failures + 1
       }
     }
@@ -327,12 +370,17 @@ test_rng_asym <- function(rng_fun,
   } else {
     testthat::fail(paste(
       "Number of allowed failures in asymp test was violated\n",
-      "Allowed were", allowed_failures_abs, "of", num_tests, "to fail\n",
-      "but actually", num_failures, "number of tests did fail"
+      "Allowed were",
+      allowed_failures_abs,
+      "of",
+      num_tests,
+      "to fail\n",
+      "but actually",
+      num_failures,
+      "number of tests did fail"
     ))
   }
 }
-
 
 
 #' Tests if an RNG can recover the true quantiles within a margin of error
@@ -368,17 +416,19 @@ test_rng_asym <- function(rng_fun,
 #'   p_acceptable_failures = 0.1,
 #'   relative = TRUE
 #' )
-test_rng_quantiles <- function(rng_fun,
-                               quantile_fun,
-                               n,
-                               mu_list,
-                               aux_list = NA,
-                               aux2_list = NA,
-                               eps,
-                               quantiles,
-                               p_acceptable_failures,
-                               mu_link = identity,
-                               relative = FALSE) {
+test_rng_quantiles <- function(
+  rng_fun,
+  quantile_fun,
+  n,
+  mu_list,
+  aux_list = NA,
+  aux2_list = NA,
+  eps,
+  quantiles,
+  p_acceptable_failures,
+  mu_link = identity,
+  relative = FALSE
+) {
   if (any(is.na(aux_list))) {
     for (mu in mu_list) {
       sample <- rng_fun(
@@ -402,7 +452,10 @@ test_rng_quantiles <- function(rng_fun,
           mu = mu_link(mu),
           aux
         )
-        true_quantiles <- do.call(quantile_fun, list(quantiles, mu_link(mu), aux))
+        true_quantiles <- do.call(
+          quantile_fun,
+          list(quantiles, mu_link(mu), aux)
+        )
         expect_eps(
           a = true_quantiles,
           b = quantile(sample, quantiles),
@@ -481,27 +534,30 @@ test_rng_quantiles <- function(rng_fun,
 #'   aux_name = "phi"
 #' )
 #' print(result)
-expect_brms_family <- function(n_data_sampels = 1000,
-                               intercept,
-                               ref_intercept = NULL,
-                               aux_par = NA,
-                               aux2_par = NA,
-                               rng_link,
-                               parameter_link,
-                               family,
-                               rng,
-                               aux_name = NULL,
-                               aux2_name = NULL,
-                               seed = 1235813,
-                               data_threshold = NULL,
-                               thresh = 0.05,
-                               debug = FALSE,
-                               formula = y ~ 1,
-                               prior = NULL) {
+expect_brms_family <- function(
+  n_data_sampels = 1000,
+  intercept,
+  ref_intercept = NULL,
+  aux_par = NA,
+  aux2_par = NA,
+  rng_link,
+  parameter_link,
+  family,
+  rng,
+  aux_name = NULL,
+  aux2_name = NULL,
+  seed = 1235813,
+  data_threshold = NULL,
+  thresh = 0.05,
+  debug = FALSE,
+  formula = y ~ 1,
+  prior = NULL
+) {
   if (is.null(ref_intercept)) {
     ref_intercept <- intercept
   }
-  posterior_fit <- construct_brms(n_data_sampels,
+  posterior_fit <- construct_brms(
+    n_data_sampels,
     intercept,
     aux_par,
     aux2_par,
@@ -515,19 +571,33 @@ expect_brms_family <- function(n_data_sampels = 1000,
   )
 
   success <- test_brms_quantile(
-    posterior_fit, "b_Intercept", parameter_link(ref_intercept), thresh, debug
+    posterior_fit,
+    "b_Intercept",
+    parameter_link(ref_intercept),
+    thresh,
+    debug
   )
 
   if (!is.na(aux_par)) {
     # logical and with first aux, if it exists
-    success <- success && test_brms_quantile(
-      posterior_fit, aux_name, aux_par, thresh, debug
-    )
+    success <- success &&
+      test_brms_quantile(
+        posterior_fit,
+        aux_name,
+        aux_par,
+        thresh,
+        debug
+      )
   }
   if (!is.na(aux2_par)) {
-    success <- success && test_brms_quantile(
-      posterior_fit, aux2_name, aux2_par, thresh, debug
-    )
+    success <- success &&
+      test_brms_quantile(
+        posterior_fit,
+        aux2_name,
+        aux2_par,
+        thresh,
+        debug
+      )
   }
 
   if (debug & !success) {
@@ -550,7 +620,9 @@ expect_brms_family <- function(n_data_sampels = 1000,
   if (success) {
     testthat::succeed()
   } else {
-    testthat::fail("One or more variables have not been recovered correctly! You may set debug true and check the plot.")
+    testthat::fail(
+      "One or more variables have not been recovered correctly! You may set debug true and check the plot."
+    )
   }
 }
 
@@ -584,17 +656,19 @@ expect_brms_family <- function(n_data_sampels = 1000,
 #' )
 #' plot(posterior_fit)
 #' # beta_prime uses log-link for Intercept
-construct_brms <- function(n_data_sampels,
-                           intercept,
-                           aux_par = NA,
-                           aux2_par = NA,
-                           rng_link,
-                           family,
-                           rng,
-                           seed = NULL,
-                           data_threshold = NULL,
-                           formula = y ~ 1,
-                           prior = NULL) {
+construct_brms <- function(
+  n_data_sampels,
+  intercept,
+  aux_par = NA,
+  aux2_par = NA,
+  rng_link,
+  family,
+  rng,
+  seed = NULL,
+  data_threshold = NULL,
+  formula = y ~ 1,
+  prior = NULL
+) {
   if (!(is.function(family) && is.function(rng) && is.function(rng_link))) {
     stop("family, rng or rng_link argument were not a function!")
   }
@@ -611,10 +685,11 @@ construct_brms <- function(n_data_sampels,
     stop("aux2_par argument has to be a real scalar, or NA if unused")
   }
   if (!(isNum_len(seed) || is.null(seed))) {
-    stop("seed argument if used has to be a real scalar. Else it is let default as NULL,
-         which will not change the current RNG seed")
+    stop(
+      "seed argument if used has to be a real scalar. Else it is let default as NULL,
+         which will not change the current RNG seed"
+    )
   }
-
 
   if (!is.null(seed)) {
     old_seed <- .Random.seed
@@ -636,7 +711,6 @@ construct_brms <- function(n_data_sampels,
   if (!is.null(seed)) {
     set.seed(old_seed)
   }
-
 
   data <- list(y = y_data)
 
@@ -662,7 +736,7 @@ construct_brms <- function(n_data_sampels,
 #' @param arg_name Name of the argument variable to check, as single string
 #' @param reference Reference value to check against, single real scalar
 #' @param thresh real scalar or 2-length vector of quantile bounds.
-#' For scalar constructs bound as [thresh, 1-thresh]
+#' For scalar constructs bound as `[thresh, 1-thresh]`
 #' thresh has to be inside the Unit-Interval.
 #' @param debug True for verbose output of test results.
 #'
@@ -681,9 +755,17 @@ construct_brms <- function(n_data_sampels,
 #' )
 #' plot(fit)
 #' # beta_prime uses log-link for Intercept
-test_brms_quantile <- function(posterior_data, arg_name, reference, thresh, debug = FALSE) {
+test_brms_quantile <- function(
+  posterior_data,
+  arg_name,
+  reference,
+  thresh,
+  debug = FALSE
+) {
   if (!is.list(posterior_data)) {
-    stop("The posterior_data frame has to be brms data, which itself is in R of type list")
+    stop(
+      "The posterior_data frame has to be brms data, which itself is in R of type list"
+    )
   }
   if (!isSingleString(arg_name)) {
     stop("The variable arg_name argument has to be a single string")
@@ -699,12 +781,16 @@ test_brms_quantile <- function(posterior_data, arg_name, reference, thresh, debu
   }
   if (isNum_len(thresh)) {
     if (thresh > 0.5) {
-      stop("Any threshold scalar bigger 0.5 would create a bigger lower bound than upper bound!")
+      stop(
+        "Any threshold scalar bigger 0.5 would create a bigger lower bound than upper bound!"
+      )
     }
     bounds <- c(thresh, 1 - thresh)
   } else if (isNum_len(thresh, 2)) {
     if (isFALSE(thresh[1] <= thresh[2])) {
-      stop("If a 2 entry vector is used for the bounds, the first entry is the lower bound")
+      stop(
+        "If a 2 entry vector is used for the bounds, the first entry is the lower bound"
+      )
     }
     bounds <- thresh
   } else {
@@ -718,9 +804,13 @@ test_brms_quantile <- function(posterior_data, arg_name, reference, thresh, debu
     error = function(e) {
       # if the extract fails, most probably cause is a wrong variable arg_name string
       # instead of giving an unreadable error, throw clear warning and return false
-      warning(paste0("In test_brms_quantile, the variable extraction of ", arg_name, " failed.
+      warning(paste0(
+        "In test_brms_quantile, the variable extraction of ",
+        arg_name,
+        " failed.
                    Most probable cause, the variable-string was written wrong or did not exist somehow.
-                   Return FALSE in this case."))
+                   Return FALSE in this case."
+      ))
       # warning(paste0("Original error was: ", e))
       return(FALSE)
     }
@@ -849,7 +939,12 @@ isSingleString <- function(input) {
 #' vc <- c(7, 8)
 #' bayesfam:::lenEqual(list(va, vb)) # both got 3 entries
 #' bayesfam:::lenEqual(list(va, vb, vc)) # not all vectors have the same number of entries
-lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL, na_allowed = FALSE) {
+lenEqual <- function(
+  list_of_vectors,
+  scalars_allowed = FALSE,
+  type_check = NULL,
+  na_allowed = FALSE
+) {
   if (!isLogic_len(scalars_allowed)) {
     stop("scalars_allowed has to be a single boolean value")
   }
@@ -857,8 +952,10 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
     stop("na_allowed has to be a single boolean value")
   }
   if (!is.null(type_check) && !is.function(type_check)) {
-    stop("If type_check is to be used, it has to be a function pointer, to a type checking function
-         (for example is.numeric)")
+    stop(
+      "If type_check is to be used, it has to be a function pointer, to a type checking function
+         (for example is.numeric)"
+    )
   }
 
   maxLen <- 0
@@ -871,12 +968,16 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
 
     if (is.function(type_check) && !type_check(vector)) {
       # warning surpressed the then following error?
-      warning("At least one vector was not of the specified type! Return FALSE immediatly.")
+      warning(
+        "At least one vector was not of the specified type! Return FALSE immediatly."
+      )
       return(FALSE)
     }
     if (!na_allowed && any(is.na(vector))) {
       # if NAs are disallowed and the input contains any NAs, the function returns FALSE immediatly.
-      warning("NAs disallowed, but at least one entry in the vectors was a NA! Return FALSE immediatly.")
+      warning(
+        "NAs disallowed, but at least one entry in the vectors was a NA! Return FALSE immediatly."
+      )
       return(FALSE)
     }
   }
@@ -897,7 +998,7 @@ lenEqual <- function(list_of_vectors, scalars_allowed = FALSE, type_check = NULL
 #' Data limit function
 #'
 #' @param data Data to be limited
-#' @param limits Limits to be used. Vector with 2 real entries, limits[1] <= limits[2]
+#' @param limits Limits to be used. Vector with 2 real entries, `limits[1] <= limits[2]`
 #' If the lower bound does not have to be restricted, set it to NA and vice versa.
 #' Sets data outside those bounds to those bounds.
 #'
@@ -920,8 +1021,10 @@ limit_data <- function(data, limits) {
   # if both bounds are used, check the order of them
   if (isNum_len(limits, 2)) {
     if (limits[1] > limits[2]) {
-      stop("In limit_data, the first limit is the lower limit, so it has to be
-           smaller than the second limit.")
+      stop(
+        "In limit_data, the first limit is the lower limit, so it has to be
+           smaller than the second limit."
+      )
     }
   }
 

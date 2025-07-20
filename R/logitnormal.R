@@ -80,9 +80,11 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
 #'
 #' @return Median of Posterior
 posterior_epred_logitnormal <- function(prep) {
-  warning("posterior_epred promises the mean, however with no analytical mean
+  warning(
+    "posterior_epred promises the mean, however with no analytical mean
           available for the logit-normal distribution, we provide the median
-          in this case. Proceed with caution.")
+          in this case. Proceed with caution."
+  )
   mu <- brms::get_dpar(prep, "mu")
   return(plogis(mu))
 }

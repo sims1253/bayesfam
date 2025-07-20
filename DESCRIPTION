@@ -1,39 +1,41 @@
-Package: bayesfam
 Type: Package
+Package: bayesfam
 Title: brms Custom Families
 Version: 0.3.2
 Date: 2022-10-26
-Authors@R:
-    c(person("Maximilian", "Scholz", email = "research.scholz@mailbox.org",
-             role = c("aut", "cre")),
-      person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com",
-             role = c("aut")),
-      person("Yannick", "Dzubba", role = c("aut")))
+Authors@R: c(
+    person("Maximilian", "Scholz", , "research.scholz@mailbox.org", role = c("aut", "cre")),
+    person("Paul-Christian", "Bürkner", , "paul.buerkner@gmail.com", role = "aut"),
+    person("Yannick", "Dzubba", role = "aut")
+  )
 Maintainer: Maximilian Scholz <research.scholz@mailbox.org>
-License: GPL-3 + file LICENSE
-Encoding: UTF-8
-LazyData: true
-Imports:
-    brms (>= 2.18.1),
-    stats,
-    lamW
-Suggests:
-    testthat (>= 3.1.0),
-    rmutil,
-    extraDistr,
-    posterior (>= 1.3.1),
-    gnorm,
-    logitnorm,
-    flexsurv
-Remotes:
-    paul-buerkner/brms
-RoxygenNote: 7.2.3
-NeedsCompilation: no
+Description: A collection of custom brms families and some additional
+    functions for existing families originally developed as part of the
+    bayesim package.  References: Scholz (2022)
+    <doi:10.5281/zenodo.7099513>; Scholz (2022)
+    <doi:10.48550/ARXIV.2210.06927>.
 URL: https://github.com/sims1253/bayesfam
 BugReports: https://github.com/sims1253/bayesfam/issues
-Description: A collection of custom brms families and some additional functions
-    for existing families originally developed as part of the bayesim package.
-    References: Scholz (2022) <doi:10.5281/zenodo.7099513>;
-    Scholz (2022) <doi:10.48550/ARXIV.2210.06927>.
-Config/testthat/parallel: true
+License: GPL (>= 3)
+Imports:
+    brms (>= 2.18.1),
+    lamW,
+    stats
+Suggests:
+    extraDistr,
+    flexsurv,
+    gnorm,
+    logitnorm,
+    posterior (>= 1.3.1),
+    rmutil,
+    testthat (>= 3.1.0)
+Remotes:
+    paul-buerkner/brms
 Config/testthat/edition: 3
+Config/testthat/parallel: true
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: no
+RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)
+

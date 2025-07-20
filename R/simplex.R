@@ -24,16 +24,14 @@ dsimplex <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(sigma == 0))) {
     stop("sigma can not be 0.")
   }
-  result <- (-0.5) * (
-    log(2) +
+  result <- (-0.5) *
+    (log(2) +
       log(pi) +
       2 * log(sigma) +
-      3 * (log(x) + log1p(-x))
-  ) +
-    ((-1 / (2 * sigma^2)) * (
-      ((x - mu)^2) /
-        (x * (1 - x) * mu^2 * (1 - mu)^2)
-    ))
+      3 * (log(x) + log1p(-x))) +
+    ((-1 / (2 * sigma^2)) *
+      (((x - mu)^2) /
+        (x * (1 - x) * mu^2 * (1 - mu)^2)))
   if (log) {
     return(result)
   } else {

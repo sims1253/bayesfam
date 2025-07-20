@@ -15,3 +15,6 @@ List containing lower and upper bounds for the auxiliary parameter.
 \description{
 Lookup for limits of family auxiliary parameters.
 }
+\examples{
+aux_limits_lookup("beta")
+}

@@ -5,8 +5,8 @@
 \title{Symlog response function}
 \source{
 Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
-        Mastering Diverse Domains through World Models.
-        (\url{https://doi.org/10.48550/arXiv.2301.04104})
+Mastering Diverse Domains through World Models.
+(\url{https://doi.org/10.48550/arXiv.2301.04104})
 }
 \usage{
 inv_symlog(x)

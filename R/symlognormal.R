@@ -2,7 +2,7 @@
 #'
 #' @source Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
 #'         Mastering Diverse Domains through World Models.
-#'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
+#'         (<https://doi.org/10.48550/arXiv.2301.04104>)
 #'
 #' @param x Value space of the distribution, x unbound
 #' @param mu Median parameter, mu unbound
@@ -19,7 +19,8 @@ dsymlognormal <- function(x, mu, sigma, log = FALSE) {
     stop("sigma must be above or equal to 0.")
   }
 
-  symlog_jacobian_adjustment <- ifelse(x == 0,
+  symlog_jacobian_adjustment <- ifelse(
+    x == 0,
     0,
     log(x * sign(x)) - log((abs(x) + x^2))
   )
@@ -39,7 +40,7 @@ dsymlognormal <- function(x, mu, sigma, log = FALSE) {
 #'
 #' @source Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
 #'         Mastering Diverse Domains through World Models.
-#'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
+#'         (<https://doi.org/10.48550/arXiv.2301.04104>)
 #'
 #' @param n Number of draws
 #' @param mu Median parameter, mu unbound, mu already symlog transformed
@@ -91,14 +92,16 @@ posterior_predict_symlognormal <- function(i, prep, ...) {
 #'
 #' @return warning
 posterior_epred_symlognormal <- function(prep) {
-  warning("posterior_epred is not defined for the symlog normal as I don't know a mean formula.")
+  warning(
+    "posterior_epred is not defined for the symlog normal as I don't know a mean formula."
+  )
 }
 
 #' Custom brms family symlog-Normal
 #'
 #' @source Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
 #'         Mastering Diverse Domains through World Models.
-#'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
+#'         (<https://doi.org/10.48550/arXiv.2301.04104>)
 #'
 #' @param link Link function argument (as string) for Median argument. Left as identity!
 #' @param link_sigma Link function argument (as string) for Shape argument

@@ -9,7 +9,7 @@ limit_data(data, limits)
 \arguments{
 \item{data}{Data to be limited}
 
-\item{limits}{Limits to be used. Vector with 2 real entries, limits[1] <= limits[2]
+\item{limits}{Limits to be used. Vector with 2 real entries, \code{limits[1] <= limits[2]}
 If the lower bound does not have to be restricted, set it to NA and vice versa.
 Sets data outside those bounds to those bounds.}
 }

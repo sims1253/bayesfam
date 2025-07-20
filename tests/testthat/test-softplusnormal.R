@@ -14,7 +14,6 @@ test_that("custom-softplusnormal", {
   expect_equal(n, length(dsoftplusnormal(x, mu = softplus(1), sigma = 2)))
   expect_equal(n, length(rsoftplusnormal(n, mu = softplus(1), sigma = 2)))
 
-
   # Compare density and to built-in
   warning("No reference density available to test against.")
 

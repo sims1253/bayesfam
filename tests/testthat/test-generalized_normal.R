@@ -13,7 +13,10 @@ test_that("custom-generalized-normal", {
 
   # Check lengths
   expect_equal(n, length(dgeneralized_normal(x, mu = 1, sigma = 2, beta = 3)))
-  expect_equal(n, length(qgeneralized_normal(unit, mu = 1, sigma = 2, beta = 3)))
+  expect_equal(
+    n,
+    length(qgeneralized_normal(unit, mu = 1, sigma = 2, beta = 3))
+  )
   expect_equal(n, length(rgeneralized_normal(n, mu = 1, sigma = 2, beta = 3)))
 
   # Compare density and quantile functions to extraDistr
@@ -58,7 +61,21 @@ test_that("custom-generalized-normal", {
     aux_list = aux_list,
     aux2_list = aux_list,
     eps = accepted_rng_error,
-    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+    quantiles = c(
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      0.95,
+      0.99
+    ),
     p_acceptable_failures = accepred_rng_failures,
     relative = TRUE
   )

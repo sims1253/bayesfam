@@ -80,8 +80,10 @@ posterior_predict_cloglognormal <- function(i, prep, ...) {
 #' @return Nothing
 posterior_epred_cloglognormal <- function(prep) {
   # https://doi.org/10.1080/03610926.2020.1752723 might solve this
-  stop("Due to the mean not having an analytical solution for the cloglog-normal
-        distribution, posterior_epred is currently not supported.")
+  stop(
+    "Due to the mean not having an analytical solution for the cloglog-normal
+        distribution, posterior_epred is currently not supported."
+  )
 }
 
 #' Custom brms family Cloglog-Normal in median parametrization.

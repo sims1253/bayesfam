@@ -136,7 +136,7 @@ inv_softplus <- function(x) {
 #'
 #' @source Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
 #'         Mastering Diverse Domains through World Models.
-#'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
+#'         (<https://doi.org/10.48550/arXiv.2301.04104>)
 #'
 #' @param x value to be transformed, x is unbound
 #'
@@ -156,7 +156,7 @@ symlog <- function(x) {
 #'
 #' @source Based on Hafner, D., Pasukonis, J., Ba, J., & Lillicrap, T. (2023).
 #'         Mastering Diverse Domains through World Models.
-#'         (\url{https://doi.org/10.48550/arXiv.2301.04104})
+#'         (<https://doi.org/10.48550/arXiv.2301.04104>)
 #'
 #' @param x value to be transformed, x is unbound
 #'
@@ -173,13 +173,13 @@ inv_symlog <- function(x) {
 
 #' Logarithm of the sum of exponentials.
 #'
-#' A more numerically stable equivalent to \code{log(sum(exp(x)))}
+#' A more numerically stable equivalent to `log(sum(exp(x)))`
 #'
 #' @source https://en.wikipedia.org/wiki/LogSumExp#log-sum-exp_trick_for_log-domain_calculations
 #' @param x a vector of values
 #' @return log(sum(exp(x)))
 #' @export
-logsumexp <- function (x) {
+logsumexp <- function(x) {
   y = max(x)
   y + log(sum(exp(x - y)))
 }

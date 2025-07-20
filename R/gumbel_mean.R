@@ -55,8 +55,7 @@ qgumbel_mean <- function(p, mu, sigma) {
   }
 
   return(
-    (mu - sigma * (-digamma(1)))
-    - sigma * log(-log(p))
+    (mu - sigma * (-digamma(1))) - sigma * log(-log(p))
   )
 }
 

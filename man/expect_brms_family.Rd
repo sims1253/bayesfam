@@ -20,7 +20,9 @@ expect_brms_family(
   seed = 1235813,
   data_threshold = NULL,
   thresh = 0.05,
-  debug = FALSE
+  debug = FALSE,
+  formula = y ~ 1,
+  prior = NULL
 )
 }
 \arguments{
@@ -60,6 +62,10 @@ Vector is used as is, scalar will be interpreted as c(thresh, 1-thresh).
 Default = 0.05}
 
 \item{debug}{Scalar Boolean argument, whether debug info is printed or not. Default = False.}
+
+\item{formula}{the formula used in the brms fit}
+
+\item{prior}{any priors for brms}
 }
 \value{
 None

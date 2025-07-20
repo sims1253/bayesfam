@@ -34,7 +34,6 @@ test_that("custom-logistic", {
     }
   }
 
-
   # check if the RNG is close enough to the true mean in most cases
   test_rng(
     rng_fun = rlogistic,
@@ -55,7 +54,21 @@ test_that("custom-logistic", {
     mu_list = mu_list,
     aux_list = aux_list,
     eps = accepted_rng_error,
-    quantiles = c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+    quantiles = c(
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      0.95,
+      0.99
+    ),
     p_acceptable_failures = accepred_rng_failures,
     relative = TRUE
   )
@@ -78,7 +91,6 @@ test_that("custom-logistic", {
   expect_error(rlogistic(-1, mu = 2, sigma = 2)) # number of drawn samples cannot be smaller 0
   # expect_error(rlogistic("r", mu = 2, sigma = 2)) # non-numeric arguments are disallowed
   expect_error(rlogistic(100, mu = 1, sigma = 0)) # phi is not allowed to be 0 or smaller
-
 
   # Check of brms can fit the custom family and recover the intercept and shape
   expect_brms_family(

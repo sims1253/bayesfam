@@ -119,9 +119,11 @@ posterior_epred_shifted_inv_gaussian <- function(prep) {
 #'   refresh = 0
 #' )
 #' plot(fit)
-shifted_inv_gaussian <- function(link = "log",
-                                 link_shape = "log",
-                                 link_ndt = "log") {
+shifted_inv_gaussian <- function(
+  link = "log",
+  link_shape = "log",
+  link_ndt = "log"
+) {
   family <- brms::custom_family(
     "shifted_inv_gaussian",
     dpars = c("mu", "shape", "ndt"),

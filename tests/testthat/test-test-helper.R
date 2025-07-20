@@ -38,15 +38,40 @@ test_that("test custom expect_eps function", {
   expect_success(expect_eps(c(1, 1), c(1.1, 1.1), c(0.2, 0.3)))
   expect_success(expect_eps(c(1, 3), c(1.1, 3.1), c(0.2, 0.3)))
   expect_success(expect_eps(c(1, 5), c(1.1, 7), c(0.2, 3)))
-  expect_success(expect_eps(c(1, 1, 2), c(1.1, 1.1, 1.1), eps = c(0.2, 0.3, 0.2), r = 0.4))
+  expect_success(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1, 1.1),
+    eps = c(0.2, 0.3, 0.2),
+    r = 0.4
+  ))
   expect_failure(expect_eps(c(1, 2), c(1.1, 1.1), c(0.2, 0.3)))
-  expect_failure(expect_eps(c(1, 1, 2), c(1.1, 1.1, 1.1), eps = c(0.2, 0.3, 0.2), r = 0.2))
+  expect_failure(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1, 1.1),
+    eps = c(0.2, 0.3, 0.2),
+    r = 0.2
+  ))
   expect_error(expect_eps(c(1, 1, 1), c(1.1, 1.1), c(0.2, 0.3)))
   expect_error(expect_eps(c(1, 1, 2), c(1.1, 1.1), c(0.2, 0.3)))
   # additional r-error-tests
-  expect_error(expect_eps(c(1, 1, 2), c(1.1, 1.1, 1.1), eps = c(0.2, 0.3, 0.2), r = -0.1))
-  expect_error(expect_eps(c(1, 1, 2), c(1.1, 1.1, 1.1), eps = c(0.2, 0.3, 0.2), r = 1.1))
-  expect_error(expect_eps(c(1, 1, 2), c(1.1, 1.1, 1.1), eps = c(0.2, 0.3, 0.2), r = c(0.1, 0.2, 0.3)))
+  expect_error(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1, 1.1),
+    eps = c(0.2, 0.3, 0.2),
+    r = -0.1
+  ))
+  expect_error(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1, 1.1),
+    eps = c(0.2, 0.3, 0.2),
+    r = 1.1
+  ))
+  expect_error(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1, 1.1),
+    eps = c(0.2, 0.3, 0.2),
+    r = c(0.1, 0.2, 0.3)
+  ))
   expect_error(expect_eps(1, 1.1, 0.2, "r"))
 
   # now all normal use cases, but as relative test
@@ -59,24 +84,60 @@ test_that("test custom expect_eps function", {
   expect_error(expect_eps(0.1, 0.11, 1, relative = TRUE))
   # a vector, b scalar, eps scalar
   expect_success(expect_eps(c(1, 1), 1.1, 0.2, relative = TRUE))
-  expect_success(expect_eps(c(2, 1, 1), 1.1, eps = 0.2, r = 0.4, relative = TRUE))
+  expect_success(expect_eps(
+    c(2, 1, 1),
+    1.1,
+    eps = 0.2,
+    r = 0.4,
+    relative = TRUE
+  ))
   expect_failure(expect_eps(c(1, 2), 1.1, 0.2, relative = TRUE))
   expect_failure(expect_eps(c(1, 1.1), 2, 0.2, relative = TRUE))
-  expect_failure(expect_eps(c(2, 1, 1), 1.1, eps = 0.2, r = 0.2, relative = TRUE))
+  expect_failure(expect_eps(
+    c(2, 1, 1),
+    1.1,
+    eps = 0.2,
+    r = 0.2,
+    relative = TRUE
+  ))
   # a vector, b vector, eps scalar
   expect_success(expect_eps(c(1, 1), c(1.1, 1.1), 0.2, relative = TRUE))
-  expect_success(expect_eps(c(2, 1, 1), c(1.1, 1.1, 1.1), eps = 0.2, r = 0.4, relative = TRUE))
+  expect_success(expect_eps(
+    c(2, 1, 1),
+    c(1.1, 1.1, 1.1),
+    eps = 0.2,
+    r = 0.4,
+    relative = TRUE
+  ))
   expect_failure(expect_eps(c(1, 2), c(1.1, 1.1), 0.2, relative = TRUE))
-  expect_failure(expect_eps(c(2, 1, 1), c(1.1, 1.1, 1.1), eps = 0.2, r = 0.2, relative = TRUE))
+  expect_failure(expect_eps(
+    c(2, 1, 1),
+    c(1.1, 1.1, 1.1),
+    eps = 0.2,
+    r = 0.2,
+    relative = TRUE
+  ))
   expect_error(expect_eps(c(1, 1, 1), c(1.1, 1.1), 0.2, relative = TRUE))
   expect_error(expect_eps(c(1, 1, 2), c(1.1, 1.1), 0.2, relative = TRUE))
   # a vector, b scalar, eps vector
   expect_success(expect_eps(c(1, 1), 1.1, c(0.2, 0.3), relative = TRUE))
-  expect_success(expect_eps(c(1, 1, 2), 1.1, eps = c(0.2, 0.3, 0.2), r = 0.4, relative = TRUE))
+  expect_success(expect_eps(
+    c(1, 1, 2),
+    1.1,
+    eps = c(0.2, 0.3, 0.2),
+    r = 0.4,
+    relative = TRUE
+  ))
   expect_success(expect_eps(c(1, 1), 1.1, c(0.2, 0.3), relative = TRUE))
   expect_failure(expect_eps(c(1, 2), 1.1, c(0.2, 0.3), relative = TRUE))
   expect_failure(expect_eps(c(1, 1), 2, c(0.2, 0.3), relative = TRUE))
-  expect_failure(expect_eps(c(1, 1, 2), 1.1, eps = c(0.2, 0.3, 0.2), r = 0.2, relative = TRUE))
+  expect_failure(expect_eps(
+    c(1, 1, 2),
+    1.1,
+    eps = c(0.2, 0.3, 0.2),
+    r = 0.2,
+    relative = TRUE
+  ))
   expect_error(expect_eps(c(1, 1, 1), 1.1, c(0.2, 0.3), relative = TRUE))
   expect_error(expect_eps(c(1, 2, 3), 1.1, c(0.2, 0.3), relative = TRUE))
   expect_error(expect_eps(c(1, 1), 1.1, c(0.2, -0.3), relative = TRUE))
@@ -84,11 +145,33 @@ test_that("test custom expect_eps function", {
   expect_success(expect_eps(c(1, 1), c(1.1, 1.1), c(0.2, 0.3), relative = TRUE))
   expect_success(expect_eps(c(1, 3), c(1.1, 3.1), c(0.2, 0.3), relative = TRUE))
   expect_success(expect_eps(c(1, 5), c(1.1, 7), c(0.1, 0.3), relative = TRUE))
-  expect_success(expect_eps(c(1, 1, 2), c(1.1, 1.1, 1.1), eps = c(0.2, 0.3, 0.2), r = 0.4, relative = TRUE))
+  expect_success(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1, 1.1),
+    eps = c(0.2, 0.3, 0.2),
+    r = 0.4,
+    relative = TRUE
+  ))
   expect_failure(expect_eps(c(1, 2), c(1.1, 1.1), c(0.2, 0.3), relative = TRUE))
-  expect_failure(expect_eps(c(1, 1, 2), c(1.1, 1.1, 1.1), eps = c(0.2, 0.3, 0.2), r = 0.2, relative = TRUE))
-  expect_error(expect_eps(c(1, 1, 1), c(1.1, 1.1), c(0.2, 0.3), relative = TRUE))
-  expect_error(expect_eps(c(1, 1, 2), c(1.1, 1.1), c(0.2, 0.3), relative = TRUE))
+  expect_failure(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1, 1.1),
+    eps = c(0.2, 0.3, 0.2),
+    r = 0.2,
+    relative = TRUE
+  ))
+  expect_error(expect_eps(
+    c(1, 1, 1),
+    c(1.1, 1.1),
+    c(0.2, 0.3),
+    relative = TRUE
+  ))
+  expect_error(expect_eps(
+    c(1, 1, 2),
+    c(1.1, 1.1),
+    c(0.2, 0.3),
+    relative = TRUE
+  ))
 })
 
 test_that("test normal_difference metric-function", {
@@ -134,40 +217,76 @@ test_that("test the test_rng-wrapper", {
 
   # the one test, if it works (not much point, in checking any other expected state)
   expect_success(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_list = alphas_r,
-    mu_eps = accepted_means_eps, p_acceptable_failures = p_acceptable_failures
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_list = alphas_r,
+    mu_eps = accepted_means_eps,
+    p_acceptable_failures = p_acceptable_failures
   ))
   # if the margins are too low, the function has a high likelihood to fail
   # for eps=0, will always fail
   expect_failure(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_list = alphas_r,
-    mu_eps = 0, p_acceptable_failures = 0, debug = FALSE
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_list = alphas_r,
+    mu_eps = 0,
+    p_acceptable_failures = 0,
+    debug = FALSE
   ))
 
   # else check all forbidden arguments
   # non-function type function arguments
-  expect_error(test_rng(0,
-    metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = 0, p_acceptable_failures = 0
+  expect_error(test_rng(
+    0,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = 0,
+    p_acceptable_failures = 0
   ))
   expect_error(test_rng(
-    rng_fun = rlomax, 0, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = 0, p_acceptable_failures = 0
+    rng_fun = rlomax,
+    0,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = 0,
+    p_acceptable_failures = 0
   ))
   # switched function arguments
   expect_error(test_rng(
-    rng_fun = mean, metric_mu = rlomax, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = 0, p_acceptable_failures = 0
+    rng_fun = mean,
+    metric_mu = rlomax,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = 0,
+    p_acceptable_failures = 0
   ))
   # non numeric sample number argument
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = "R", mu_list = mus, aux_par = alphas_r,
-    mu_eps = accepted_means_eps, p_acceptable_failures = p_acceptable_failures
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = "R",
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = accepted_means_eps,
+    p_acceptable_failures = p_acceptable_failures
   ))
   # vector of numbers to sample
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = c(42, 73), mu_list = mus, aux_par = alphas_r,
-    mu_eps = accepted_means_eps, p_acceptable_failures = p_acceptable_failures
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = c(42, 73),
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = accepted_means_eps,
+    p_acceptable_failures = p_acceptable_failures
   ))
   # non numeric eps argument
   # expect_warning(expect_error(test_rng(
@@ -175,38 +294,73 @@ test_that("test the test_rng-wrapper", {
   #   mu_eps = "R", p_acceptable_failures = p_acceptable_failures
   # )))
   expect_error(expect_warning(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = "R", p_acceptable_failures = p_acceptable_failures
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = "R",
+    p_acceptable_failures = p_acceptable_failures
   )))
   # negative eps argument
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = -1, p_acceptable_failures = p_acceptable_failures
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = -1,
+    p_acceptable_failures = p_acceptable_failures
   ))
   # vector eps argument
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = c(0.1, 0.2), p_acceptable_failures = p_acceptable_failures
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = c(0.1, 0.2),
+    p_acceptable_failures = p_acceptable_failures
   ))
   # non numeric p argument
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = accepted_means_eps, p_acceptable_failures = "R"
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = accepted_means_eps,
+    p_acceptable_failures = "R"
   ))
   # too small p argument (smaller 0)
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = accepted_means_eps, p_acceptable_failures = -1
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = accepted_means_eps,
+    p_acceptable_failures = -1
   ))
   # too big p argument (bigger 1)
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = accepted_means_eps, p_acceptable_failures = 2
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = accepted_means_eps,
+    p_acceptable_failures = 2
   ))
   # vector p argument
   expect_error(test_rng(
-    rng_fun = rlomax, metric_mu = mean, n = n, mu_list = mus, aux_par = alphas_r,
-    mu_eps = accepted_means_eps, p_acceptable_failures = c(0.1, 0.2)
+    rng_fun = rlomax,
+    metric_mu = mean,
+    n = n,
+    mu_list = mus,
+    aux_par = alphas_r,
+    mu_eps = accepted_means_eps,
+    p_acceptable_failures = c(0.1, 0.2)
   ))
 })
 
@@ -230,21 +384,35 @@ test_that("test_brms_quantile", {
   allowed_interval <- c(eps_brms, 1 - eps_brms)
   cloglog_data <- limit_data(cloglog_data, allowed_interval)
 
-  fit <- brms::brm(y ~ 1,
-    family = cloglognormal(), stanvars = cloglognormal()$stanvars,
+  fit <- brms::brm(
+    y ~ 1,
+    family = cloglognormal(),
+    stanvars = cloglognormal()$stanvars,
     data = list(y = cloglog_data),
-    backend = "rstan", cores = 2, chains = 2, silent = 2, refresh = 0, init = 0.1
+    backend = "rstan",
+    cores = 2,
+    chains = 2,
+    silent = 2,
+    refresh = 0,
+    init = 0.1
   )
 
   # OK, after all that preamble, now it is getting interesting!
-  expect_true(test_brms_quantile(fit, "b_Intercept", intercept, tresh) &&
-    test_brms_quantile(fit, "sigma", sigma, tresh))
+  expect_true(
+    test_brms_quantile(fit, "b_Intercept", intercept, tresh) &&
+      test_brms_quantile(fit, "sigma", sigma, tresh)
+  )
   # This test should be correct (is the almost the same as in the Cloglog Testthat)
   expect_warning(expect_false(test_brms_quantile(fit, "alpha", sigma, tresh)))
   # No alpha in Cloglognormal, which return false and throws a warning
   sigma_data <- posterior::extract_variable_matrix(fit, variable = "sigma")
   median_sigma <- median(sigma_data)
-  expect_false(test_brms_quantile(fit, "sigma", 2 * tresh + 2 * median_sigma, tresh))
+  expect_false(test_brms_quantile(
+    fit,
+    "sigma",
+    2 * tresh + 2 * median_sigma,
+    tresh
+  ))
   # definitively data not within quantiles
   expect_error(test_brms_quantile())
   # wrong amount of arguments
@@ -274,12 +442,17 @@ test_that("test_brms_quantile", {
   # for 0.6, the threshold would create bounds, with lowerbound > upperbound
   expect_error(test_brms_quantile(fit, "sigma", sigma, thresh, debug = "TRUE"))
   # debug has to be of type boolean
-  expect_error(test_brms_quantile(fit, "sigma", sigma, thresh, debug = c(TRUE, FALSE)))
+  expect_error(test_brms_quantile(
+    fit,
+    "sigma",
+    sigma,
+    thresh,
+    debug = c(TRUE, FALSE)
+  ))
   # debug has to be a single boolean
   expect_error(test_brms_quantile(fit, "sigma", sigma, thresh, debug = 0))
   # debug has to be type boolean
 })
-
 
 
 # Test a few fúrther miscellanios helping functions
@@ -384,23 +557,42 @@ test_that("lenEqual length and type_check assertion", {
   expect_true(lenEqual(list(va, vb, vd), na_allowed = TRUE))
   # now check numeric
   expect_true(lenEqual(list(va, ve), type_check = is.numeric))
-  expect_warning(expect_false(lenEqual(list(va, vb, vd), type_check = is.numeric)))
+  expect_warning(expect_false(lenEqual(
+    list(va, vb, vd),
+    type_check = is.numeric
+  )))
   # now include scalars into the mix
   expect_true(lenEqual(list(va, ve, sa, sb), scalars_allowed = TRUE))
-  expect_true(lenEqual(list(va, ve, sa), scalars_allowed = TRUE, type_check = is.numeric))
+  expect_true(lenEqual(
+    list(va, ve, sa),
+    scalars_allowed = TRUE,
+    type_check = is.numeric
+  ))
   # non numerics
-  expect_warning(expect_false(lenEqual(list(va, ve, vd, sa), scalars_allowed = TRUE, type_check = is.numeric)))
-  expect_warning(expect_false(lenEqual(list(va, ve, sa, sb), scalars_allowed = TRUE, type_check = is.numeric)))
+  expect_warning(expect_false(lenEqual(
+    list(va, ve, vd, sa),
+    scalars_allowed = TRUE,
+    type_check = is.numeric
+  )))
+  expect_warning(expect_false(lenEqual(
+    list(va, ve, sa, sb),
+    scalars_allowed = TRUE,
+    type_check = is.numeric
+  )))
   expect_true(lenEqual(list(va, ve, sa, sb), scalars_allowed = TRUE))
   # NAs in vector still makes it a numeric
-  expect_true(lenEqual(list(va, vb, sa),
+  expect_true(lenEqual(
+    list(va, vb, sa),
     scalars_allowed = TRUE,
-    type_check = is.numeric, na_allowed = TRUE
+    type_check = is.numeric,
+    na_allowed = TRUE
   ))
   # NA in scalar however will fail the is.numeric. Small peculiar quirk of R
-  expect_warning(expect_false(lenEqual(list(va, NA, sa),
+  expect_warning(expect_false(lenEqual(
+    list(va, NA, sa),
     scalars_allowed = TRUE,
-    type_check = is.numeric, na_allowed = TRUE
+    type_check = is.numeric,
+    na_allowed = TRUE
   )))
 
   # so far for all the use cases, with correct lengths.
@@ -411,8 +603,14 @@ test_that("lenEqual length and type_check assertion", {
   expect_false(lenEqual(list(va, vc, sa), scalars_allowed = TRUE))
   # those two might look trivial, but depending on implementation, one might actually
   # break with incorrect length, before checking the wrong type (hence why no warning)
-  expect_warning(expect_false(lenEqual(list(va, vc, vd), type_check = is.numeric)))
-  expect_warning(expect_false(lenEqual(list(va, vd, vc), type_check = is.numeric)))
+  expect_warning(expect_false(lenEqual(
+    list(va, vc, vd),
+    type_check = is.numeric
+  )))
+  expect_warning(expect_false(lenEqual(
+    list(va, vd, vc),
+    type_check = is.numeric
+  )))
   # but this implementation does check in both cases.
 
   # I suppose, one might still find about 1000 different relevant permutations.

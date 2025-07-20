@@ -8,8 +8,8 @@
 \source{
 Bases on flexsurv
 (\url{https://github.com/chjackson/flexsurv/tree/master}) by Christopher
-Jackson <chris.jackson@mrc-bsu.cam.ac.uk>. Inspired by a blog post by
-Demetri Pananos (/url{https://dpananos.github.io/posts/2023-12-02-gen-gamma/})
+Jackson \href{mailto:chris.jackson@mrc-bsu.cam.ac.uk}{chris.jackson@mrc-bsu.cam.ac.uk}. Inspired by a blog post by
+Demetri Pananos (\url{https://dpananos.github.io/posts/2023-12-02-gen-gamma/})
 and code by Krzysztof Sakrejda (\url{https://github.com/sakrejda/tooling}).
 }
 \usage{
@@ -24,11 +24,9 @@ generalized_gamma(link = "log", link_sigma = "log", link_Q = "log")
 
 \item{mu}{Vector of ``location'' parameters.}
 
-\item{sigma}{Vector of ``scale'' parameters.  Note the inconsistent
-meanings of the term ``scale'' - this parameter is analogous to the
-(log-scale) standard deviation of the log-normal distribution, ``sdlog'' in
-\code{\link{dlnorm}}, rather than the ``scale'' parameter of the gamma
-distribution \code{\link{dgamma}}. Constrained to be positive.}
+\item{sigma}{Vector of \verb{scale'' parameters.  Note the inconsistent meanings of the term }scale'' - this parameter is analogous to the
+(log-scale) standard deviation of the log-normal distribution, \verb{sdlog'' in [dlnorm()], rather than the }scale'' parameter of the gamma
+distribution \code{\link[=dgamma]{dgamma()}}. Constrained to be positive.}
 
 \item{Q}{Vector of shape parameters.}
 

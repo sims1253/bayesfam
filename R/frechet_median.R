@@ -25,7 +25,12 @@ dfrechet_median <- function(x, mu, nu) {
   if (isTRUE(mu <= 0)) {
     stop("frechet is only defined for mu > 0")
   }
-  return(brms::dfrechet(x = x, loc = 0, scale = mu / gamma(1 - 1 / nu), shape = nu))
+  return(brms::dfrechet(
+    x = x,
+    loc = 0,
+    scale = mu / gamma(1 - 1 / nu),
+    shape = nu
+  ))
 }
 
 
