@@ -86,15 +86,42 @@ posterior_predict_symlognormal <- function(i, prep, ...) {
   return(rsymlognormal(prep$ndraws, mu, sigma))
 }
 
+#' Expected response of the symlog-normal distribution.
+#'
+#' For Z ~ N(mu, sigma) and Y = sign(Z) * (exp(|Z|) - 1) the mean has the
+#' closed form
+#' E[Y] = exp(mu + sigma^2/2) * Phi((mu + sigma^2)/sigma)
+#'      - exp(-mu + sigma^2/2) * Phi((-mu + sigma^2)/sigma)
+#'      + 1 - 2 * Phi(mu/sigma).
+#' The two leading terms are subtracted in log space so that symmetric or
+#' extreme parameter values cannot overflow or cancel.
+#'
+#' @param mu Median parameter, unbound
+#' @param sigma Sigma shape parameter, sigma > 0
+#'
+#' @return Expected response E[Y], same dimensions as `mu`.
+#' @noRd
+symlognormal_mean <- function(mu, sigma) {
+  sigma2 <- sigma^2
+  log_a <- mu + sigma2 / 2 + pnorm((mu + sigma2) / sigma, log.p = TRUE)
+  log_b <- -mu + sigma2 / 2 + pnorm((-mu + sigma2) / sigma, log.p = TRUE)
+  # A - B for A = exp(log_a), B = exp(log_b), without forming A or B:
+  # |A - B| = exp(max) * (1 - exp(-|log_a - log_b|)), sign from the difference
+  delta <- log_b - log_a
+  log_abs_diff <- pmax(log_a, log_b) + log(-expm1(-abs(delta)))
+  a_minus_b <- sign(-delta) * exp(log_abs_diff)
+  return(a_minus_b + 1 - 2 * pnorm(mu / sigma))
+}
+
 #' Posterior epred for symlognormal distribution.
 #'
 #' @param prep brms data
 #'
-#' @return warning
+#' @return Mean of Posterior
 posterior_epred_symlognormal <- function(prep) {
-  warning(
-    "posterior_epred is not defined for the symlog normal as I don't know a mean formula."
-  )
+  mu <- brms::get_dpar(prep, "mu")
+  sigma <- brms::get_dpar(prep, "sigma")
+  return(symlognormal_mean(mu, sigma))
 }
 
 #' Custom brms family symlog-Normal
