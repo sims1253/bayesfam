@@ -427,6 +427,155 @@ test_rng_asym <- function(
   }
 }
 
+#' Assess RNG location recovery via bootstrap cumulative means (experimental)
+#'
+#' Experimental helper evaluating, whether bootstrap cumulative mean testing
+#' is more robust for RNG checks than the fixed-n approach in
+#' [test_rng()] (issue #18). Not used by the regular family test files yet.
+#'
+#' For every parameter combination, one sample of size `n` is drawn. At each
+#' checkpoint sample size, the metric of the first `k` observations (the
+#' cumulative mean for `metric_mu = mean`) is computed and bootstrapped to
+#' obtain a percentile confidence interval. A combination is *covered* at a
+#' checkpoint, if the true location parameter lies within this interval. For a
+#' well-behaved RNG, the share of covered combinations should approach
+#' `conf_level` for growing checkpoints, while a biased RNG stays uncovered
+#' even at the largest checkpoint.
+#'
+#' @param rng_fun RNG function under test. Called with the same argument
+#' conventions as in [test_rng()]: `rng_fun(n, mu)`, `rng_fun(n, mu, aux)`
+#' or `rng_fun(n, mu, aux, aux2)`.
+#' @param mu_list Location values used as RNG argument and reference.
+#' @param aux_list Auxiliary parameter values, NA (default) if unused.
+#' @param aux2_list Second auxiliary parameter values, NA (default) if unused.
+#' @param n Total sample size per parameter combination. Positive integer scalar.
+#' @param checkpoints Sample sizes at which the cumulative metric is evaluated.
+#' Each entry has to be a positive integer <= n. Default NULL derives
+#' `c(50, 100, 1000, n)` capped at n.
+#' @param n_boot Number of bootstrap replicates per checkpoint. Default = 1000.
+#' @param conf_level Confidence level of the percentile intervals in (0, 1).
+#' Default = 0.95.
+#' @param metric_mu Metric to be assessed on the growing prefixes, usually the
+#' mean. Default = mean.
+#' @param mu_link Optional link applied to mu before calling the RNG. Default = identity.
+#' @param seed Optional seed, set for a reproducible assessment. The caller's
+#' RNG state is preserved and restored, like in [construct_brms()]. Default = NULL.
+#'
+#' @return A data.frame with one row per parameter combination and checkpoint:
+#' mu, aux, aux2, n_checkpoint, estimate, lower, upper and covered (boolean).
+#'
+#' @examples
+#' result <- bayesfam:::rng_bootstrap_cummean(
+#'   rng_fun = function(n, mu) stats::rnorm(n, mean = mu),
+#'   mu_list = c(-1, 0, 2),
+#'   n = 1000,
+#'   checkpoints = c(100, 1000),
+#'   n_boot = 200,
+#'   seed = 1
+#' )
+#' print(result)
+rng_bootstrap_cummean <- function(
+  rng_fun,
+  mu_list,
+  aux_list = NA,
+  aux2_list = NA,
+  n = 10000,
+  checkpoints = NULL,
+  n_boot = 1000,
+  conf_level = 0.95,
+  metric_mu = mean,
+  mu_link = identity,
+  seed = NULL
+) {
+  if (
+    isFALSE(is.function(rng_fun) && is.function(metric_mu) && is.function(mu_link))
+  ) {
+    stop("rng_fun, metric_mu and mu_link arguments have to be functions!")
+  }
+  if (!isNat_len(n)) {
+    stop("n has to be a positive integer scalar!")
+  }
+  if (is.null(checkpoints)) {
+    checkpoints <- sort(unique(pmin(c(50, 100, 1000, n), n)))
+  }
+  if (
+    !all(isNat_len(checkpoints, length(checkpoints))) ||
+      any(checkpoints > n)
+  ) {
+    stop("checkpoints have to be positive integers <= n!")
+  }
+  checkpoints <- sort(unique(checkpoints))
+  if (isFALSE(isNum_len(n_boot) && n_boot >= 1)) {
+    stop("n_boot has to be a positive real scalar!")
+  }
+  if (isFALSE(isNum_len(conf_level) && conf_level > 0 && conf_level < 1)) {
+    stop("conf_level has to be a single real scalar in (0, 1)!")
+  }
+
+  if (!is.null(seed)) {
+    # preserve and restore the caller's full RNG state, as in construct_brms
+    seed_existed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+    if (seed_existed) {
+      old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+    }
+    set.seed(seed)
+    on.exit(
+      {
+        if (seed_existed) {
+          assign(".Random.seed", old_seed, envir = globalenv())
+        } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+          rm(".Random.seed", envir = globalenv())
+        }
+      },
+      add = TRUE
+    )
+  }
+
+  alpha <- 1 - conf_level
+  no_aux <- all(is.na(aux_list))
+
+  results <- list()
+  idx <- 1
+  for (j in seq_along(mu_list)) {
+    mu <- mu_list[j]
+    aux_grid <- if (no_aux) NA else aux_list
+    for (aux in aux_grid) {
+      aux2_grid <- if (no_aux || all(is.na(aux2_list))) NA else aux2_list
+      for (aux2 in aux2_grid) {
+        draws <- if (no_aux) {
+          rng_fun(n, mu = mu_link(mu))
+        } else if (all(is.na(aux2_grid))) {
+          rng_fun(n, mu = mu_link(mu), aux)
+        } else {
+          rng_fun(n, mu = mu_link(mu), aux, aux2)
+        }
+        for (k in checkpoints) {
+          prefix <- draws[seq_len(k)]
+          estimate <- metric_mu(prefix)
+          boot <- vector(mode = "numeric", length = n_boot)
+          for (b in seq_len(n_boot)) {
+            boot[b] <- metric_mu(prefix[sample.int(k, k, replace = TRUE)])
+          }
+          interval <- stats::quantile(boot, probs = c(alpha / 2, 1 - alpha / 2))
+          results[[idx]] <- data.frame(
+            mu = mu,
+            aux = aux,
+            aux2 = aux2,
+            n_checkpoint = k,
+            estimate = estimate,
+            lower = unname(interval[1]),
+            upper = unname(interval[2]),
+            covered = interval[1] <= mu && mu <= interval[2]
+          )
+          idx <- idx + 1
+        }
+      }
+    }
+  }
+
+  return(do.call(rbind, results))
+}
+
 
 #' Tests if an RNG can recover the true quantiles within a margin of error
 #'
