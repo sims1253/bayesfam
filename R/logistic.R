@@ -22,7 +22,9 @@ dlogistic <- function(x, mu, sigma, log = FALSE) {
   }
 
   z <- (x - mu) / sigma
-  lpdf <- -z - log(sigma) - 2 * log1p(exp(-z))
+  # symmetric stable form; equivalent to stats::dlogis but tail-safe for
+  # large |z| where exp(-z) would overflow
+  lpdf <- -abs(z) - log(sigma) - 2 * log1p(exp(-abs(z)))
 
   # return either the log or the pdf itself, given the log-value
   if (log) {
