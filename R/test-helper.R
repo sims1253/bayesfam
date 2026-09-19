@@ -83,6 +83,11 @@ expect_eps <- function(
   }
   eps_comparison_wrong <- (difference > eps)
 
+  # non-finite differences (NaN or Inf, for example produced by Inf - Inf or by
+  # overflow inside the comparison itself) have to count as deviances. Dropping
+  # them via na.rm, as done before, could let grossly different inputs pass.
+  eps_comparison_wrong <- !is.finite(difference) | eps_comparison_wrong
+
   # convert the logical vector in a sum of how many entries were wrong
   number_deviances <- sum(eps_comparison_wrong, na.rm = TRUE)
 
@@ -119,12 +124,21 @@ expect_eps <- function(
       "\nWith relative:",
       relative,
       "the max difference was:",
-      max(difference)
+      max(difference),
+      "non-finite differences (counted as wrong):",
+      sum(!is.finite(difference))
     ))
   }
 }
 
 #' Uses euler metric for denominator
+#'
+#' Finite operands are normalized by their largest absolute magnitude before
+#' subtracting and squaring, which avoids the overflow to Inf (and the
+#' resulting 0 or NaN differences) squaring large raw values would cause.
+#' Infinite operands are handled via the limits of the euler metric: equal
+#' infinities have distance 0, an infinite value against a finite one has
+#' distance 1 and opposite-sign infinities have distance sqrt(2).
 #'
 #' @param va Numeric scalar or vector of entries
 #' @param vb Numeric scalar or vector of entries
@@ -141,14 +155,39 @@ normale_difference <- function(va, vb) {
       "In normale_difference function, both vector va and vb have to be numeric and of same len (or scalar)"
     )
   }
-  difference <- abs(va - vb)
-  denominator <- (va^2 + vb^2)^0.5
+
+  # normalize both operands by their largest absolute magnitude before
+  # subtracting/squaring. Squaring the raw values overflows to Inf for large
+  # finite inputs and the resulting 0/NaN distances would silently corrupt
+  # relative comparisons (see issue #35).
+  scale <- pmax(abs(va), abs(vb))
+  # a scale of 0 means both operands are exactly zero, the 0/0 case is a
+  # clearly valid 0 difference and is set explicitly below.
+  safe_scale <- ifelse(scale == 0, 1, scale)
+  va_norm <- va / safe_scale
+  vb_norm <- vb / safe_scale
+  difference <- abs(va_norm - vb_norm)
+  denominator <- (va_norm^2 + vb_norm^2)^0.5
   # I like euler as a compromise, between va or vb, given we usually do not know
   # which is the correct one.
 
   result <- difference / denominator
-  result[denominator == 0.0] <- 0.0 # those would be NAs, but are clearly valid 0!
-  # I think, this should be the only point, where this formula would fail
+  result[scale == 0] <- 0.0 # both values are exactly zero, hence clearly valid 0!
+
+  # infinite operands are defined via the limits of the euler metric:
+  # equal infinities -> 0, opposite-sign infinities -> sqrt(2) and an
+  # infinite value against a finite one -> 1. The normalized differences of
+  # these pairs would be NaN (Inf / Inf), hence they are set explicitly.
+  infinite_pairs <- is.infinite(va) | is.infinite(vb)
+  result[infinite_pairs] <- ifelse(
+    va[infinite_pairs] == vb[infinite_pairs],
+    0,
+    ifelse(
+      is.infinite(va[infinite_pairs]) & is.infinite(vb[infinite_pairs]),
+      sqrt(2),
+      1
+    )
+  )
 
   return(result)
 }
