@@ -106,7 +106,7 @@ log_lik_lomax <- function(i, prep) {
 posterior_predict_lomax <- function(i, prep, ...) {
   mu <- brms::get_dpar(prep, "mu", i = i)
   alpha <- brms::get_dpar(prep, "alpha", i = i)
-  return(rgompertz(prep$ndraws, mu, alpha))
+  return(rlomax(prep$ndraws, mu, alpha))
 }
 
 #' Expectation-Predict vignette for the Lomax distribution, with Mean parametrization.
