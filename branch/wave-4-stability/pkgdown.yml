@@ -1,0 +1,8 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles: {}
+last_built: 2026-09-19T11:05Z
+urls:
+  reference: https://sims1253.github.io/bayesfam/branch/wave-4-stability/reference
+  article: https://sims1253.github.io/bayesfam/branch/wave-4-stability/articles
