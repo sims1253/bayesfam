@@ -70,24 +70,57 @@ dshifted_lognormal_uniform <- function(
   stopifnot(all(shift >= 0))
   stopifnot(all(max_uniform > 0))
 
-  unif_llh = dunif(y, min = 0, max = max_uniform, log = TRUE)
-  lognormal_llh = dlnorm(
-    y - shift,
-    meanlog = meanlog,
-    sdlog = sdlog,
+  # recycle all arguments to a common length
+  n <- max(
+    length(y),
+    length(meanlog),
+    length(sdlog),
+    length(mix),
+    length(shift),
+    length(max_uniform)
+  )
+  y <- rep(y, length.out = n)
+  meanlog <- rep(meanlog, length.out = n)
+  sdlog <- rep(sdlog, length.out = n)
+  mix <- rep(mix, length.out = n)
+  shift <- rep(shift, length.out = n)
+  max_uniform <- rep(max_uniform, length.out = n)
+
+  # The lognormal component has support on (shift, Inf) and the uniform
+  # component on (0, max_uniform). Both components enter the mixture
+  # untruncated, matching the Stan likelihood and the RNG. The component
+  # densities are set to -Inf outside their support so that, e.g., below the
+  # shift only the uniform component contributes.
+  unif_llh <- rep(-Inf, n)
+  lognormal_llh <- rep(-Inf, n)
+  in_uniform_support <- y < max_uniform
+  in_lognormal_support <- y > shift
+  unif_llh[in_uniform_support] <- dunif(
+    y[in_uniform_support],
+    min = 0,
+    max = max_uniform[in_uniform_support],
     log = TRUE
-  ) -
-    plnorm(max_uniform - shift, meanlog = meanlog, sdlog = sdlog, log.p = TRUE)
+  )
+  lognormal_llh[in_lognormal_support] <- dlnorm(
+    y[in_lognormal_support] - shift[in_lognormal_support],
+    meanlog = meanlog[in_lognormal_support],
+    sdlog = sdlog[in_lognormal_support],
+    log = TRUE
+  )
 
   # Computing logsumexp(log(mix) + unif_llh, log1p(-mix) + lognormal_llh)
   # but vectorized
   llh_matrix <- array(
     NA_real_,
-    dim = c(2, max(length(unif_llh), length(lognormal_llh)))
+    dim = c(2, n)
   )
   llh_matrix[1, ] <- log(mix) + unif_llh
   llh_matrix[2, ] <- log1p(-mix) + lognormal_llh
-  return(apply(llh_matrix, MARGIN = 2, FUN = logsumexp))
+  out <- apply(llh_matrix, MARGIN = 2, FUN = logsumexp)
+  # if neither component has support (or weight) at y, the density is 0,
+  # but logsumexp of c(-Inf, -Inf) is NaN, so correct those to -Inf
+  out[is.nan(out)] <- -Inf
+  return(out)
 }
 
 posterior_predict_shifted_lognormal_uniform <- function(i, prep, ...) {
