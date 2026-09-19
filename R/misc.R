@@ -115,7 +115,7 @@ inv_erf <- function(x) {
 #' @examples x <- seq(from = 0, to = 5, length.out = 100)
 #' plot(x, softplus(x), type = "l")
 softplus <- function(x) {
-  return(log(exp(x) - 1))
+  return(x + log(-expm1(-x)))
 }
 
 
@@ -129,7 +129,7 @@ softplus <- function(x) {
 #' @examples x <- seq(from = 0.1, to = 5, length.out = 100)
 #' plot(x, softplus(x), type = "l")
 inv_softplus <- function(x) {
-  return(log(exp(x) + 1))
+  return(pmax(x, 0) + log1p(exp(-abs(x))))
 }
 
 #' Symlog link function
@@ -175,11 +175,27 @@ inv_symlog <- function(x) {
 #'
 #' A more numerically stable equivalent to `log(sum(exp(x)))`
 #'
+#' @details An empty vector returns `-Inf` (the sum is empty). `NA`/`NaN`
+#'   entries propagate and return `NA_real_`. If any entry is `+Inf`, the
+#'   result is `Inf`; if all entries are `-Inf`, the result is `-Inf`.
+#'
 #' @source https://en.wikipedia.org/wiki/LogSumExp#log-sum-exp_trick_for_log-domain_calculations
 #' @param x a vector of values
 #' @return log(sum(exp(x)))
 #' @export
 logsumexp <- function(x) {
-  y = max(x)
-  y + log(sum(exp(x - y)))
+  if (!length(x)) {
+    return(-Inf)
+  }
+  if (anyNA(x)) {
+    return(NA_real_)
+  }
+  if (any(x == Inf)) {
+    return(Inf)
+  }
+  y <- max(x)
+  if (y == -Inf) {
+    return(-Inf)
+  }
+  return(y + log(sum(exp(x - y))))
 }
