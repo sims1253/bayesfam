@@ -9,9 +9,9 @@ rfrechet_median(n, mu = 1, nu = 2)
 \arguments{
 \item{n}{Number samples to draw}
 
-\item{mu}{Mean}
+\item{mu}{Median}
 
-\item{nu}{Shape}
+\item{nu}{Shape, nu > 0}
 }
 \value{
 n samples in Frechet-Distribution
