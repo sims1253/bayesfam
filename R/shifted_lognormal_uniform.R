@@ -70,24 +70,57 @@ dshifted_lognormal_uniform <- function(
   stopifnot(all(shift >= 0))
   stopifnot(all(max_uniform > 0))
 
-  unif_llh = dunif(y, min = 0, max = max_uniform, log = TRUE)
-  lognormal_llh = dlnorm(
-    y - shift,
-    meanlog = meanlog,
-    sdlog = sdlog,
+  # recycle all arguments to a common length
+  n <- max(
+    length(y),
+    length(meanlog),
+    length(sdlog),
+    length(mix),
+    length(shift),
+    length(max_uniform)
+  )
+  y <- rep(y, length.out = n)
+  meanlog <- rep(meanlog, length.out = n)
+  sdlog <- rep(sdlog, length.out = n)
+  mix <- rep(mix, length.out = n)
+  shift <- rep(shift, length.out = n)
+  max_uniform <- rep(max_uniform, length.out = n)
+
+  # The lognormal component has support on (shift, Inf) and the uniform
+  # component on (0, max_uniform). Both components enter the mixture
+  # untruncated, matching the Stan likelihood and the RNG. The component
+  # densities are set to -Inf outside their support so that, e.g., below the
+  # shift only the uniform component contributes.
+  unif_llh <- rep(-Inf, n)
+  lognormal_llh <- rep(-Inf, n)
+  in_uniform_support <- y < max_uniform
+  in_lognormal_support <- y > shift
+  unif_llh[in_uniform_support] <- dunif(
+    y[in_uniform_support],
+    min = 0,
+    max = max_uniform[in_uniform_support],
     log = TRUE
-  ) -
-    plnorm(max_uniform - shift, meanlog = meanlog, sdlog = sdlog, log.p = TRUE)
+  )
+  lognormal_llh[in_lognormal_support] <- dlnorm(
+    y[in_lognormal_support] - shift[in_lognormal_support],
+    meanlog = meanlog[in_lognormal_support],
+    sdlog = sdlog[in_lognormal_support],
+    log = TRUE
+  )
 
   # Computing logsumexp(log(mix) + unif_llh, log1p(-mix) + lognormal_llh)
   # but vectorized
   llh_matrix <- array(
     NA_real_,
-    dim = c(2, max(length(unif_llh), length(lognormal_llh)))
+    dim = c(2, n)
   )
   llh_matrix[1, ] <- log(mix) + unif_llh
   llh_matrix[2, ] <- log1p(-mix) + lognormal_llh
-  return(apply(llh_matrix, MARGIN = 2, FUN = logsumexp))
+  out <- apply(llh_matrix, MARGIN = 2, FUN = logsumexp)
+  # if neither component has support (or weight) at y, the density is 0,
+  # but logsumexp of c(-Inf, -Inf) is NaN, so correct those to -Inf
+  out[is.nan(out)] <- -Inf
+  return(out)
 }
 
 posterior_predict_shifted_lognormal_uniform <- function(i, prep, ...) {
@@ -120,6 +153,24 @@ posterior_predict_shifted_lognormal_uniform <- function(i, prep, ...) {
 }
 
 
+# Expand a parameter or data vector to an S x N matrix of posterior draws
+# (rows) by observations (columns). Scalars and draw-level vectors (length S)
+# are recycled column-wise, observation-level data (length N) is expanded
+# row-wise so that each posterior draw uses the bounds of its own observation,
+# as prescribed by the brms custom-family vignette.
+expand_to_draws_by_obs <- function(x, S, N) {
+  if (is.matrix(x)) {
+    if (identical(dim(x), c(S, N))) {
+      return(x)
+    }
+    return(matrix(x, nrow = S, ncol = N))
+  }
+  if (length(x) == N) {
+    return(matrix(x, nrow = S, ncol = N, byrow = TRUE))
+  }
+  return(matrix(x, nrow = S, ncol = N))
+}
+
 posterior_epred_shifted_lognormal_uniform <- function(prep) {
   if (
     (!is.null(prep$data$lb) && any(prep$data$lb > 0)) ||
@@ -128,14 +179,17 @@ posterior_epred_shifted_lognormal_uniform <- function(prep) {
     stop("Predictions for truncated distributions not supported")
   }
 
-  mu <- brms::get_dpar(prep, "mu")
-  sigma <- brms::get_dpar(prep, "sigma")
-  mix <- brms::get_dpar(prep, "mix")
-  shiftprop <- brms::get_dpar(prep, "shiftprop")
+  S <- prep$ndraws
+  N <- length(prep$data$vreal1)
 
-  max_shift <- prep$data$vreal1
-  max_uniform <- prep$data$vreal2
-  shift = shiftprop * max_shift
+  mu <- expand_to_draws_by_obs(brms::get_dpar(prep, "mu"), S, N)
+  sigma <- expand_to_draws_by_obs(brms::get_dpar(prep, "sigma"), S, N)
+  mix <- expand_to_draws_by_obs(brms::get_dpar(prep, "mix"), S, N)
+  shiftprop <- expand_to_draws_by_obs(brms::get_dpar(prep, "shiftprop"), S, N)
+
+  max_shift <- expand_to_draws_by_obs(prep$data$vreal1, S, N)
+  max_uniform <- expand_to_draws_by_obs(prep$data$vreal2, S, N)
+  shift <- shiftprop * max_shift
 
   shifted_lognormal_mean <- shift + exp(mu + sigma^2 / 2)
   uniform_mean <- 0.5 * max_uniform

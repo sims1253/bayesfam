@@ -2,7 +2,7 @@
 #'
 #' @param x value space, x e (0, 1)
 #' @param mu Median parameter of pdf, mu e (0, 1)
-#' @param sigma shape parameter, sigma unbound
+#' @param sigma shape parameter, sigma > 0
 #' @param log if true, returns log(pdf). Normally FALSE.
 #'
 #' @details \deqn{f(y) = (2 \pi \sigma^2(y(1-y))^3)^{-\frac{1}{2}} exp(-(\frac{y-\mu}{\mu(1-\mu)})^2 \frac{1}{2y(1-y)\sigma^2} )}
@@ -21,8 +21,8 @@ dsimplex <- function(x, mu, sigma, log = FALSE) {
   }
   mu[which(mu > 0.999999)] <- 0.999999
   mu[which(mu < 0.000001)] <- 0.000001
-  if (isTRUE(any(sigma == 0))) {
-    stop("sigma can not be 0.")
+  if (isTRUE(any(sigma <= 0))) {
+    stop("The simplex distribution is only defined for sigma > 0.")
   }
   result <- (-0.5) *
     (log(2) +
@@ -105,7 +105,7 @@ rMIG <-
 #'
 #' @param n Number of samples to draw, as a natural number scalar.
 #' @param mu Mean parameter, mu e (0, 1)
-#' @param sigma shape parameter, Sigma unbound
+#' @param sigma shape parameter, sigma > 0
 #'
 #' @return n samples in Simplex distribution.
 #' @export
@@ -120,8 +120,8 @@ rsimplex <-
     }
     mu[which(mu > 0.999999)] <- 0.999999
     mu[which(mu < 0.000001)] <- 0.000001
-    if (any(sigma == 0)) {
-      stop("sigma can not be 0.")
+    if (any(sigma <= 0)) {
+      stop("The simplex distribution is only defined for sigma > 0.")
     }
 
     if (length(mu) == 1) {
@@ -182,9 +182,11 @@ posterior_epred_simplex <- function(prep) {
 #' Simplex brms-implementation in median parametrization.
 #'
 #' @param link Link function for function
-#' @param link_sigma Link function for sigma argument
+#' @param link_sigma Link function for sigma argument. Defaults to `"log"`
+#'   so that sigma is guaranteed to be positive (API change: previously
+#'   defaulted to `"identity"`).
 #'
-#' @return brms Beta-Custom distribution family
+#' @return brms Beta-Custom Distribution family
 #' @export
 #'
 #' @examples a <- rnorm(1000)
@@ -195,12 +197,12 @@ posterior_epred_simplex <- function(prep) {
 #'   refresh = 0
 #' )
 #' plot(fit)
-simplex <- function(link = "logit", link_sigma = "identity") {
+simplex <- function(link = "logit", link_sigma = "log") {
   family <- brms::custom_family(
     "simplex",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
-    lb = c(0, -NA),
+    lb = c(0, 0),
     ub = c(1, NA),
     type = "real",
     log_lik = log_lik_simplex,
