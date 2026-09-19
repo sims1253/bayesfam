@@ -18,3 +18,8 @@ log(sum(exp(x)))
 \description{
 A more numerically stable equivalent to \code{log(sum(exp(x)))}
 }
+\details{
+An empty vector returns \code{-Inf} (the sum is empty). \code{NA}/\code{NaN}
+entries propagate and return \code{NA_real_}. If any entry is \code{+Inf}, the
+result is \code{Inf}; if all entries are \code{-Inf}, the result is \code{-Inf}.
+}
