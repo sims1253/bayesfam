@@ -57,15 +57,26 @@ dgeneralized_gamma <- function(x, mu = 0, sigma = 1, Q, log = FALSE) {
   # lpdf = (k - 0.5) * log(k) - log(sigma) - lgamma(k) +
   #        (sqrt(k) * w - k * exp(1 / sqrt(k) * w)) - log(x)
 
-  if (Q != 0) {
-    qi <- 1 / (Q * Q)
-    qw <- Q * ((log(x) - mu) / sigma)
-    lpdf <- -log(sigma * x) +
-      log(abs(Q)) * (1 - 2 * qi) +
+  # recycle all arguments to a common length and evaluate the zero-Q and
+  # nonzero-Q cases separately, so the singular nonzero-Q formula is never
+  # evaluated at Q = 0
+  n <- max(length(x), length(mu), length(sigma), length(Q))
+  x <- rep(x, length.out = n)
+  mu <- rep(mu, length.out = n)
+  sigma <- rep(sigma, length.out = n)
+  Q <- rep(Q, length.out = n)
+
+  lpdf <- rep(NA_real_, n)
+  zero_q <- Q == 0
+  lpdf[zero_q] <- dlnorm(x[zero_q], mu[zero_q], sigma[zero_q], log = TRUE)
+  nonzero_q <- !zero_q
+  if (any(nonzero_q)) {
+    qi <- 1 / (Q[nonzero_q]^2)
+    qw <- Q[nonzero_q] * ((log(x[nonzero_q]) - mu[nonzero_q]) / sigma[nonzero_q])
+    lpdf[nonzero_q] <- -log(sigma[nonzero_q] * x[nonzero_q]) +
+      log(abs(Q[nonzero_q])) * (1 - 2 * qi) +
       qi * (qw - exp(qw)) -
       lgamma(qi)
-  } else {
-    lpdf <- dlnorm(x, mu, sigma, 1)
   }
 
   # return either the log or the pdf itself, given the log-value
