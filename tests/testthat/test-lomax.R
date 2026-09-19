@@ -39,10 +39,13 @@ test_that("custom-lomax", {
   }
 
   # check if the RNG is close enough to the true mean in most cases
+  # (#15: sample size increased, heavy-tail combos at alpha ~ 1 make the
+  # sample mean converge slowly, so the remaining combos need extra draws
+  # to stay well within the tolerated failure budget)
   test_rng(
     rng_fun = rlomax,
     metric_mu = mean,
-    n = 5 * n,
+    n = 20 * n,
     mu_list = mu_list,
     aux_list = alpha_list,
     mu_eps = accepted_rng_error,
@@ -54,7 +57,7 @@ test_that("custom-lomax", {
   test_rng_quantiles(
     rng_fun = rlomax,
     quantile_fun = qlomax,
-    n = 20 * n,
+    n = 40 * n,
     mu_list = mu_list,
     aux_list = alpha_list,
     eps = accepted_rng_error,
@@ -101,8 +104,10 @@ test_that("custom-lomax", {
   expect_error(rlomax(100, mu = 1, alpha = 0)) # alpha is not allowed to be 0 or smaller
 
   # Check of brms can fit the custom family and recover the intercept and shape
+  # (#15: sample size increased from 10000 to 30000 so the posterior intervals
+  # around the true values are tight enough for stable recovery)
   expect_brms_family(
-    n_data_sampels = 10000,
+    n_data_sampels = 30000,
     intercept = 5,
     aux_par = 2,
     ref_intercept = 5,
