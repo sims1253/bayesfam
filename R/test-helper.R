@@ -737,8 +737,27 @@ construct_brms <- function(
   }
 
   if (!is.null(seed)) {
-    old_seed <- .Random.seed
+    # record whether the caller already had an RNG state and preserve it in
+    # full. .Random.seed is a complete state vector, not a seed value, hence
+    # restoring via set.seed(old_seed) would initialize a new stream instead
+    # of continuing the caller's stream (see issue #37). on.exit guarantees
+    # the restoration, even if the rng, data handling or the brms fit errors.
+    seed_existed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+    if (seed_existed) {
+      old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+    }
     set.seed(seed)
+    on.exit(
+      {
+        if (seed_existed) {
+          assign(".Random.seed", old_seed, envir = globalenv())
+        } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+          # no state existed before, remove the helper-created seed again
+          rm(".Random.seed", envir = globalenv())
+        }
+      },
+      add = TRUE
+    )
   }
 
   # mutually exclusive dispatch over the number of auxiliary parameters
@@ -753,10 +772,6 @@ construct_brms <- function(
   }
   if (!is.null(data_threshold)) {
     y_data <- limit_data(y_data, data_threshold)
-  }
-
-  if (!is.null(seed)) {
-    set.seed(old_seed)
   }
 
   data <- list(y = y_data)
