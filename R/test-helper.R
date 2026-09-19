@@ -83,6 +83,11 @@ expect_eps <- function(
   }
   eps_comparison_wrong <- (difference > eps)
 
+  # non-finite differences (NaN or Inf, for example produced by Inf - Inf or by
+  # overflow inside the comparison itself) have to count as deviances. Dropping
+  # them via na.rm, as done before, could let grossly different inputs pass.
+  eps_comparison_wrong <- !is.finite(difference) | eps_comparison_wrong
+
   # convert the logical vector in a sum of how many entries were wrong
   number_deviances <- sum(eps_comparison_wrong, na.rm = TRUE)
 
@@ -119,12 +124,21 @@ expect_eps <- function(
       "\nWith relative:",
       relative,
       "the max difference was:",
-      max(difference)
+      max(difference),
+      "non-finite differences (counted as wrong):",
+      sum(!is.finite(difference))
     ))
   }
 }
 
 #' Uses euler metric for denominator
+#'
+#' Finite operands are normalized by their largest absolute magnitude before
+#' subtracting and squaring, which avoids the overflow to Inf (and the
+#' resulting 0 or NaN differences) squaring large raw values would cause.
+#' Infinite operands are handled via the limits of the euler metric: equal
+#' infinities have distance 0, an infinite value against a finite one has
+#' distance 1 and opposite-sign infinities have distance sqrt(2).
 #'
 #' @param va Numeric scalar or vector of entries
 #' @param vb Numeric scalar or vector of entries
@@ -141,14 +155,39 @@ normale_difference <- function(va, vb) {
       "In normale_difference function, both vector va and vb have to be numeric and of same len (or scalar)"
     )
   }
-  difference <- abs(va - vb)
-  denominator <- (va^2 + vb^2)^0.5
+
+  # normalize both operands by their largest absolute magnitude before
+  # subtracting/squaring. Squaring the raw values overflows to Inf for large
+  # finite inputs and the resulting 0/NaN distances would silently corrupt
+  # relative comparisons (see issue #35).
+  scale <- pmax(abs(va), abs(vb))
+  # a scale of 0 means both operands are exactly zero, the 0/0 case is a
+  # clearly valid 0 difference and is set explicitly below.
+  safe_scale <- ifelse(scale == 0, 1, scale)
+  va_norm <- va / safe_scale
+  vb_norm <- vb / safe_scale
+  difference <- abs(va_norm - vb_norm)
+  denominator <- (va_norm^2 + vb_norm^2)^0.5
   # I like euler as a compromise, between va or vb, given we usually do not know
   # which is the correct one.
 
   result <- difference / denominator
-  result[denominator == 0.0] <- 0.0 # those would be NAs, but are clearly valid 0!
-  # I think, this should be the only point, where this formula would fail
+  result[scale == 0] <- 0.0 # both values are exactly zero, hence clearly valid 0!
+
+  # infinite operands are defined via the limits of the euler metric:
+  # equal infinities -> 0, opposite-sign infinities -> sqrt(2) and an
+  # infinite value against a finite one -> 1. The normalized differences of
+  # these pairs would be NaN (Inf / Inf), hence they are set explicitly.
+  infinite_pairs <- is.infinite(va) | is.infinite(vb)
+  result[infinite_pairs] <- ifelse(
+    va[infinite_pairs] == vb[infinite_pairs],
+    0,
+    ifelse(
+      is.infinite(va[infinite_pairs]) & is.infinite(vb[infinite_pairs]),
+      sqrt(2),
+      1
+    )
+  )
 
   return(result)
 }
@@ -216,16 +255,22 @@ test_rng <- function(
   # As opposed to using a matrix, which would just complicate implementation and comparison.
 
   len_mu <- length(mu_list)
-  if (any(is.na(aux_list))) {
+  if (all(is.na(aux_list))) {
     # added case for likelihoods w/o aux-arguments, like unit-lindley likelihood
-    rng_mu_list <-
-      metric_mu(
+    # the rng is called once per mu (the whole mu_list vector used to be passed
+    # in a single call) and expected_mus has to be initialized for the shared
+    # expect_eps comparison below (see issue #36)
+    rng_mu_list <- vector(mode = "numeric", length = len_mu)
+    expected_mus <- mu_list
+    for (j in seq_along(mu_list)) {
+      rng_mu_list[j] <- metric_mu(
         rng_fun(
           n,
-          mu = mu_link(mu_list)
+          mu = mu_link(mu_list[j])
         )
       )
-  } else if (any(is.na(aux2_list))) {
+    }
+  } else if (all(is.na(aux2_list))) {
     len_aux <- length(aux_list)
     expected_mus <- rep(mu_list, times = len_aux)
     rng_mu_list <- vector(mode = "numeric", length = len_aux * len_mu)
@@ -380,6 +425,155 @@ test_rng_asym <- function(
       "number of tests did fail"
     ))
   }
+}
+
+#' Assess RNG location recovery via bootstrap cumulative means (experimental)
+#'
+#' Experimental helper evaluating, whether bootstrap cumulative mean testing
+#' is more robust for RNG checks than the fixed-n approach in
+#' [test_rng()] (issue #18). Not used by the regular family test files yet.
+#'
+#' For every parameter combination, one sample of size `n` is drawn. At each
+#' checkpoint sample size, the metric of the first `k` observations (the
+#' cumulative mean for `metric_mu = mean`) is computed and bootstrapped to
+#' obtain a percentile confidence interval. A combination is *covered* at a
+#' checkpoint, if the true location parameter lies within this interval. For a
+#' well-behaved RNG, the share of covered combinations should approach
+#' `conf_level` for growing checkpoints, while a biased RNG stays uncovered
+#' even at the largest checkpoint.
+#'
+#' @param rng_fun RNG function under test. Called with the same argument
+#' conventions as in [test_rng()]: `rng_fun(n, mu)`, `rng_fun(n, mu, aux)`
+#' or `rng_fun(n, mu, aux, aux2)`.
+#' @param mu_list Location values used as RNG argument and reference.
+#' @param aux_list Auxiliary parameter values, NA (default) if unused.
+#' @param aux2_list Second auxiliary parameter values, NA (default) if unused.
+#' @param n Total sample size per parameter combination. Positive integer scalar.
+#' @param checkpoints Sample sizes at which the cumulative metric is evaluated.
+#' Each entry has to be a positive integer <= n. Default NULL derives
+#' `c(50, 100, 1000, n)` capped at n.
+#' @param n_boot Number of bootstrap replicates per checkpoint. Default = 1000.
+#' @param conf_level Confidence level of the percentile intervals in (0, 1).
+#' Default = 0.95.
+#' @param metric_mu Metric to be assessed on the growing prefixes, usually the
+#' mean. Default = mean.
+#' @param mu_link Optional link applied to mu before calling the RNG. Default = identity.
+#' @param seed Optional seed, set for a reproducible assessment. The caller's
+#' RNG state is preserved and restored, like in [construct_brms()]. Default = NULL.
+#'
+#' @return A data.frame with one row per parameter combination and checkpoint:
+#' mu, aux, aux2, n_checkpoint, estimate, lower, upper and covered (boolean).
+#'
+#' @examples
+#' result <- bayesfam:::rng_bootstrap_cummean(
+#'   rng_fun = function(n, mu) stats::rnorm(n, mean = mu),
+#'   mu_list = c(-1, 0, 2),
+#'   n = 1000,
+#'   checkpoints = c(100, 1000),
+#'   n_boot = 200,
+#'   seed = 1
+#' )
+#' print(result)
+rng_bootstrap_cummean <- function(
+  rng_fun,
+  mu_list,
+  aux_list = NA,
+  aux2_list = NA,
+  n = 10000,
+  checkpoints = NULL,
+  n_boot = 1000,
+  conf_level = 0.95,
+  metric_mu = mean,
+  mu_link = identity,
+  seed = NULL
+) {
+  if (
+    isFALSE(is.function(rng_fun) && is.function(metric_mu) && is.function(mu_link))
+  ) {
+    stop("rng_fun, metric_mu and mu_link arguments have to be functions!")
+  }
+  if (!isNat_len(n)) {
+    stop("n has to be a positive integer scalar!")
+  }
+  if (is.null(checkpoints)) {
+    checkpoints <- sort(unique(pmin(c(50, 100, 1000, n), n)))
+  }
+  if (
+    !all(isNat_len(checkpoints, length(checkpoints))) ||
+      any(checkpoints > n)
+  ) {
+    stop("checkpoints have to be positive integers <= n!")
+  }
+  checkpoints <- sort(unique(checkpoints))
+  if (isFALSE(isNum_len(n_boot) && n_boot >= 1)) {
+    stop("n_boot has to be a positive real scalar!")
+  }
+  if (isFALSE(isNum_len(conf_level) && conf_level > 0 && conf_level < 1)) {
+    stop("conf_level has to be a single real scalar in (0, 1)!")
+  }
+
+  if (!is.null(seed)) {
+    # preserve and restore the caller's full RNG state, as in construct_brms
+    seed_existed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+    if (seed_existed) {
+      old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+    }
+    set.seed(seed)
+    on.exit(
+      {
+        if (seed_existed) {
+          assign(".Random.seed", old_seed, envir = globalenv())
+        } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+          rm(".Random.seed", envir = globalenv())
+        }
+      },
+      add = TRUE
+    )
+  }
+
+  alpha <- 1 - conf_level
+  no_aux <- all(is.na(aux_list))
+
+  results <- list()
+  idx <- 1
+  for (j in seq_along(mu_list)) {
+    mu <- mu_list[j]
+    aux_grid <- if (no_aux) NA else aux_list
+    for (aux in aux_grid) {
+      aux2_grid <- if (no_aux || all(is.na(aux2_list))) NA else aux2_list
+      for (aux2 in aux2_grid) {
+        draws <- if (no_aux) {
+          rng_fun(n, mu = mu_link(mu))
+        } else if (all(is.na(aux2_grid))) {
+          rng_fun(n, mu = mu_link(mu), aux)
+        } else {
+          rng_fun(n, mu = mu_link(mu), aux, aux2)
+        }
+        for (k in checkpoints) {
+          prefix <- draws[seq_len(k)]
+          estimate <- metric_mu(prefix)
+          boot <- vector(mode = "numeric", length = n_boot)
+          for (b in seq_len(n_boot)) {
+            boot[b] <- metric_mu(prefix[sample.int(k, k, replace = TRUE)])
+          }
+          interval <- stats::quantile(boot, probs = c(alpha / 2, 1 - alpha / 2))
+          results[[idx]] <- data.frame(
+            mu = mu,
+            aux = aux,
+            aux2 = aux2,
+            n_checkpoint = k,
+            estimate = estimate,
+            lower = unname(interval[1]),
+            upper = unname(interval[2]),
+            covered = interval[1] <= mu && mu <= interval[2]
+          )
+          idx <- idx + 1
+        }
+      }
+    }
+  }
+
+  return(do.call(rbind, results))
 }
 
 
@@ -692,24 +886,41 @@ construct_brms <- function(
   }
 
   if (!is.null(seed)) {
-    old_seed <- .Random.seed
+    # record whether the caller already had an RNG state and preserve it in
+    # full. .Random.seed is a complete state vector, not a seed value, hence
+    # restoring via set.seed(old_seed) would initialize a new stream instead
+    # of continuing the caller's stream (see issue #37). on.exit guarantees
+    # the restoration, even if the rng, data handling or the brms fit errors.
+    seed_existed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+    if (seed_existed) {
+      old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+    }
     set.seed(seed)
+    on.exit(
+      {
+        if (seed_existed) {
+          assign(".Random.seed", old_seed, envir = globalenv())
+        } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+          # no state existed before, remove the helper-created seed again
+          rm(".Random.seed", envir = globalenv())
+        }
+      },
+      add = TRUE
+    )
   }
 
+  # mutually exclusive dispatch over the number of auxiliary parameters
+  # (0, 1 or 2). The previous two independent if-branches called the rng a
+  # second time with aux_par = NA for single-parameter distributions.
   if (is.na(aux_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept))
-  }
-  if (is.na(aux2_par)) {
+  } else if (is.na(aux2_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par)
   } else {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par, aux2_par)
   }
   if (!is.null(data_threshold)) {
     y_data <- limit_data(y_data, data_threshold)
-  }
-
-  if (!is.null(seed)) {
-    set.seed(old_seed)
   }
 
   data <- list(y = y_data)
