@@ -22,6 +22,9 @@ If a transformed normal likelihood is passed, the respective built-in link will
 be returned instead of the identity link that would commonly be used with
 transformed normal likelihood families.
 }
+\details{
+Unknown link or family identifiers raise an error.
+}
 \examples{
 
 link_lookup("log", "gaussian", FALSE)

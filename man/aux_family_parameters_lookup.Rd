@@ -13,7 +13,9 @@ aux_family_parameters_lookup(family)
 Character vector of auxiliary parameter names.
 }
 \description{
-Lookup function for the names of the auxiliary parameters of a likelihood
+Returns the auxiliary distributional parameter names of a family, i.e. all
+dpars except mu. Zero-auxiliary families return an empty character vector.
+Unknown identifiers raise an error.
 }
 \examples{
 aux_family_parameters_lookup("beta")
