@@ -10,7 +10,7 @@ posterior_epred_logitnormal(prep)
 \item{prep}{brms data}
 }
 \value{
-Median of Posterior
+Mean of Posterior
 }
 \description{
 Posterior expected value prediction vignette for Logitnormal distribution.
