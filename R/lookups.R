@@ -100,6 +100,13 @@ family_registry <- list(
     aux_lb = 0,
     aux_ub = Inf
   ),
+  "inverse_burr" = list(
+    constructor = inverse_burr,
+    rng = rinverse_burr,
+    aux = c("tau", "gamma"),
+    aux_lb = c(0, 0),
+    aux_ub = c(Inf, Inf)
+  ),
   "kumaraswamy" = list(
     constructor = kumaraswamy,
     rng = rkumaraswamy,

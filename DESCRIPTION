@@ -22,6 +22,7 @@ Imports:
     lamW,
     stats
 Suggests:
+    actuar,
     extraDistr,
     flexsurv,
     gnorm,
@@ -52,6 +53,7 @@ Collate:
     'global_imports.R'
     'gompertz.R'
     'gumbel_mean.R'
+    'inverse_burr.R'
     'kumaraswamy.R'
     'logistic.R'
     'logitnormal.R'

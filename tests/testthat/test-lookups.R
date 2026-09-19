@@ -8,6 +8,7 @@ custom_families <- c(
   "generalized_normal",
   "gompertz",
   "gumbel_mean",
+  "inverse_burr",
   "kumaraswamy",
   "logistic",
   "logitnormal",
