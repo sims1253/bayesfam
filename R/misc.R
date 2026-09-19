@@ -115,7 +115,7 @@ inv_erf <- function(x) {
 #' @examples x <- seq(from = 0, to = 5, length.out = 100)
 #' plot(x, softplus(x), type = "l")
 softplus <- function(x) {
-  return(log(exp(x) - 1))
+  return(x + log(-expm1(-x)))
 }
 
 
@@ -129,7 +129,7 @@ softplus <- function(x) {
 #' @examples x <- seq(from = 0.1, to = 5, length.out = 100)
 #' plot(x, softplus(x), type = "l")
 inv_softplus <- function(x) {
-  return(log(exp(x) + 1))
+  return(pmax(x, 0) + log1p(exp(-abs(x))))
 }
 
 #' Symlog link function

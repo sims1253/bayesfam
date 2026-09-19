@@ -25,16 +25,7 @@ dbeta_mean <- function(x, mu, phi, log = FALSE) {
   if (isTRUE(any(phi <= 0))) {
     stop("P must be above 0.")
   }
-  lpdf <- (log(gamma(phi)) -
-    log(gamma(mu * phi)) -
-    log(gamma((1 - mu) * phi))) +
-    log(x) * (mu * phi - 1) +
-    log1p(-x) * ((1 - mu) * phi - 1)
-  if (log) {
-    return(lpdf)
-  } else {
-    return(exp(lpdf))
-  }
+  dbeta(x, shape1 = mu * phi, shape2 = (1 - mu) * phi, log = log)
 }
 
 #' Mean parameterization of the beta quantile function
