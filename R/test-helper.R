@@ -255,16 +255,22 @@ test_rng <- function(
   # As opposed to using a matrix, which would just complicate implementation and comparison.
 
   len_mu <- length(mu_list)
-  if (any(is.na(aux_list))) {
+  if (all(is.na(aux_list))) {
     # added case for likelihoods w/o aux-arguments, like unit-lindley likelihood
-    rng_mu_list <-
-      metric_mu(
+    # the rng is called once per mu (the whole mu_list vector used to be passed
+    # in a single call) and expected_mus has to be initialized for the shared
+    # expect_eps comparison below (see issue #36)
+    rng_mu_list <- vector(mode = "numeric", length = len_mu)
+    expected_mus <- mu_list
+    for (j in seq_along(mu_list)) {
+      rng_mu_list[j] <- metric_mu(
         rng_fun(
           n,
-          mu = mu_link(mu_list)
+          mu = mu_link(mu_list[j])
         )
       )
-  } else if (any(is.na(aux2_list))) {
+    }
+  } else if (all(is.na(aux2_list))) {
     len_aux <- length(aux_list)
     expected_mus <- rep(mu_list, times = len_aux)
     rng_mu_list <- vector(mode = "numeric", length = len_aux * len_mu)
@@ -735,10 +741,12 @@ construct_brms <- function(
     set.seed(seed)
   }
 
+  # mutually exclusive dispatch over the number of auxiliary parameters
+  # (0, 1 or 2). The previous two independent if-branches called the rng a
+  # second time with aux_par = NA for single-parameter distributions.
   if (is.na(aux_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept))
-  }
-  if (is.na(aux2_par)) {
+  } else if (is.na(aux2_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par)
   } else {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par, aux2_par)
