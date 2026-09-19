@@ -116,7 +116,8 @@ pkumaraswamy <- function(x, mu = 0.5, p = 1) {
     stop("P must be above 0.")
   }
   q <- -(log(2) / log1p(-mu^p))
-  return(1 + (x^p - 1)^q)
+  # CDF = 1 - (1 - x^p)^q, computed in a numerically stable way
+  return(-expm1(q * log1p(-x^p)))
 }
 
 #' Log-Likelihood vignette for the Kumaraswamy distribution, in Median parametrization.
