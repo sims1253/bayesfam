@@ -188,9 +188,8 @@ generalized_normal <- function(
       }
 
       real generalized_normal_rng(real mu, real sigma, real beta) {
-        real p = uniform_rng(0,1);
-        real q_part = ((sigma^beta) * exp(gamma_lccdf(2*abs(p - 0.5) | 1/beta, 1)))^(1/beta);
-        return sign(p - 0.5) * q_part + mu;
+        real g = gamma_rng(1.0 / beta, 1.0);
+        return (2 * bernoulli_rng(0.5) - 1) * sigma * pow(g, 1.0 / beta) + mu;
       }",
     block = "functions"
   )
