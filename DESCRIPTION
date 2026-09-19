@@ -22,6 +22,7 @@ Imports:
     lamW,
     stats
 Suggests:
+    actuar,
     extraDistr,
     flexsurv,
     gnorm,
@@ -36,6 +37,37 @@ Config/testthat/parallel: true
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
-RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
-
+Config/roxygen2/version: 8.0.0
+Collate: 
+    'bayesfam-package.R'
+    'beta_mean.R'
+    'beta_prime.R'
+    'cauchitnormal.R'
+    'cloglognormal.R'
+    'exgauss_mean.R'
+    'frechet_median.R'
+    'gamma_mean.R'
+    'generalized_gamma.R'
+    'generalized_normal.R'
+    'global_imports.R'
+    'gompertz.R'
+    'gumbel_mean.R'
+    'inverse_burr.R'
+    'kumaraswamy.R'
+    'logistic.R'
+    'logitnormal.R'
+    'lognormal.R'
+    'lognormal_natural.R'
+    'lomax.R'
+    'weibull_median.R'
+    'unitlindley.R'
+    'symlognormal.R'
+    'softplusnormal.R'
+    'simplex.R'
+    'shifted_lognormal_uniform.R'
+    'shifted_inv_gaussian.R'
+    'misc.R'
+    'lookups.R'
+    'student_mean.R'
+    'test-helper.R'

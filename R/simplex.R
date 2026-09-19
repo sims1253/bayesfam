@@ -16,11 +16,9 @@ dsimplex <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(x <= 0 | x >= 1))) {
     stop("x must be in (0,1).")
   }
-  if (isTRUE(any(mu < 0 | mu > 1))) {
+  if (isTRUE(any(mu <= 0 | mu >= 1))) {
     stop("The mean must be in (0,1).")
   }
-  mu[which(mu > 0.999999)] <- 0.999999
-  mu[which(mu < 0.000001)] <- 0.000001
   if (isTRUE(any(sigma == 0))) {
     stop("sigma can not be 0.")
   }
@@ -118,8 +116,6 @@ rsimplex <-
     if (any(mu <= 0 | mu >= 1)) {
       stop("The mean must be in (0,1).")
     }
-    mu[which(mu > 0.999999)] <- 0.999999
-    mu[which(mu < 0.000001)] <- 0.000001
     if (any(sigma == 0)) {
       stop("sigma can not be 0.")
     }

@@ -13,7 +13,10 @@ aux_limits_lookup(family)
 List containing lower and upper bounds for the auxiliary parameter.
 }
 \description{
-Lookup for limits of family auxiliary parameters.
+Returns a list with numeric lower and upper bound vectors of the auxiliary
+parameters, matching the order of aux_family_parameters_lookup().
+Zero-auxiliary families return empty numeric vectors. Unknown identifiers
+raise an error.
 }
 \examples{
 aux_limits_lookup("beta")

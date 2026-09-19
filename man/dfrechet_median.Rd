@@ -11,7 +11,7 @@ dfrechet_median(x, mu, nu)
 
 \item{mu}{Median}
 
-\item{nu}{Shape}
+\item{nu}{Shape, nu > 0}
 }
 \value{
 dfrechet(x | mu, nu)
@@ -21,10 +21,10 @@ Median parameterization of the Fréchet pdf.
 }
 \details{
 Define scale parameter sigma as
-\deqn{\sigma(\mu, \nu) := \mu / \Gamma(1 - 1 / \nu)}
+\deqn{\sigma(\mu, \nu) := \mu \cdot \log(2)^{1 / \nu}}
 
 The Frechet distribution has density
-\deqn{f(y) = (\nu /\sigma) * (y / \sigma)^{-(1 - \nu)} * exp(-(y / \sigma)^{-\nu}) }
+\deqn{f(y) = (\nu /\sigma) * (y / \sigma)^{-(\nu + 1)} * exp(-(y / \sigma)^{-\nu}) }
 }
 \examples{
 x <- seq(from = 0.1, to = 20, length.out = 1000)

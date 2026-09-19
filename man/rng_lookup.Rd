@@ -13,7 +13,7 @@ rng_lookup(family)
 The RNG function.
 }
 \description{
-Lookup function for RNGs via string identifier
+Unknown identifiers raise an error.
 }
 \examples{
 rng_lookup("gamma")
