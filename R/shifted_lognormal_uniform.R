@@ -153,6 +153,24 @@ posterior_predict_shifted_lognormal_uniform <- function(i, prep, ...) {
 }
 
 
+# Expand a parameter or data vector to an S x N matrix of posterior draws
+# (rows) by observations (columns). Scalars and draw-level vectors (length S)
+# are recycled column-wise, observation-level data (length N) is expanded
+# row-wise so that each posterior draw uses the bounds of its own observation,
+# as prescribed by the brms custom-family vignette.
+expand_to_draws_by_obs <- function(x, S, N) {
+  if (is.matrix(x)) {
+    if (identical(dim(x), c(S, N))) {
+      return(x)
+    }
+    return(matrix(x, nrow = S, ncol = N))
+  }
+  if (length(x) == N) {
+    return(matrix(x, nrow = S, ncol = N, byrow = TRUE))
+  }
+  return(matrix(x, nrow = S, ncol = N))
+}
+
 posterior_epred_shifted_lognormal_uniform <- function(prep) {
   if (
     (!is.null(prep$data$lb) && any(prep$data$lb > 0)) ||
@@ -161,14 +179,17 @@ posterior_epred_shifted_lognormal_uniform <- function(prep) {
     stop("Predictions for truncated distributions not supported")
   }
 
-  mu <- brms::get_dpar(prep, "mu")
-  sigma <- brms::get_dpar(prep, "sigma")
-  mix <- brms::get_dpar(prep, "mix")
-  shiftprop <- brms::get_dpar(prep, "shiftprop")
+  S <- prep$ndraws
+  N <- length(prep$data$vreal1)
 
-  max_shift <- prep$data$vreal1
-  max_uniform <- prep$data$vreal2
-  shift = shiftprop * max_shift
+  mu <- expand_to_draws_by_obs(brms::get_dpar(prep, "mu"), S, N)
+  sigma <- expand_to_draws_by_obs(brms::get_dpar(prep, "sigma"), S, N)
+  mix <- expand_to_draws_by_obs(brms::get_dpar(prep, "mix"), S, N)
+  shiftprop <- expand_to_draws_by_obs(brms::get_dpar(prep, "shiftprop"), S, N)
+
+  max_shift <- expand_to_draws_by_obs(prep$data$vreal1, S, N)
+  max_uniform <- expand_to_draws_by_obs(prep$data$vreal2, S, N)
+  shift <- shiftprop * max_shift
 
   shifted_lognormal_mean <- shift + exp(mu + sigma^2 / 2)
   uniform_mean <- 0.5 * max_uniform
