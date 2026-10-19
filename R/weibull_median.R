@@ -6,9 +6,9 @@
 #' @param log Optional argument. If TRUE, returns log(pdf). Normally False.
 #'
 #' @details Define constant sigma as
-#' \deqn{\sigma(\mu, k) := \mu / \Gamma(1 + 1 / k)}
+#' \deqn{\sigma(\mu, k) := \mu / \log(2)^{1 / k}}
 #' @details The Weibull distribution density is defined as
-#' \deqn{f(y) = \frac{k}{\sigma} * (\frac{x}{\sigma})^{\alpha - 1} * exp(-(\frac{x}{\sigma})^\alpha)}
+#' \deqn{f(y) = \frac{k}{\sigma} * (\frac{x}{\sigma})^{k - 1} * exp(-(\frac{x}{\sigma})^k)}
 #'
 #' @return f(x | mu, k)
 #' @export
@@ -26,7 +26,7 @@ dweibull_median <- function(x, mu, k, log = FALSE) {
   if (isTRUE(mu <= 0)) {
     stop("weibull is only defined for mu > 0")
   }
-  return(dweibull(x = x, shape = k, scale = mu / gamma(1 + 1 / k), log))
+  return(dweibull(x = x, shape = k, scale = mu / log(2)^(1 / k), log))
 }
 
 
@@ -48,5 +48,5 @@ rweibull_median <- function(n, mu = 1, k = 1) {
   if (isTRUE(mu <= 0)) {
     stop("weibull is only defined for mu > 0")
   }
-  return(rweibull(n = n, shape = k, scale = mu / gamma(1 + 1 / k)))
+  return(rweibull(n = n, shape = k, scale = mu / log(2)^(1 / k)))
 }
