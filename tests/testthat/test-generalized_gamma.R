@@ -59,3 +59,29 @@ test_that("Generalized Gamma", {
     aux2_name = "Q"
   )
 })
+
+test_that("dgeneralized_gamma is vectorized in Q (#23)", {
+  x <- c(0.5, 1.2, 3.7, 10)
+  mu <- c(0, 0.2, -0.5, 1.1)
+  sigma <- c(1, 0.7, 2.3, 0.5)
+  for (Q in list(c(0, 0, 0, 0), c(-1.5, 0.3, 2, 7.7), c(0, 0.9, 0, -2.2))) {
+    expect_equal(
+      dgeneralized_gamma(x, mu, sigma, Q = Q, log = TRUE),
+      mapply(dgeneralized_gamma, x, mu, sigma, Q, log = TRUE)
+    )
+  }
+
+  # log_lik callback: scalar y with length-S draws of Q
+  Q <- c(0, 1.1, 0, -0.7, 2.3)
+  prep <- structure(
+    list(
+      dpars = list(mu = rep(0.3, 5), sigma = rep(1.2, 5), Q = Q),
+      data = list(Y = c(1.7, 2.5))
+    ),
+    class = "brmsprep"
+  )
+  expect_equal(
+    log_lik_generalized_gamma(2, prep),
+    mapply(dgeneralized_gamma, 2.5, 0.3, 1.2, Q, log = TRUE)
+  )
+})

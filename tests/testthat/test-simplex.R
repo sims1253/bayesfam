@@ -70,3 +70,14 @@ test_that("custom-simplex", {
     aux_name = "sigma"
   )
 })
+
+test_that("simplex requires sigma > 0 (#27)", {
+  expect_error(dsimplex(0.5, mu = 0.5, sigma = -1), "sigma > 0")
+  expect_error(dsimplex(c(0.3, 0.7), mu = 0.5, sigma = c(1, -2)), "sigma > 0")
+  expect_error(rsimplex(5, mu = 0.5, sigma = -1), "sigma > 0")
+  expect_error(rsimplex(5, mu = 0.5, sigma = 0), "sigma > 0")
+
+  fam <- simplex()
+  expect_equal(fam$link_sigma, "log")
+  expect_equal(as.numeric(fam$lb[["sigma"]]), 0)
+})

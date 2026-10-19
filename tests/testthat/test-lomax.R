@@ -118,3 +118,14 @@ test_that("custom-lomax", {
     aux_name = "alpha"
   )
 })
+
+test_that("posterior_predict_lomax draws from rlomax (#22)", {
+  prep <- structure(
+    list(ndraws = 1000L, dpars = list(mu = rep(1, 1000), alpha = rep(2, 1000))),
+    class = "brmsprep"
+  )
+  set.seed(101)
+  actual <- posterior_predict_lomax(1, prep)
+  set.seed(101)
+  expect_equal(actual, rlomax(1000, mu = 1, alpha = 2))
+})
