@@ -175,9 +175,9 @@ inv_symlog <- function(x) {
 #'
 #' A more numerically stable equivalent to `log(sum(exp(x)))`
 #'
-#' @details An empty vector returns `-Inf` (the sum is empty). `NA`/`NaN`
-#'   entries propagate and return `NA_real_`. If any entry is `+Inf`, the
-#'   result is `Inf`; if all entries are `-Inf`, the result is `-Inf`.
+#' @details An empty vector returns `-Inf` (the sum is empty). A non-finite
+#'   maximum is returned as is: `NA`/`NaN` entries propagate, otherwise any
+#'   `Inf` entry gives `Inf` and all-`-Inf` input gives `-Inf`.
 #'
 #' @source https://en.wikipedia.org/wiki/LogSumExp#log-sum-exp_trick_for_log-domain_calculations
 #' @param x a vector of values
@@ -187,15 +187,9 @@ logsumexp <- function(x) {
   if (!length(x)) {
     return(-Inf)
   }
-  if (anyNA(x)) {
-    return(NA_real_)
-  }
-  if (any(x == Inf)) {
-    return(Inf)
-  }
   y <- max(x)
-  if (y == -Inf) {
-    return(-Inf)
+  if (!is.finite(y)) {
+    return(y)
   }
   return(y + log(sum(exp(x - y))))
 }
