@@ -81,3 +81,10 @@ test_that("test-custom-beta", {
   expect_error(rbeta_mean(100, mu = 1, phi = 2)) # mu must be between 0 and 1
   expect_error(rbeta_mean(100, mu = 0.8, phi = -1)) # phi is not allowed to be negative
 })
+
+test_that("dbeta_mean is finite for large phi (#30)", {
+  x <- c(0.25, 0.5, 0.75)
+  lpdf <- dbeta_mean(x, mu = 0.5, phi = 1000, log = TRUE)
+  expect_true(all(is.finite(lpdf)))
+  expect_equal(lpdf, dbeta(x, shape1 = 500, shape2 = 500, log = TRUE))
+})

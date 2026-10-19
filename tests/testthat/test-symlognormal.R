@@ -56,3 +56,33 @@ test_that("custom-symlognormal", {
     aux_name = "sigma"
   )
 })
+
+test_that("symlognormal mean matches numerical integration (#39)", {
+  ref <- function(mu, sigma) {
+    f <- function(z) sign(z) * expm1(abs(z)) * dnorm(z, mu, sigma)
+    integrate(f, mu - 40 * sigma, mu + 40 * sigma, rel.tol = 1e-12)$value
+  }
+  for (mu in c(-5, -1, 0, 1, 2, 5)) {
+    for (sigma in c(0.01, 0.5, 1, 3)) {
+      expect_equal(
+        symlognormal_mean(mu, sigma),
+        ref(mu, sigma),
+        tolerance = 1e-9
+      )
+    }
+  }
+  expect_equal(symlognormal_mean(0, c(0.1, 2, 50)), c(0, 0, 0))
+
+  # posterior_epred keeps the draws x observations dimensions, without warning
+  mu <- matrix(c(-1, 0, 1.5, 2), nrow = 2)
+  sigma <- matrix(c(0.5, 2, 1, 0.1), nrow = 2)
+  prep <- structure(
+    list(dpars = list(mu = mu, sigma = sigma), ndraws = 2),
+    class = "brmsprep"
+  )
+  expect_equal(
+    expect_silent(posterior_epred_symlognormal(prep)),
+    matrix(mapply(ref, mu, sigma), nrow = 2),
+    tolerance = 1e-9
+  )
+})
