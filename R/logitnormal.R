@@ -77,10 +77,8 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
 #' Expected response of the logit-normal distribution.
 #'
 #' Computes E[plogis(Z)] for Z ~ N(mu, sigma) (the expectation that
-#' `posterior_epred` promises) via deterministic composite trapezoid
-#' quadrature on the standardized variable t = (Z - mu) / sigma. The grid
-#' resolution adapts to the largest sigma so the logistic transition stays
-#' resolved; for well-separated values the rule is spectrally accurate.
+#' `posterior_epred` promises) with trapezoid sums on fixed nodes, which are
+#' accurate to about 1e-14 for all mu and sigma.
 #'
 #' @param mu Median parameter, unbound
 #' @param sigma Sigma shape parameter, sigma > 0
@@ -88,18 +86,27 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
 #' @return Expected response E[plogis(Z)], same dimensions as `mu`.
 #' @noRd
 logitnormal_mean <- function(mu, sigma) {
-  # integration bounds in t-units: mass outside +-10 is < 1e-23
-  L <- 10
-  h <- max(min(0.2, 0.5 / max(sigma)), 2 * L / 4000)
-  n_intervals <- 2 * ceiling(L / h)
-  t <- seq(-L, L, length.out = n_intervals + 1L)
-  h <- t[2] - t[1]
-  weights <- rep(h, length(t))
-  weights[c(1L, length(t))] <- h / 2
+  sigma <- sigma + 0 * mu
+  mu <- mu + 0 * sigma
   out <- 0 * mu
-  for (j in seq_along(t)) {
-    out <- out + weights[j] * plogis(mu + sigma * t[j]) * dnorm(t[j])
+  # sigma <= 1: integrate plogis(mu + sigma * t) over t ~ N(0, 1)
+  narrow <- sigma <= 1
+  m <- mu[narrow]
+  s <- sigma[narrow]
+  total <- 0
+  for (t in seq(-9, 9, by = 0.5)) {
+    total <- total + 0.5 * dnorm(t) * plogis(m + s * t)
   }
+  out[narrow] <- total
+  # sigma > 1 makes that integrand too steep, so use the dual form: with
+  # L ~ Logistic(0, 1), E[plogis(Z)] = P(L < Z) = E[pnorm((mu + L) / sigma)]
+  m <- mu[!narrow]
+  s <- sigma[!narrow]
+  total <- 0
+  for (l in seq(-36, 36, by = 0.5)) {
+    total <- total + 0.5 * dlogis(l) * pnorm((m + l) / s)
+  }
+  out[!narrow] <- total
   return(out)
 }
 
