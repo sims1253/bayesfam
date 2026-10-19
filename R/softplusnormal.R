@@ -18,15 +18,10 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(sigma <= 0)) {
     stop("softplusnormal is only defined for sigma > 0")
   }
-  # softplus link of x, computed without overflow/cancellation:
-  # log(exp(x) - 1) = x + log(-expm1(-x))
-  z <- x + log(-expm1(-x))
-  # log Jacobian of the softplus link: -log(1 - exp(-x)) = -log(-expm1(-x))
-  log_jacobian <- -log(-expm1(-x))
-  logpdf <-
-    -(log(sigma) + 0.5 * log(2 * pi)) +
-    log_jacobian +
-    -0.5 * ((z - mu) / sigma)^2
+  # normal density of the softplus link z, plus its log Jacobian
+  # log(d z / d x) = x - z
+  z <- softplus(x)
+  logpdf <- dnorm(z, mu, sigma, log = TRUE) + x - z
   if (log) {
     return(logpdf)
   } else {
@@ -125,11 +120,9 @@ softplusnormal <- function(link = "identity", link_sigma = "log") {
   family$stanvars <- stanvars <- brms::stanvar(
     scode = "
       real softplusnormal_lpdf(real y, real mu, real sigma) {
-        // softplus link of y in stable form, plus its log Jacobian
+        // softplus link of y in stable form, plus its log Jacobian y - z
         real z = y + log1m_exp(-y);
-        return -(log(sigma) + 0.5 * log(2 * pi())) +
-                -log1m_exp(-y) +
-                -0.5 * ((z - mu) / sigma)^2;
+        return normal_lpdf(z | mu, sigma) + y - z;
       }
 
       real softplusnormal_rng(real mu, real sigma) {
