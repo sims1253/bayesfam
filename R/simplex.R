@@ -186,7 +186,7 @@ posterior_epred_simplex <- function(prep) {
 #'   so that sigma is guaranteed to be positive (API change: previously
 #'   defaulted to `"identity"`).
 #'
-#' @return brms Beta-Custom Distribution family
+#' @return brms Beta-Custom distribution family
 #' @export
 #'
 #' @examples a <- rnorm(1000)

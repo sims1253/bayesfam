@@ -4,12 +4,14 @@
 \alias{simplex}
 \title{Simplex brms-implementation in median parametrization.}
 \usage{
-simplex(link = "logit", link_sigma = "identity")
+simplex(link = "logit", link_sigma = "log")
 }
 \arguments{
 \item{link}{Link function for function}
 
-\item{link_sigma}{Link function for sigma argument}
+\item{link_sigma}{Link function for sigma argument. Defaults to \code{"log"}
+so that sigma is guaranteed to be positive (API change: previously
+defaulted to \code{"identity"}).}
 }
 \value{
 brms Beta-Custom distribution family
