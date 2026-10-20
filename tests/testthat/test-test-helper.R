@@ -393,6 +393,25 @@ test_that("test the test_rng-wrapper", {
   ))
 })
 
+test_that("test_rng works without auxiliary parameters (#36)", {
+  mus <- numeric()
+  recording_rng <- function(n, mu) {
+    mus[length(mus) + 1] <<- mu
+    stats::rnorm(n, mean = mu, sd = 0.05)
+  }
+  expect_success(test_rng(
+    rng_fun = recording_rng,
+    metric_mu = mean,
+    n = 100,
+    mu_list = c(0, 1, 2),
+    aux_list = NA,
+    mu_eps = 0.1,
+    p_acceptable_failures = 0
+  ))
+  # the rng is called once per mu, not once with the whole mu_list
+  expect_equal(mus, c(0, 1, 2))
+})
+
 test_that("test_brms_quantile", {
   # To test this, first construct a brms model with Cloglognormal
   n_brms <- 1000
@@ -667,4 +686,58 @@ test_that("data limiting function limit_data", {
   # wrong input data
   expect_error(limit_data(c(1, "r"), c(1, 2)))
   expect_error(limit_data(c(1, NA), c(1, 2)))
+})
+
+mock_family <- function() list(name = "mock_family", stanvars = NULL)
+
+construct_mock <- function(rng, aux_par = NA, aux2_par = NA, seed = NULL) {
+  construct_brms(
+    n_data_sampels = 5,
+    intercept = 1,
+    aux_par = aux_par,
+    aux2_par = aux2_par,
+    rng_link = identity,
+    family = mock_family,
+    rng = rng,
+    seed = seed
+  )
+}
+
+test_that("construct_brms dispatches the rng by auxiliary parameter count (#36)", {
+  local_mocked_bindings(brm = function(...) NULL, .package = "brms")
+  n_args <- integer()
+  recording_rng <- function(...) {
+    n_args[length(n_args) + 1] <<- ...length()
+    seq_len(..1)
+  }
+  construct_mock(recording_rng)
+  construct_mock(recording_rng, aux_par = 5)
+  construct_mock(recording_rng, aux_par = 5, aux2_par = 7)
+  # exactly one rng call per construction, without NA arguments
+  expect_equal(n_args, c(2L, 3L, 4L))
+})
+
+test_that("construct_brms restores the caller RNG state (#37)", {
+  local_mocked_bindings(brm = function(...) NULL, .package = "brms")
+  rng <- function(n, mu) stats::rnorm(n, mean = mu)
+
+  set.seed(42)
+  state_before <- .Random.seed
+  construct_mock(rng, seed = 99)
+  expect_identical(.Random.seed, state_before)
+
+  # also, if the rng or the fit errors
+  expect_error(construct_mock(function(n, mu) stop("rng boom"), seed = 99))
+  expect_identical(.Random.seed, state_before)
+  expect_error(with_mocked_bindings(
+    construct_mock(rng, seed = 99),
+    brm = function(...) stop("brms boom"),
+    .package = "brms"
+  ))
+  expect_identical(.Random.seed, state_before)
+
+  # a fresh session without .Random.seed stays without one
+  rm(".Random.seed", envir = globalenv())
+  construct_mock(rng, seed = 99)
+  expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
 })
