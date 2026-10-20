@@ -164,6 +164,11 @@ test_that("gaussian-error-function", {
   expect_error(erf(0.1, 0.5))
 })
 
+test_that("inverse gaussian error function", {
+  x <- seq(from = -3, to = 3, length.out = n_testset)
+  expect_eps(inv_erf(erf(x)), x, 1e-10)
+})
+
 test_that("Softplus link-function", {
   # check, that the error is within reason
   expect_eps(-2.252168, softplus(0.1), eps)

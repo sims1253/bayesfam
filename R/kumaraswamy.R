@@ -17,11 +17,9 @@ dkumaraswamy <- function(x, mu, p, log = FALSE) {
   if (isTRUE(any(x <= 0 | x >= 1))) {
     stop("x must be in (0,1).")
   }
-  if (isTRUE(any(mu < 0 | mu > 1))) {
-    stop("The mean must be in (0,1).")
+  if (isTRUE(any(mu <= 0 | mu >= 1))) {
+    stop("The median must be in (0,1).")
   }
-  mu[which(mu > 0.999999)] <- 0.999999
-  mu[which(mu < 0.000001)] <- 0.000001
   if (isTRUE(any(p <= 0))) {
     stop("P must be above 0.")
   }
@@ -50,10 +48,8 @@ dkumaraswamy <- function(x, mu, p, log = FALSE) {
 #' @examples hist(rkumaraswamy(10000, mu = 0.5, p = 4))
 rkumaraswamy <- function(n, mu = 0.5, p = 2) {
   if (isTRUE(any(mu <= 0 | mu >= 1))) {
-    stop("The mean must be in (0,1).")
+    stop("The median must be in (0,1).")
   }
-  mu[which(mu > 0.999999)] <- 0.999999
-  mu[which(mu < 0.000001)] <- 0.000001
   if (isTRUE(any(p <= 0))) {
     stop("P must be above 0.")
   }

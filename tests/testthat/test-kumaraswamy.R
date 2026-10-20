@@ -122,3 +122,20 @@ test_that("pkumaraswamy is the Kumaraswamy CDF (#26)", {
     }
   }
 })
+
+test_that("kumaraswamy mu policy: strict (0, 1) in d/p/q/r, no clamping", {
+  for (mu in c(0, 1, -0.1, 1.1)) {
+    expect_error(dkumaraswamy(0.3, mu = mu, p = 2), "median must be in")
+    expect_error(pkumaraswamy(0.3, mu = mu, p = 2), "median must be in")
+    expect_error(qkumaraswamy(0.3, mu = mu, p = 2), "median must be in")
+    expect_error(rkumaraswamy(10, mu = mu, p = 2), "median must be in")
+  }
+  # mu is used as-is (like the Stan lpdf), not clamped to 1 - 1e-6
+  mu <- 1 - 1e-10
+  expect_eps(
+    dkumaraswamy(0.3, mu = mu, p = 2),
+    extraDistr::dkumar(0.3, a = 2, b = -log(2) / log1p(-mu^2)),
+    eps = 1e-8,
+    relative = TRUE
+  )
+})

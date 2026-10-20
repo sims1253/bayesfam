@@ -102,7 +102,7 @@ erf <- function(x) {
 }
 
 inv_erf <- function(x) {
-  return(qnorm(x / 2 + 1) / sqrt(2))
+  return(qnorm((x + 1) / 2) / sqrt(2))
 }
 
 #' Softplus link function

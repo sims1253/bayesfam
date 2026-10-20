@@ -81,3 +81,17 @@ test_that("simplex requires sigma > 0 (#27)", {
   expect_equal(fam$link_sigma, "log")
   expect_equal(as.numeric(fam$lb[["sigma"]]), 0)
 })
+
+test_that("simplex mu policy: strict (0, 1) in d/r, no clamping", {
+  for (mu in c(0, 1, -0.1, 1.1)) {
+    expect_error(dsimplex(0.5, mu = mu, sigma = 2), "mean must be in")
+    expect_error(rsimplex(10, mu = mu, sigma = 2), "mean must be in")
+  }
+  # mu is used as-is (like the Stan lpdf), not clamped to 1 - 1e-6
+  expect_eps(
+    dsimplex(1 - 1e-7, mu = 1 - 1e-7, sigma = 2, log = TRUE),
+    rmutil::dsimplex(1 - 1e-7, m = 1 - 1e-7, s = 4, log = TRUE),
+    eps = 1e-8,
+    relative = TRUE
+  )
+})
