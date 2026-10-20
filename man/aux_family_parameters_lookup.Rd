@@ -7,10 +7,12 @@
 aux_family_parameters_lookup(family)
 }
 \arguments{
-\item{family}{The identifier string of a family.}
+\item{family}{The identifier string of a family. Unknown identifiers raise
+an error.}
 }
 \value{
-Character vector of auxiliary parameter names.
+Character vector of auxiliary parameter names (all distributional
+parameters except \code{mu}), empty if there are none.
 }
 \description{
 Lookup function for the names of the auxiliary parameters of a likelihood

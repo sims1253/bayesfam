@@ -7,9 +7,11 @@
 brms_family_lookup(family, link = NULL)
 }
 \arguments{
-\item{family}{String identifier of the family.}
+\item{family}{String identifier of the family. Unknown identifiers raise an
+error.}
 
-\item{link}{Link to be passed to the family function.}
+\item{link}{Link to be passed to the family function. If \code{NULL}, the
+family's default link is used.}
 }
 \value{
 A brmsfamily object matching the string identifier and using the link

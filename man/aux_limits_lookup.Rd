@@ -7,10 +7,12 @@
 aux_limits_lookup(family)
 }
 \arguments{
-\item{family}{The identifier string of a family.}
+\item{family}{The identifier string of a family. Unknown identifiers raise
+an error.}
 }
 \value{
-List containing lower and upper bounds for the auxiliary parameter.
+List containing lower and upper bounds for the auxiliary parameters,
+in the order of \code{\link[=aux_family_parameters_lookup]{aux_family_parameters_lookup()}}.
 }
 \description{
 Lookup for limits of family auxiliary parameters.
