@@ -81,11 +81,12 @@ expect_eps <- function(
   } else {
     difference <- abs(a - b)
   }
+  # identical values pass, including equal infinities (Inf - Inf is NaN)
+  difference[a == b] <- 0
   eps_comparison_wrong <- (difference > eps)
 
-  # non-finite differences (NaN or Inf, for example produced by Inf - Inf or by
-  # overflow inside the comparison itself) have to count as deviances. Dropping
-  # them via na.rm, as done before, could let grossly different inputs pass.
+  # remaining non-finite differences (e.g. Inf vs. a finite value) have to
+  # count as deviances, even for eps = Inf (see issue #35).
   eps_comparison_wrong <- !is.finite(difference) | eps_comparison_wrong
 
   # convert the logical vector in a sum of how many entries were wrong
@@ -134,11 +135,12 @@ expect_eps <- function(
 #' Uses euler metric for denominator
 #'
 #' Finite operands are normalized by their largest absolute magnitude before
-#' subtracting and squaring, which avoids the overflow to Inf (and the
-#' resulting 0 or NaN differences) squaring large raw values would cause.
-#' Infinite operands are handled via the limits of the euler metric: equal
-#' infinities have distance 0, an infinite value against a finite one has
-#' distance 1 and opposite-sign infinities have distance sqrt(2).
+#' subtracting and squaring, which avoids squaring large raw values to Inf
+#' (see issue #35). Identical values, including equal infinities, have
+#' distance 0. Pairs, where both magnitudes are below
+#' `sqrt(.Machine$double.xmin)`, also count as distance 0 (the euler metric is
+#' meaningless at that scale). Otherwise, an infinite value against a finite one
+#' has distance 1 and opposite-sign infinities have distance sqrt(2).
 #'
 #' @param va Numeric scalar or vector of entries
 #' @param vb Numeric scalar or vector of entries
@@ -155,39 +157,27 @@ normale_difference <- function(va, vb) {
       "In normale_difference function, both vector va and vb have to be numeric and of same len (or scalar)"
     )
   }
+  len <- max(length(va), length(vb))
+  va <- rep_len(va, len)
+  vb <- rep_len(vb, len)
 
-  # normalize both operands by their largest absolute magnitude before
-  # subtracting/squaring. Squaring the raw values overflows to Inf for large
-  # finite inputs and the resulting 0/NaN distances would silently corrupt
-  # relative comparisons (see issue #35).
+  # normalize by the larger magnitude, so squaring cannot overflow (issue #35)
   scale <- pmax(abs(va), abs(vb))
-  # a scale of 0 means both operands are exactly zero, the 0/0 case is a
-  # clearly valid 0 difference and is set explicitly below.
-  safe_scale <- ifelse(scale == 0, 1, scale)
-  va_norm <- va / safe_scale
-  vb_norm <- vb / safe_scale
-  difference <- abs(va_norm - vb_norm)
-  denominator <- (va_norm^2 + vb_norm^2)^0.5
+  va_norm <- va / scale
+  vb_norm <- vb / scale
   # I like euler as a compromise, between va or vb, given we usually do not know
   # which is the correct one.
+  result <- abs(va_norm - vb_norm) / sqrt(va_norm^2 + vb_norm^2)
 
-  result <- difference / denominator
-  result[scale == 0] <- 0.0 # both values are exactly zero, hence clearly valid 0!
-
-  # infinite operands are defined via the limits of the euler metric:
-  # equal infinities -> 0, opposite-sign infinities -> sqrt(2) and an
-  # infinite value against a finite one -> 1. The normalized differences of
-  # these pairs would be NaN (Inf / Inf), hence they are set explicitly.
-  infinite_pairs <- is.infinite(va) | is.infinite(vb)
-  result[infinite_pairs] <- ifelse(
-    va[infinite_pairs] == vb[infinite_pairs],
-    0,
-    ifelse(
-      is.infinite(va[infinite_pairs]) & is.infinite(vb[infinite_pairs]),
-      sqrt(2),
-      1
-    )
+  # Inf / Inf above is NaN, use the limits of the euler metric instead
+  infinite <- is.infinite(scale)
+  result[infinite] <- ifelse(
+    is.infinite(va[infinite]) & is.infinite(vb[infinite]),
+    sqrt(2),
+    1
   )
+  # identical and tiny values (incl. 0 vs 0) are clearly valid 0!
+  result[va == vb | scale < sqrt(.Machine$double.xmin)] <- 0
 
   return(result)
 }
@@ -742,7 +732,11 @@ construct_brms <- function(
     # restoring via set.seed(old_seed) would initialize a new stream instead
     # of continuing the caller's stream (see issue #37). on.exit guarantees
     # the restoration, even if the rng, data handling or the brms fit errors.
-    seed_existed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+    seed_existed <- exists(
+      ".Random.seed",
+      envir = globalenv(),
+      inherits = FALSE
+    )
     if (seed_existed) {
       old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
     }
@@ -751,7 +745,9 @@ construct_brms <- function(
       {
         if (seed_existed) {
           assign(".Random.seed", old_seed, envir = globalenv())
-        } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+        } else if (
+          exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+        ) {
           # no state existed before, remove the helper-created seed again
           rm(".Random.seed", envir = globalenv())
         }

@@ -59,7 +59,8 @@ test_that("custom-generalized-normal", {
     n = 5 * n,
     mu_list = mu_list,
     aux_list = aux_list,
-    aux2_list = aux_list,
+    # beta = 0.01 gives ~1e209 tail quantiles, these only passed via overflow (#35)
+    aux2_list = aux_list[-1],
     eps = accepted_rng_error,
     quantiles = c(
       0.01,

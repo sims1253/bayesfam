@@ -205,6 +205,35 @@ test_that("test normal_difference metric-function", {
   # NAs are dissallowed as well, will produce warning
 })
 
+test_that("normale_difference avoids overflow, handles Inf and tiny values (#35)", {
+  # squaring the raw values used to overflow, yielding a distance of 0 or NaN
+  expect_equal(normale_difference(1e200, 2e200), 1 / sqrt(5))
+  expect_equal(normale_difference(1e308, -1e308), sqrt(2))
+  # infinities use the limits of the euler metric, scalars are recycled
+  expect_equal(normale_difference(Inf, c(Inf, -Inf, 5)), c(0, sqrt(2), 1))
+  # magnitudes below sqrt(.Machine$double.xmin) count as equal, as before
+  expect_equal(
+    normale_difference(c(0, 1e-200, 1e-150), c(1e-200, 2e-200, 2e-150)),
+    c(0, 0, 1 / sqrt(5))
+  )
+})
+
+test_that("expect_eps passes identical values, fails overflowing ones (#35)", {
+  # identical values pass in both modes, including equal infinities
+  expect_success(expect_eps(c(1, Inf, -Inf), c(1, Inf, -Inf), 0.1))
+  expect_success(expect_eps(
+    c(Inf, 1e300),
+    c(Inf, 1e300),
+    1e-8,
+    relative = TRUE
+  ))
+  expect_failure(expect_eps(c(Inf, 2), c(-Inf, 2), 10))
+  expect_failure(expect_eps(Inf, -Inf, 0.99, relative = TRUE))
+  # large finite mismatches used to pass through overflow
+  expect_failure(expect_eps(1e200, 2e200, 0.1, relative = TRUE))
+  expect_failure(expect_eps(1e308, -1e308, 0.1, relative = TRUE))
+})
+
 test_that("test the test_rng-wrapper", {
   # Test-RNG constants
   eps <- 1e-6
