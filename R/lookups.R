@@ -42,6 +42,7 @@ family_registry <- function() {
       brms::rinv_gaussian,
       lb = 0
     ),
+    "inverse_burr" = custom(inverse_burr, rinverse_burr),
     "kumaraswamy" = custom(kumaraswamy, rkumaraswamy),
     "logistic" = custom(logistic, rlogistic),
     "logitnormal" = custom(logitnormal, rlogitnormal, "logit"),
