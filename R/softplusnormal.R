@@ -19,9 +19,9 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
     stop("softplusnormal is only defined for sigma > 0")
   }
   # normal density of the softplus link z, plus its log Jacobian
-  # log(d z / d x) = x - z
+  # log(d z / d x) = x - z = -log(1 - exp(-x))
   z <- softplus(x)
-  logpdf <- dnorm(z, mu, sigma, log = TRUE) + x - z
+  logpdf <- dnorm(z, mu, sigma, log = TRUE) - log(-expm1(-x))
   if (log) {
     return(logpdf)
   } else {
@@ -122,7 +122,7 @@ softplusnormal <- function(link = "identity", link_sigma = "log") {
       real softplusnormal_lpdf(real y, real mu, real sigma) {
         // softplus link of y in stable form, plus its log Jacobian y - z
         real z = y + log1m_exp(-y);
-        return normal_lpdf(z | mu, sigma) + y - z;
+        return normal_lpdf(z | mu, sigma) - log1m_exp(-y);
       }
 
       real softplusnormal_rng(real mu, real sigma) {
