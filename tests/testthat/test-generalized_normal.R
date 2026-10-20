@@ -135,7 +135,7 @@ test_that("Stan generalized_normal_rng matches the R-side distribution", {
   env <- new.env()
   rstan::expose_stan_functions(rstan::stanc(model_code = code), env = env)
   p <- c(0.05, 0.25, 0.75, 0.95)
-  for (beta in c(1, 2)) {
+  for (beta in c(0.5, 1, 2)) {
     y <- env$generalized_normal_n_rng(
       20000,
       1,
