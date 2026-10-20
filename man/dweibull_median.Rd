@@ -26,7 +26,7 @@ Define constant sigma as
 \deqn{\sigma(\mu, k) := \mu / \log(2)^{1 / k}}
 
 The Weibull distribution density is defined as
-\deqn{f(y) = \frac{k}{\sigma} * (\frac{x}{\sigma})^{k - 1} * exp(-(\frac{x}{\sigma})^k)}
+\deqn{f(y) = \frac{k}{\sigma} * (\frac{y}{\sigma})^{k - 1} * exp(-(\frac{y}{\sigma})^k)}
 }
 \examples{
 x <- seq(from = 0.01, to = 10, length.out = 1000)

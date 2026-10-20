@@ -59,6 +59,9 @@ rng_lookup <- function(family) {
     "softplusnormal" = bayesfam::rsoftplusnormal,
     "lomax" = bayesfam::rlomax,
     "frechet" = function(n, mu, nu) {
+      if (isTRUE(any(nu <= 1))) {
+        stop("frechet is only defined for nu > 1")
+      }
       brms::rfrechet(n, scale = mu / gamma(1 - 1 / nu), shape = nu)
     },
     "inverse.gaussian" = brms::rinv_gaussian,

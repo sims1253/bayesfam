@@ -22,4 +22,5 @@ test_that("rng_lookup('frechet') matches brms's mean parameterization", {
   set.seed(1124)
   draws <- rng_lookup("frechet")(1e5, mu = 2, nu = 5)
   expect_eps(mean(draws), 2, eps = 0.02, relative = TRUE)
+  expect_error(rng_lookup("frechet")(10, mu = 2, nu = 1))
 })
