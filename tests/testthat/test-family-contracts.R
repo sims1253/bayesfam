@@ -18,7 +18,7 @@ epred_exceptions <- c(
 )
 
 test_that("every custom family has a fixture", {
-  expect_setequal(names(family_fixtures), families)
+  expect_identical(sort(names(family_fixtures)), sort(families))
   for (f in families) {
     fx <- family_fixture(f)
     expect_named(fx$pars, fx$fam$dpars)
