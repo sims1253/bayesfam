@@ -5,7 +5,7 @@ Simplex brms-implementation in median parametrization.
 ## Usage
 
 ``` r
-simplex(link = "logit", link_sigma = "identity")
+simplex(link = "logit", link_sigma = "log")
 ```
 
 ## Arguments
@@ -16,7 +16,9 @@ simplex(link = "logit", link_sigma = "identity")
 
 - link_sigma:
 
-  Link function for sigma argument
+  Link function for sigma argument. Defaults to `"log"` so that sigma is
+  guaranteed to be positive (API change: previously defaulted to
+  `"identity"`).
 
 ## Value
 

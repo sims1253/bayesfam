@@ -23,7 +23,7 @@ rsimplex(n, mu = 0.5, sigma = 1)
 
 - sigma:
 
-  shape parameter, Sigma unbound
+  shape parameter, sigma \> 0
 
 ## Value
 

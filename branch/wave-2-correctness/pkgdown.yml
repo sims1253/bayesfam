@@ -2,7 +2,7 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2026-09-19T10:43Z
+last_built: 2026-10-20T01:17Z
 urls:
   reference: https://sims1253.github.io/bayesfam/branch/wave-2-correctness/reference
   article: https://sims1253.github.io/bayesfam/branch/wave-2-correctness/articles
