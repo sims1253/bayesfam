@@ -78,7 +78,7 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
 #'
 #' Computes E[plogis(Z)] for Z ~ N(mu, sigma) (the expectation that
 #' `posterior_epred` promises) with trapezoid sums on fixed nodes, which are
-#' accurate to about 1e-14 for all mu and sigma.
+#' accurate to an absolute error of about 1e-14 for all mu and sigma.
 #'
 #' @param mu Median parameter, unbound
 #' @param sigma Sigma shape parameter, sigma > 0

@@ -77,11 +77,8 @@ test_that("logitnormal mean matches numerical integration (#34)", {
   }
   for (mu in c(-20, -2, 0, 1, 5)) {
     for (sigma in c(0.01, 0.5, 1, 2, 10, 200)) {
-      expect_equal(
-        logitnormal_mean(mu, sigma),
-        ref(mu, sigma),
-        tolerance = 1e-10
-      )
+      # absolute error, the mean can be tiny (about 2e-9 at mu = -20)
+      expect_lt(abs(logitnormal_mean(mu, sigma) - ref(mu, sigma)), 1e-13)
     }
   }
   expect_equal(logitnormal_mean(0, c(0.01, 1, 200)), rep(0.5, 3))
