@@ -1,3 +1,19 @@
+test_that("dshifted_lognormal_uniform returns the density unless log = TRUE", {
+  y <- c(0.5, 2, 20)
+  d <- dshifted_lognormal_uniform(y, meanlog = 1, sdlog = 0.5, shift = 1)
+  expect_equal(
+    dshifted_lognormal_uniform(
+      y,
+      meanlog = 1,
+      sdlog = 0.5,
+      shift = 1,
+      log = TRUE
+    ),
+    log(d)
+  )
+  expect_true(all(d > 0 & d < 1))
+})
+
 test_that("custom-shifted_lognormal_uniform", {
   # Setup of testing space
   n <- 10000
@@ -65,7 +81,7 @@ test_that("dshifted_lognormal_uniform integrates to 1 (#24)", {
   shift <- 0.5
   max_uniform <- 2
   dens <- function(y, mix) {
-    exp(dshifted_lognormal_uniform(y, 0, 1, mix, shift, max_uniform))
+    dshifted_lognormal_uniform(y, 0, 1, mix, shift, max_uniform)
   }
   # integrate piecewise over the support of each mixture
   for (mix in c(0, 0.5, 1)) {

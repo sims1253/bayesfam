@@ -26,6 +26,7 @@
 #' @param mix the probability of the value comming from the uniform component
 #' @param shift the shift the lognormal distribution
 #' @param max_uniform the maximum value of the uniform component
+#' @param log logical; if TRUE, the log density is returned
 #' @name shifted_lognormal_uniform_distribution
 NULL
 
@@ -62,7 +63,8 @@ dshifted_lognormal_uniform <- function(
   sdlog = 1,
   mix = 0.1,
   shift = 0,
-  max_uniform = 100
+  max_uniform = 100,
+  log = FALSE
 ) {
   stopifnot(all(y > 0))
   stopifnot(all(sdlog > 0))
@@ -86,7 +88,12 @@ dshifted_lognormal_uniform <- function(
   )
   llh_matrix[1, ] <- log(mix) + unif_llh
   llh_matrix[2, ] <- log1p(-mix) + lognormal_llh
-  return(apply(llh_matrix, MARGIN = 2, FUN = logsumexp))
+  lpdf <- apply(llh_matrix, MARGIN = 2, FUN = logsumexp)
+  if (log) {
+    return(lpdf)
+  } else {
+    return(exp(lpdf))
+  }
 }
 
 posterior_predict_shifted_lognormal_uniform <- function(i, prep, ...) {
@@ -174,7 +181,8 @@ log_lik_shifted_lognormal_uniform <- function(i, prep) {
     sdlog = sigma,
     mix = mix,
     shift = shift,
-    max_uniform = max_uniform
+    max_uniform = max_uniform,
+    log = TRUE
   )
 }
 

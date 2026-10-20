@@ -26,7 +26,8 @@ dshifted_lognormal_uniform(
   sdlog = 1,
   mix = 0.1,
   shift = 0,
-  max_uniform = 100
+  max_uniform = 100,
+  log = FALSE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ dshifted_lognormal_uniform(
 \item{max_uniform}{the maximum value of the uniform component}
 
 \item{y}{the observed value}
+
+\item{log}{logical; if TRUE, the log density is returned}
 }
 \description{
 Probability density and RNG function for the mixture of shifted lognormal and

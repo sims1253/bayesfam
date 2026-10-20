@@ -29,9 +29,9 @@ family_fixtures <- list(
   shifted_inv_gaussian = fixture(list(support = c(0.2, Inf), y = c(0.5, 1, 3)), mu = c(1, 2), shape = c(1, 3), ndt = c(0.2, 0.2)),
   shifted_lognormal_uniform = c(
     fixture(list(support = c(0, Inf), y = c(0.05, 1, 12)), mu = c(0, 0.5), sigma = c(0.5, 1), mix = c(0.1, 0.3), shiftprop = c(0.2, 0.8)),
-    # the d/r functions take the shift itself, and d always returns the log density
+    # the d/r functions take the shift itself
     vreal = list(list(vreal1 = 0.3, vreal2 = 10)),
-    lpdf = function(y, mu, sigma, mix, shiftprop, max_shift, max_uniform) dshifted_lognormal_uniform(y, mu, sigma, mix, shiftprop * max_shift, max_uniform),
+    lpdf = function(y, mu, sigma, mix, shiftprop, max_shift, max_uniform) dshifted_lognormal_uniform(y, mu, sigma, mix, shiftprop * max_shift, max_uniform, log = TRUE),
     rng = function(n, mu, sigma, mix, shiftprop, max_shift, max_uniform) rshifted_lognormal_uniform(n, mu, sigma, mix, shiftprop * max_shift, max_uniform)
   ),
   simplex = fixture(unit, mu = c(0.3, 0.6), sigma = c(0.5, 1)),
