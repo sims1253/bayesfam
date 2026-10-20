@@ -35,8 +35,8 @@ f(x \| mu, k)
 Define constant sigma as \$\$\sigma(\mu, k) := \mu / \log(2)^{1 / k}\$\$
 
 The Weibull distribution density is defined as \$\$f(y) =
-\frac{k}{\sigma} \* (\frac{x}{\sigma})^{k - 1} \*
-exp(-(\frac{x}{\sigma})^k)\$\$
+\frac{k}{\sigma} \* (\frac{y}{\sigma})^{k - 1} \*
+exp(-(\frac{y}{\sigma})^k)\$\$
 
 ## Examples
 
