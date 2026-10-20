@@ -59,9 +59,9 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>An empty vector returns <code>-Inf</code> (the sum is empty). <code>NA</code>/<code>NaN</code>
-entries propagate and return <code>NA_real_</code>. If any entry is <code>+Inf</code>, the
-result is <code>Inf</code>; if all entries are <code>-Inf</code>, the result is <code>-Inf</code>.</p>
+    <p>An empty vector returns <code>-Inf</code> (the sum is empty). A non-finite
+maximum is returned as is: <code>NA</code>/<code>NaN</code> entries propagate, otherwise any
+<code>Inf</code> entry gives <code>Inf</code> and all-<code>-Inf</code> input gives <code>-Inf</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
