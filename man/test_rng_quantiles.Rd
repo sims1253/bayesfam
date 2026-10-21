@@ -15,7 +15,8 @@ test_rng_quantiles(
   quantiles,
   p_acceptable_failures,
   mu_link = identity,
-  relative = FALSE
+  relative = FALSE,
+  seed = 1
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ difference bigger mu_eps}
 useful in link-normal-distributions}
 
 \item{relative}{True if the error should be relative to the mu_list}
+
+\item{seed}{Seed for the draws, so the check is reproducible; the caller's
+RNG state is restored afterwards. NULL keeps the current RNG state.}
 }
 \value{
 Nothing actually, just wraps the test

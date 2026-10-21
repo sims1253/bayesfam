@@ -196,6 +196,8 @@ normale_difference <- function(va, vb) {
 #' useful in link-normal-distributions
 #' @param relative True if the error should be relative to the mu_list, Default = FALSE
 #' @param debug bool argument, if set will printout the difference, in case of failure. Default = FALSE
+#' @param seed Seed for the draws, so the check is reproducible; the caller's
+#' RNG state is restored afterwards. NULL keeps the current RNG state.
 #'
 #' @return Nothing actually, just wraps the test
 #'
@@ -218,8 +220,12 @@ test_rng <- function(
   p_acceptable_failures,
   mu_link = identity,
   relative = FALSE,
-  debug = TRUE
+  debug = TRUE,
+  seed = 1
 ) {
+  if (!is.null(seed)) {
+    local_seed(seed)
+  }
   # check, that all function arguments are actually functions
   # TODO: (Is it possible, to check, if they also take the correct arguments?)
   if (
@@ -434,6 +440,8 @@ test_rng_asym <- function(
 #' @param mu_link Default=identity, optional link-function argument, for example
 #' useful in link-normal-distributions
 #' @param relative True if the error should be relative to the mu_list
+#' @param seed Seed for the draws, so the check is reproducible; the caller's
+#' RNG state is restored afterwards. NULL keeps the current RNG state.
 #'
 #' @return Nothing actually, just wraps the test
 #' @examples eps <- 0.001
@@ -462,8 +470,12 @@ test_rng_quantiles <- function(
   quantiles,
   p_acceptable_failures,
   mu_link = identity,
-  relative = FALSE
+  relative = FALSE,
+  seed = 1
 ) {
+  if (!is.null(seed)) {
+    local_seed(seed)
+  }
   if (any(is.na(aux_list))) {
     for (mu in mu_list) {
       sample <- rng_fun(
@@ -661,6 +673,26 @@ expect_brms_family <- function(
   }
 }
 
+# Sets the RNG seed until the calling function exits, then restores the
+# caller's full RNG state, or removes it again if none existed (see #37).
+# .Random.seed is a state vector, not a seed, so set.seed(old_state) would
+# start a new stream instead of continuing the caller's.
+local_seed <- function(seed, envir = parent.frame()) {
+  seed_existed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+  if (seed_existed) {
+    old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+  }
+  restore <- function() {
+    if (seed_existed) {
+      assign(".Random.seed", old_seed, envir = globalenv())
+    } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+      rm(".Random.seed", envir = globalenv())
+    }
+  }
+  set.seed(seed)
+  do.call(on.exit, list(as.call(list(restore)), add = TRUE), envir = envir)
+}
+
 #' Construct brms family for simple linear y ~ 1 model.
 #'
 #' @param n_data_sampels How many samples per chain. Positive integer scalar.
@@ -727,33 +759,7 @@ construct_brms <- function(
   }
 
   if (!is.null(seed)) {
-    # record whether the caller already had an RNG state and preserve it in
-    # full. .Random.seed is a complete state vector, not a seed value, hence
-    # restoring via set.seed(old_seed) would initialize a new stream instead
-    # of continuing the caller's stream (see issue #37). on.exit guarantees
-    # the restoration, even if the rng, data handling or the brms fit errors.
-    seed_existed <- exists(
-      ".Random.seed",
-      envir = globalenv(),
-      inherits = FALSE
-    )
-    if (seed_existed) {
-      old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
-    }
-    set.seed(seed)
-    on.exit(
-      {
-        if (seed_existed) {
-          assign(".Random.seed", old_seed, envir = globalenv())
-        } else if (
-          exists(".Random.seed", envir = globalenv(), inherits = FALSE)
-        ) {
-          # no state existed before, remove the helper-created seed again
-          rm(".Random.seed", envir = globalenv())
-        }
-      },
-      add = TRUE
-    )
+    local_seed(seed)
   }
 
   # mutually exclusive dispatch over the number of auxiliary parameters
