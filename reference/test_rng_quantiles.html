@@ -49,7 +49,8 @@
 <span>  <span class="va">quantiles</span>,</span>
 <span>  <span class="va">p_acceptable_failures</span>,</span>
 <span>  mu_link <span class="op">=</span> <span class="va">identity</span>,</span>
-<span>  relative <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  relative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -102,6 +103,11 @@ useful in link-normal-distributions</p></dd>
 
 <dt id="arg-relative">relative<a class="anchor" aria-label="anchor" href="#arg-relative"></a></dt>
 <dd><p>True if the error should be relative to the mu_list</p></dd>
+
+
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
+<dd><p>Seed for the draws, so the check is reproducible; the caller's
+RNG state is restored afterwards. NULL keeps the current RNG state.</p></dd>
 
 </dl></div>
     <div class="section level2">

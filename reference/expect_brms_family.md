@@ -127,9 +127,7 @@ result <- bayesfam:::expect_brms_family(
   rng = rbetaprime,
   aux_name = "phi"
 )
-#> Error in .fun(model_code = .x1) : 
-#>   Boost not found; call install.packages('BH')
-#> Error in .fun(model_code = .x1): Boost not found; call install.packages('BH')
 print(result)
-#> Error: object 'result' not found
+#> <expectation_success/expectation/condition>
+#> As expected
 ```

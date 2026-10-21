@@ -16,7 +16,8 @@ test_rng(
   p_acceptable_failures,
   mu_link = identity,
   relative = FALSE,
-  debug = TRUE
+  debug = TRUE,
+  seed = 1
 )
 ```
 
@@ -68,6 +69,11 @@ test_rng(
 
   bool argument, if set will printout the difference, in case of
   failure. Default = FALSE
+
+- seed:
+
+  Seed for the draws, so the check is reproducible; the caller's RNG
+  state is restored afterwards. NULL keeps the current RNG state.
 
 ## Value
 

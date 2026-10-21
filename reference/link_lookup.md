@@ -44,6 +44,6 @@ link_lookup("identiy", "logitnormal", FALSE)
 #>     }
 #>     return(qlogis(x))
 #> }
-#> <bytecode: 0x5645114f1ef0>
+#> <bytecode: 0x5588491bd878>
 #> <environment: namespace:bayesfam>
 ```

@@ -43,7 +43,6 @@ fit <- brms::brm(
   refresh = 0
 )
 #> Compiling Stan program...
-#> Error in .fun(model_code = .x1): Boost not found; call install.packages('BH')
+#> Start sampling
 plot(fit)
-#> Error: object 'fit' not found
 ```

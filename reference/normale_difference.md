@@ -1,6 +1,13 @@
 # Uses euler metric for denominator
 
-Uses euler metric for denominator
+Finite operands are normalized by their largest absolute magnitude
+before subtracting and squaring, which avoids squaring large raw values
+to Inf (see issue \#35). Identical values, including equal infinities,
+have distance 0. Pairs, where both magnitudes are below
+`sqrt(.Machine$double.xmin)`, also count as distance 0 (the euler metric
+is meaningless at that scale). Otherwise, an infinite value against a
+finite one has distance 1 and opposite-sign infinities have distance
+sqrt(2).
 
 ## Usage
 

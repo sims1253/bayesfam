@@ -82,15 +82,11 @@ thresh has to be inside the Unit-Interval.</p></dd>
 <span class="r-in"><span>  family <span class="op">=</span> <span class="va">betaprime</span>,</span></span>
 <span class="r-in"><span>  rng <span class="op">=</span> <span class="va">rbetaprime</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in .fun(model_code = .x1) : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Boost not found; call install.packages('BH')</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .fun(model_code = .x1):</span> Boost not found; call install.packages('BH')</span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">bayesfam</span><span class="fu">:::</span><span class="fu">test_brms_quantile</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  posterior_data <span class="op">=</span> <span class="va">fit</span>, arg_name <span class="op">=</span> <span class="st">"phi"</span>, <span class="fl">2.0</span>, <span class="fl">0.025</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fit' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fit' not found</span>
+<span class="r-plt img"><img src="test_brms_quantile-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># beta_prime uses log-link for Intercept</span></span></span>
 </code></pre></div>
     </div>

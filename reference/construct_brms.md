@@ -89,10 +89,7 @@ posterior_fit <- bayesfam:::construct_brms(
   family = betaprime,
   rng = rbetaprime
 )
-#> Error in .fun(model_code = .x1) : 
-#>   Boost not found; call install.packages('BH')
-#> Error in .fun(model_code = .x1): Boost not found; call install.packages('BH')
 plot(posterior_fit)
-#> Error: object 'posterior_fit' not found
+
 # beta_prime uses log-link for Intercept
 ```
