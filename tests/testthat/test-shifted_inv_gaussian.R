@@ -46,44 +46,16 @@ test_that("shifted-inverse-gauss", {
   expect_error(rshifted_inv_gaussian(1, 0.5, -0.5, 0.5)) # sigma > 0
   expect_error(rshifted_inv_gaussian(1, 0.5, 0.5, -0.5)) # shift >= 0
 
-  intercept <- 2
-  shape <- 2
-  shift <- 3
-  thresh <- 0.05
-  data <- list(
-    y = rshifted_inv_gaussian(
-      n = 1000,
-      mu = exp(intercept),
-      shape = shape,
-      shift = shift
-    )
+  # recovery fit on seeded data, like the other family tests
+  expect_brms_family(
+    intercept = 2,
+    aux_par = 2,
+    aux2_par = 3,
+    rng_link = exp,
+    parameter_link = identity,
+    family = shifted_inv_gaussian,
+    rng = rshifted_inv_gaussian,
+    aux_name = "shape",
+    aux2_name = "ndt"
   )
-  posterior_fit <- brms::brm(
-    formula = y ~ 1,
-    data = data,
-    family = shifted_inv_gaussian(),
-    stanvars = shifted_inv_gaussian()$stanvars,
-    refresh = 0,
-    silent = 2
-  )
-
-  intercept_recovered <- test_brms_quantile(
-    posterior_fit,
-    "b_Intercept",
-    intercept,
-    thresh
-  )
-  shape_par_recovered <- test_brms_quantile(
-    posterior_fit,
-    "shape",
-    shape,
-    thresh
-  )
-  shift_par_recovered <- test_brms_quantile(
-    posterior_fit,
-    "ndt",
-    shift,
-    thresh
-  )
-  expect_true(intercept_recovered && shape_par_recovered && shift_par_recovered)
 })
