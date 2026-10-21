@@ -26,9 +26,6 @@ test_that("lognormal", {
     }
   }
 
-  # fixed seed, so the stochastic RNG checks below cannot flake
-  set.seed(1235813)
-
   # check if the RNG is close enough to the true mean in most cases
   test_rng(
     rng_fun = rlognormal,

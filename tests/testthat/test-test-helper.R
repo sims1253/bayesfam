@@ -205,6 +205,35 @@ test_that("test normal_difference metric-function", {
   # NAs are dissallowed as well, will produce warning
 })
 
+test_that("normale_difference avoids overflow, handles Inf and tiny values (#35)", {
+  # squaring the raw values used to overflow, yielding a distance of 0 or NaN
+  expect_equal(normale_difference(1e200, 2e200), 1 / sqrt(5))
+  expect_equal(normale_difference(1e308, -1e308), sqrt(2))
+  # infinities use the limits of the euler metric, scalars are recycled
+  expect_equal(normale_difference(Inf, c(Inf, -Inf, 5)), c(0, sqrt(2), 1))
+  # magnitudes below sqrt(.Machine$double.xmin) count as equal, as before
+  expect_equal(
+    normale_difference(c(0, 1e-200, 1e-150), c(1e-200, 2e-200, 2e-150)),
+    c(0, 0, 1 / sqrt(5))
+  )
+})
+
+test_that("expect_eps passes identical values, fails overflowing ones (#35)", {
+  # identical values pass in both modes, including equal infinities
+  expect_success(expect_eps(c(1, Inf, -Inf), c(1, Inf, -Inf), 0.1))
+  expect_success(expect_eps(
+    c(Inf, 1e300),
+    c(Inf, 1e300),
+    1e-8,
+    relative = TRUE
+  ))
+  expect_failure(expect_eps(c(Inf, 2), c(-Inf, 2), 10))
+  expect_failure(expect_eps(Inf, -Inf, 0.99, relative = TRUE))
+  # large finite mismatches used to pass through overflow
+  expect_failure(expect_eps(1e200, 2e200, 0.1, relative = TRUE))
+  expect_failure(expect_eps(1e308, -1e308, 0.1, relative = TRUE))
+})
+
 test_that("test the test_rng-wrapper", {
   # Test-RNG constants
   eps <- 1e-6
@@ -362,6 +391,25 @@ test_that("test the test_rng-wrapper", {
     mu_eps = accepted_means_eps,
     p_acceptable_failures = c(0.1, 0.2)
   ))
+})
+
+test_that("test_rng works without auxiliary parameters (#36)", {
+  mus <- numeric()
+  recording_rng <- function(n, mu) {
+    mus[length(mus) + 1] <<- mu
+    stats::rnorm(n, mean = mu, sd = 0.05)
+  }
+  expect_success(test_rng(
+    rng_fun = recording_rng,
+    metric_mu = mean,
+    n = 100,
+    mu_list = c(0, 1, 2),
+    aux_list = NA,
+    mu_eps = 0.1,
+    p_acceptable_failures = 0
+  ))
+  # the rng is called once per mu, not once with the whole mu_list
+  expect_equal(mus, c(0, 1, 2))
 })
 
 test_that("test_brms_quantile", {
@@ -638,4 +686,58 @@ test_that("data limiting function limit_data", {
   # wrong input data
   expect_error(limit_data(c(1, "r"), c(1, 2)))
   expect_error(limit_data(c(1, NA), c(1, 2)))
+})
+
+mock_family <- function() list(name = "mock_family", stanvars = NULL)
+
+construct_mock <- function(rng, aux_par = NA, aux2_par = NA, seed = NULL) {
+  construct_brms(
+    n_data_sampels = 5,
+    intercept = 1,
+    aux_par = aux_par,
+    aux2_par = aux2_par,
+    rng_link = identity,
+    family = mock_family,
+    rng = rng,
+    seed = seed
+  )
+}
+
+test_that("construct_brms dispatches the rng by auxiliary parameter count (#36)", {
+  local_mocked_bindings(brm = function(...) NULL, .package = "brms")
+  n_args <- integer()
+  recording_rng <- function(...) {
+    n_args[length(n_args) + 1] <<- ...length()
+    seq_len(..1)
+  }
+  construct_mock(recording_rng)
+  construct_mock(recording_rng, aux_par = 5)
+  construct_mock(recording_rng, aux_par = 5, aux2_par = 7)
+  # exactly one rng call per construction, without NA arguments
+  expect_equal(n_args, c(2L, 3L, 4L))
+})
+
+test_that("construct_brms restores the caller RNG state (#37)", {
+  local_mocked_bindings(brm = function(...) NULL, .package = "brms")
+  rng <- function(n, mu) stats::rnorm(n, mean = mu)
+
+  set.seed(42)
+  state_before <- .Random.seed
+  construct_mock(rng, seed = 99)
+  expect_identical(.Random.seed, state_before)
+
+  # also, if the rng or the fit errors
+  expect_error(construct_mock(function(n, mu) stop("rng boom"), seed = 99))
+  expect_identical(.Random.seed, state_before)
+  expect_error(with_mocked_bindings(
+    construct_mock(rng, seed = 99),
+    brm = function(...) stop("brms boom"),
+    .package = "brms"
+  ))
+  expect_identical(.Random.seed, state_before)
+
+  # a fresh session without .Random.seed stays without one
+  rm(".Random.seed", envir = globalenv())
+  construct_mock(rng, seed = 99)
+  expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
 })

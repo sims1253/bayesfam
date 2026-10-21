@@ -81,7 +81,13 @@ expect_eps <- function(
   } else {
     difference <- abs(a - b)
   }
+  # identical values pass, including equal infinities (Inf - Inf is NaN)
+  difference[a == b] <- 0
   eps_comparison_wrong <- (difference > eps)
+
+  # remaining non-finite differences (e.g. Inf vs. a finite value) have to
+  # count as deviances, even for eps = Inf (see issue #35).
+  eps_comparison_wrong <- !is.finite(difference) | eps_comparison_wrong
 
   # convert the logical vector in a sum of how many entries were wrong
   number_deviances <- sum(eps_comparison_wrong, na.rm = TRUE)
@@ -119,12 +125,22 @@ expect_eps <- function(
       "\nWith relative:",
       relative,
       "the max difference was:",
-      max(difference)
+      max(difference),
+      "non-finite differences (counted as wrong):",
+      sum(!is.finite(difference))
     ))
   }
 }
 
 #' Uses euler metric for denominator
+#'
+#' Finite operands are normalized by their largest absolute magnitude before
+#' subtracting and squaring, which avoids squaring large raw values to Inf
+#' (see issue #35). Identical values, including equal infinities, have
+#' distance 0. Pairs, where both magnitudes are below
+#' `sqrt(.Machine$double.xmin)`, also count as distance 0 (the euler metric is
+#' meaningless at that scale). Otherwise, an infinite value against a finite one
+#' has distance 1 and opposite-sign infinities have distance sqrt(2).
 #'
 #' @param va Numeric scalar or vector of entries
 #' @param vb Numeric scalar or vector of entries
@@ -141,14 +157,27 @@ normale_difference <- function(va, vb) {
       "In normale_difference function, both vector va and vb have to be numeric and of same len (or scalar)"
     )
   }
-  difference <- abs(va - vb)
-  denominator <- (va^2 + vb^2)^0.5
+  len <- max(length(va), length(vb))
+  va <- rep_len(va, len)
+  vb <- rep_len(vb, len)
+
+  # normalize by the larger magnitude, so squaring cannot overflow (issue #35)
+  scale <- pmax(abs(va), abs(vb))
+  va_norm <- va / scale
+  vb_norm <- vb / scale
   # I like euler as a compromise, between va or vb, given we usually do not know
   # which is the correct one.
+  result <- abs(va_norm - vb_norm) / sqrt(va_norm^2 + vb_norm^2)
 
-  result <- difference / denominator
-  result[denominator == 0.0] <- 0.0 # those would be NAs, but are clearly valid 0!
-  # I think, this should be the only point, where this formula would fail
+  # Inf / Inf above is NaN, use the limits of the euler metric instead
+  infinite <- is.infinite(scale)
+  result[infinite] <- ifelse(
+    is.infinite(va[infinite]) & is.infinite(vb[infinite]),
+    sqrt(2),
+    1
+  )
+  # identical and tiny values (incl. 0 vs 0) are clearly valid 0!
+  result[va == vb | scale < sqrt(.Machine$double.xmin)] <- 0
 
   return(result)
 }
@@ -167,6 +196,8 @@ normale_difference <- function(va, vb) {
 #' useful in link-normal-distributions
 #' @param relative True if the error should be relative to the mu_list, Default = FALSE
 #' @param debug bool argument, if set will printout the difference, in case of failure. Default = FALSE
+#' @param seed Seed for the draws, so the check is reproducible; the caller's
+#' RNG state is restored afterwards. NULL keeps the current RNG state.
 #'
 #' @return Nothing actually, just wraps the test
 #'
@@ -189,8 +220,12 @@ test_rng <- function(
   p_acceptable_failures,
   mu_link = identity,
   relative = FALSE,
-  debug = TRUE
+  debug = TRUE,
+  seed = 1
 ) {
+  if (!is.null(seed)) {
+    local_seed(seed)
+  }
   # check, that all function arguments are actually functions
   # TODO: (Is it possible, to check, if they also take the correct arguments?)
   if (
@@ -216,16 +251,22 @@ test_rng <- function(
   # As opposed to using a matrix, which would just complicate implementation and comparison.
 
   len_mu <- length(mu_list)
-  if (any(is.na(aux_list))) {
+  if (all(is.na(aux_list))) {
     # added case for likelihoods w/o aux-arguments, like unit-lindley likelihood
-    rng_mu_list <-
-      metric_mu(
+    # the rng is called once per mu (the whole mu_list vector used to be passed
+    # in a single call) and expected_mus has to be initialized for the shared
+    # expect_eps comparison below (see issue #36)
+    rng_mu_list <- vector(mode = "numeric", length = len_mu)
+    expected_mus <- mu_list
+    for (j in seq_along(mu_list)) {
+      rng_mu_list[j] <- metric_mu(
         rng_fun(
           n,
-          mu = mu_link(mu_list)
+          mu = mu_link(mu_list[j])
         )
       )
-  } else if (any(is.na(aux2_list))) {
+    }
+  } else if (all(is.na(aux2_list))) {
     len_aux <- length(aux_list)
     expected_mus <- rep(mu_list, times = len_aux)
     rng_mu_list <- vector(mode = "numeric", length = len_aux * len_mu)
@@ -399,6 +440,8 @@ test_rng_asym <- function(
 #' @param mu_link Default=identity, optional link-function argument, for example
 #' useful in link-normal-distributions
 #' @param relative True if the error should be relative to the mu_list
+#' @param seed Seed for the draws, so the check is reproducible; the caller's
+#' RNG state is restored afterwards. NULL keeps the current RNG state.
 #'
 #' @return Nothing actually, just wraps the test
 #' @examples eps <- 0.001
@@ -427,8 +470,12 @@ test_rng_quantiles <- function(
   quantiles,
   p_acceptable_failures,
   mu_link = identity,
-  relative = FALSE
+  relative = FALSE,
+  seed = 1
 ) {
+  if (!is.null(seed)) {
+    local_seed(seed)
+  }
   if (any(is.na(aux_list))) {
     for (mu in mu_list) {
       sample <- rng_fun(
@@ -626,6 +673,26 @@ expect_brms_family <- function(
   }
 }
 
+# Sets the RNG seed until the calling function exits, then restores the
+# caller's full RNG state, or removes it again if none existed (see #37).
+# .Random.seed is a state vector, not a seed, so set.seed(old_state) would
+# start a new stream instead of continuing the caller's.
+local_seed <- function(seed, envir = parent.frame()) {
+  seed_existed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+  if (seed_existed) {
+    old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+  }
+  restore <- function() {
+    if (seed_existed) {
+      assign(".Random.seed", old_seed, envir = globalenv())
+    } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+      rm(".Random.seed", envir = globalenv())
+    }
+  }
+  set.seed(seed)
+  do.call(on.exit, list(as.call(list(restore)), add = TRUE), envir = envir)
+}
+
 #' Construct brms family for simple linear y ~ 1 model.
 #'
 #' @param n_data_sampels How many samples per chain. Positive integer scalar.
@@ -692,24 +759,21 @@ construct_brms <- function(
   }
 
   if (!is.null(seed)) {
-    old_seed <- .Random.seed
-    set.seed(seed)
+    local_seed(seed)
   }
 
+  # mutually exclusive dispatch over the number of auxiliary parameters
+  # (0, 1 or 2). The previous two independent if-branches called the rng a
+  # second time with aux_par = NA for single-parameter distributions.
   if (is.na(aux_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept))
-  }
-  if (is.na(aux2_par)) {
+  } else if (is.na(aux2_par)) {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par)
   } else {
     y_data <- rng(n_data_sampels, rng_link(intercept), aux_par, aux2_par)
   }
   if (!is.null(data_threshold)) {
     y_data <- limit_data(y_data, data_threshold)
-  }
-
-  if (!is.null(seed)) {
-    set.seed(old_seed)
   }
 
   data <- list(y = y_data)
