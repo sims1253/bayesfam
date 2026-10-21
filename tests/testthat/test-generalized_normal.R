@@ -154,5 +154,10 @@ test_that("Stan generalized_normal_rng matches the R-side distribution", {
       qgeneralized_normal(p, mu = 1, sigma = 2, beta = beta),
       tolerance = 0.05
     )
+    expect_equal(
+      var(y),
+      2^2 * gamma(3 / beta) / gamma(1 / beta),
+      tolerance = 0.1
+    )
   }
 })
