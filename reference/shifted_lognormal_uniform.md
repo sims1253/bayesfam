@@ -54,7 +54,7 @@ zero-parameter distribution which cannot be expressed in `brms`.
 ``` r
 library(brms)
 #> Loading required package: Rcpp
-#> Loading 'brms' package (version 2.23.1). Useful instructions
+#> Loading 'brms' package (version 2.23.2). Useful instructions
 #> can be found by typing help('brms'). A more detailed introduction
 #> to the package is available through vignette('brms_overview').
 #> 
