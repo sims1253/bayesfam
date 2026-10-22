@@ -54,7 +54,7 @@
 
 
 <dt id="arg-nu">nu<a class="anchor" aria-label="anchor" href="#arg-nu"></a></dt>
-<dd><p>Shape</p></dd>
+<dd><p>Shape, nu &gt; 0</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -64,9 +64,9 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Define scale parameter sigma as
-$$\sigma(\mu, \nu) := \mu / \Gamma(1 - 1 / \nu)$$</p>
+$$\sigma(\mu, \nu) := \mu \cdot \log(2)^{1 / \nu}$$</p>
 <p>The Frechet distribution has density
-$$f(y) = (\nu /\sigma) * (y / \sigma)^{-(1 - \nu)} * exp(-(y / \sigma)^{-\nu}) $$</p>
+$$f(y) = (\nu /\sigma) * (y / \sigma)^{-(\nu + 1)} * exp(-(y / \sigma)^{-\nu}) $$</p>
     </div>
 
     <div class="section level2">

@@ -12,11 +12,12 @@ brms_family_lookup(family, link = NULL)
 
 - family:
 
-  String identifier of the family.
+  String identifier of the family. Unknown identifiers raise an error.
 
 - link:
 
-  Link to be passed to the family function.
+  Link to be passed to the family function. If `NULL`, the family's
+  default link is used.
 
 ## Value
 

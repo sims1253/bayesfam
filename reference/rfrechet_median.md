@@ -16,11 +16,11 @@ rfrechet_median(n, mu = 1, nu = 2)
 
 - mu:
 
-  Mean
+  Median
 
 - nu:
 
-  Shape
+  Shape, nu \> 0
 
 ## Value
 

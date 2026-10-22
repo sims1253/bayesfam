@@ -14,7 +14,8 @@ link_lookup(link, family = NULL, inv = FALSE)
 
 - link:
 
-  String identifier for the link function of interest.
+  String identifier for the link function of interest. Unknown
+  identifiers raise an error.
 
 - family:
 
@@ -44,6 +45,6 @@ link_lookup("identiy", "logitnormal", FALSE)
 #>     }
 #>     return(qlogis(x))
 #> }
-#> <bytecode: 0x55f4c6a72158>
+#> <bytecode: 0x55bb7e26cae0>
 #> <environment: namespace:bayesfam>
 ```

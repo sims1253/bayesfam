@@ -12,11 +12,13 @@ aux_limits_lookup(family)
 
 - family:
 
-  The identifier string of a family.
+  The identifier string of a family. Unknown identifiers raise an error.
 
 ## Value
 
-List containing lower and upper bounds for the auxiliary parameter.
+List containing lower and upper bounds for the auxiliary parameters, in
+the order of
+[`aux_family_parameters_lookup()`](https://sims1253.github.io/bayesfam/reference/aux_family_parameters_lookup.md).
 
 ## Examples
 

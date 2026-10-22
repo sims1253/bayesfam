@@ -20,7 +20,7 @@ dfrechet_median(x, mu, nu)
 
 - nu:
 
-  Shape
+  Shape, nu \> 0
 
 ## Value
 
@@ -28,11 +28,11 @@ dfrechet(x \| mu, nu)
 
 ## Details
 
-Define scale parameter sigma as \$\$\sigma(\mu, \nu) := \mu / \Gamma(1 -
-1 / \nu)\$\$
+Define scale parameter sigma as \$\$\sigma(\mu, \nu) := \mu \cdot
+\log(2)^{1 / \nu}\$\$
 
 The Frechet distribution has density \$\$f(y) = (\nu /\sigma) \* (y /
-\sigma)^{-(1 - \nu)} \* exp(-(y / \sigma)^{-\nu}) \$\$
+\sigma)^{-(\nu + 1)} \* exp(-(y / \sigma)^{-\nu}) \$\$
 
 ## Examples
 

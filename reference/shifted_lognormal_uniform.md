@@ -92,8 +92,8 @@ fit_mix <- brm(rt | vreal(max_shift, max_uniform) ~ x, data = dd, family = fam,
 #> 
 #> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 3.4e-05 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.34 seconds.
+#> Chain 1: Gradient evaluation took 4.1e-05 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.41 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -110,15 +110,15 @@ fit_mix <- brm(rt | vreal(max_shift, max_uniform) ~ x, data = dd, family = fam,
 #> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 0.173 seconds (Warm-up)
-#> Chain 1:                0.162 seconds (Sampling)
-#> Chain 1:                0.335 seconds (Total)
+#> Chain 1:  Elapsed Time: 0.351 seconds (Warm-up)
+#> Chain 1:                0.277 seconds (Sampling)
+#> Chain 1:                0.628 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 2e-05 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.
+#> Chain 2: Gradient evaluation took 3.5e-05 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.35 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -135,15 +135,15 @@ fit_mix <- brm(rt | vreal(max_shift, max_uniform) ~ x, data = dd, family = fam,
 #> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 0.219 seconds (Warm-up)
-#> Chain 2:                0.149 seconds (Sampling)
-#> Chain 2:                0.368 seconds (Total)
+#> Chain 2:  Elapsed Time: 0.384 seconds (Warm-up)
+#> Chain 2:                0.316 seconds (Sampling)
+#> Chain 2:                0.7 seconds (Total)
 #> Chain 2: 
 #> 
 #> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 3).
 #> Chain 3: 
-#> Chain 3: Gradient evaluation took 2e-05 seconds
-#> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.
+#> Chain 3: Gradient evaluation took 6.7e-05 seconds
+#> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.67 seconds.
 #> Chain 3: Adjust your expectations accordingly!
 #> Chain 3: 
 #> Chain 3: 
@@ -160,15 +160,15 @@ fit_mix <- brm(rt | vreal(max_shift, max_uniform) ~ x, data = dd, family = fam,
 #> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 3: 
-#> Chain 3:  Elapsed Time: 0.184 seconds (Warm-up)
-#> Chain 3:                0.114 seconds (Sampling)
-#> Chain 3:                0.298 seconds (Total)
+#> Chain 3:  Elapsed Time: 0.403 seconds (Warm-up)
+#> Chain 3:                0.246 seconds (Sampling)
+#> Chain 3:                0.649 seconds (Total)
 #> Chain 3: 
 #> 
 #> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 4).
 #> Chain 4: 
-#> Chain 4: Gradient evaluation took 1.9e-05 seconds
-#> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.
+#> Chain 4: Gradient evaluation took 3.5e-05 seconds
+#> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.35 seconds.
 #> Chain 4: Adjust your expectations accordingly!
 #> Chain 4: 
 #> Chain 4: 
@@ -185,9 +185,9 @@ fit_mix <- brm(rt | vreal(max_shift, max_uniform) ~ x, data = dd, family = fam,
 #> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 4: 
-#> Chain 4:  Elapsed Time: 0.163 seconds (Warm-up)
-#> Chain 4:                0.13 seconds (Sampling)
-#> Chain 4:                0.293 seconds (Total)
+#> Chain 4:  Elapsed Time: 0.357 seconds (Warm-up)
+#> Chain 4:                0.28 seconds (Sampling)
+#> Chain 4:                0.637 seconds (Total)
 #> Chain 4: 
 plot(fit_mix)
 ```

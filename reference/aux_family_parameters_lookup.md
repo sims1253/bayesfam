@@ -13,11 +13,12 @@ aux_family_parameters_lookup(family)
 
 - family:
 
-  The identifier string of a family.
+  The identifier string of a family. Unknown identifiers raise an error.
 
 ## Value
 
-Character vector of auxiliary parameter names.
+Character vector of auxiliary parameter names (all distributional
+parameters except `mu`), empty if there are none.
 
 ## Examples
 
