@@ -11,7 +11,7 @@ dsimplex(x, mu, sigma, log = FALSE)
 
 \item{mu}{Median parameter of pdf, mu e (0, 1)}
 
-\item{sigma}{shape parameter, sigma unbound}
+\item{sigma}{shape parameter, sigma > 0}
 
 \item{log}{if true, returns log(pdf). Normally FALSE.}
 }

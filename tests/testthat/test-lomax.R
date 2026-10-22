@@ -39,12 +39,14 @@ test_that("custom-lomax", {
   }
 
   # check if the RNG is close enough to the true mean in most cases
+  # (#15: only for alpha > 2, below that the variance is infinite and the
+  # sample mean does not settle)
   test_rng(
     rng_fun = rlomax,
     metric_mu = mean,
     n = 5 * n,
     mu_list = mu_list,
-    aux_list = alpha_list,
+    aux_list = alpha_list[alpha_list > 2],
     mu_eps = accepted_rng_error,
     p_acceptable_failures = accepred_rng_failures,
     relative = TRUE
@@ -58,8 +60,8 @@ test_that("custom-lomax", {
     mu_list = mu_list,
     aux_list = alpha_list,
     eps = accepted_rng_error,
+    # (#15: no 0.01 quantile, near 0 its relative error is too noisy)
     quantiles = c(
-      0.01,
       0.05,
       0.1,
       0.2,
@@ -112,4 +114,15 @@ test_that("custom-lomax", {
     rng = rlomax,
     aux_name = "alpha"
   )
+})
+
+test_that("posterior_predict_lomax draws from rlomax (#22)", {
+  prep <- structure(
+    list(ndraws = 1000L, dpars = list(mu = rep(1, 1000), alpha = rep(2, 1000))),
+    class = "brmsprep"
+  )
+  set.seed(101)
+  actual <- posterior_predict_lomax(1, prep)
+  set.seed(101)
+  expect_equal(actual, rlomax(1000, mu = 1, alpha = 2))
 })

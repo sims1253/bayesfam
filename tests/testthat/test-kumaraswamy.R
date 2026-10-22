@@ -111,3 +111,14 @@ test_that("custom-kumaraswamy", {
     aux_name = "p"
   )
 })
+
+test_that("pkumaraswamy is the Kumaraswamy CDF (#26)", {
+  u <- seq(from = 0.01, to = 0.99, length.out = 25)
+  for (mu in seq(from = 0.05, to = 0.95, length.out = 7)) {
+    for (p in c(0.5, 1, 2, 3.7)) {
+      # mu is the median
+      expect_equal(pkumaraswamy(mu, mu = mu, p = p), 0.5)
+      expect_equal(pkumaraswamy(qkumaraswamy(u, mu = mu, p = p), mu, p), u)
+    }
+  }
+})

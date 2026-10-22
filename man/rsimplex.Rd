@@ -11,7 +11,7 @@ rsimplex(n, mu = 0.5, sigma = 1)
 
 \item{mu}{Mean parameter, mu e (0, 1)}
 
-\item{sigma}{shape parameter, Sigma unbound}
+\item{sigma}{shape parameter, sigma > 0}
 }
 \value{
 n samples in Simplex distribution.

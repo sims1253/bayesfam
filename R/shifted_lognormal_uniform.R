@@ -76,8 +76,7 @@ dshifted_lognormal_uniform <- function(
     meanlog = meanlog,
     sdlog = sdlog,
     log = TRUE
-  ) -
-    plnorm(max_uniform - shift, meanlog = meanlog, sdlog = sdlog, log.p = TRUE)
+  )
 
   # Computing logsumexp(log(mix) + unif_llh, log1p(-mix) + lognormal_llh)
   # but vectorized
@@ -133,8 +132,20 @@ posterior_epred_shifted_lognormal_uniform <- function(prep) {
   mix <- brms::get_dpar(prep, "mix")
   shiftprop <- brms::get_dpar(prep, "shiftprop")
 
-  max_shift <- prep$data$vreal1
-  max_uniform <- prep$data$vreal2
+  # observation-level bounds as S x N matrices, so that each column uses the
+  # bounds of its own observation
+  max_shift <- matrix(
+    prep$data$vreal1,
+    nrow = prep$ndraws,
+    ncol = length(prep$data$vreal1),
+    byrow = TRUE
+  )
+  max_uniform <- matrix(
+    prep$data$vreal2,
+    nrow = prep$ndraws,
+    ncol = length(prep$data$vreal2),
+    byrow = TRUE
+  )
   shift = shiftprop * max_shift
 
   shifted_lognormal_mean <- shift + exp(mu + sigma^2 / 2)
