@@ -21,6 +21,7 @@ family_fixtures <- list(
   generalized_normal = fixture(real, mu = c(0, 1), sigma = c(1, 2), beta = c(1.5, 3)),
   gompertz = fixture(positive, mu = c(1, 2), beta = c(0.5, 1)),
   gumbel_mean = fixture(real, mu = c(0, 1), sigma = c(0.5, 1)),
+  inverse_burr = fixture(positive, mu = c(1, 2), tau = c(2, 3), gamma = c(3, 4)),
   kumaraswamy = fixture(unit, mu = c(0.3, 0.6), p = c(2, 4)),
   logistic = fixture(real, mu = c(0, 1), sigma = c(0.5, 1)),
   logitnormal = fixture(unit, mu = c(-0.5, 0.5), sigma = c(0.5, 1)),
