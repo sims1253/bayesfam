@@ -7,7 +7,8 @@
 link_lookup(link, family = NULL, inv = FALSE)
 }
 \arguments{
-\item{link}{String identifier for the link function of interest.}
+\item{link}{String identifier for the link function of interest. Unknown
+identifiers raise an error.}
 
 \item{family}{If a transformed normal family is passed, returns the
 respective link instead of \code{link}}

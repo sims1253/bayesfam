@@ -7,7 +7,8 @@
 rng_lookup(family)
 }
 \arguments{
-\item{family}{String identifier of the likelihood family to get an RNG for.}
+\item{family}{String identifier of the likelihood family to get an RNG for.
+Unknown identifiers raise an error.}
 }
 \value{
 The RNG function.
