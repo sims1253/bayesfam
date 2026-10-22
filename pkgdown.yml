@@ -2,7 +2,7 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2026-10-21T21:45Z
+last_built: 2026-10-22T06:39Z
 urls:
   reference: https://sims1253.github.io/bayesfam/reference
   article: https://sims1253.github.io/bayesfam/articles

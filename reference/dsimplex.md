@@ -20,7 +20,7 @@ dsimplex(x, mu, sigma, log = FALSE)
 
 - sigma:
 
-  shape parameter, sigma unbound
+  shape parameter, sigma \> 0
 
 - log:
 
