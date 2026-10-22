@@ -12,9 +12,7 @@ epred_exceptions <- c(
   cloglognormal = "error", # no closed-form mean
   generalized_gamma = "error", # not implemented
   gompertz = "error", # not implemented
-  softplusnormal = "error", # no closed-form mean
-  logitnormal = "warning", # returns the median, the mean is added in #46
-  symlognormal = "warning" # returns nothing, the mean is added in #46
+  softplusnormal = "error" # no closed-form mean
 )
 
 test_that("every custom family has a fixture", {
@@ -98,8 +96,7 @@ for (f in families) {
 test_that("Stan lpdfs match the R log densities", {
   skip_on_cran()
   skip_if_not_installed("rstan")
-  # generalized_normal redefines symlognormal's `int sign(real)` (removed in #49)
-  fxs <- lapply(setdiff(families, "generalized_normal"), family_fixture)
+  fxs <- lapply(families, family_fixture)
   scode <- unlist(lapply(fxs, function(fx) {
     lapply(fx$fam$stanvars, `[[`, "scode")
   }))
