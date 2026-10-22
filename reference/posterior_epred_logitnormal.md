@@ -17,4 +17,4 @@ posterior_epred_logitnormal(prep)
 
 ## Value
 
-Median of Posterior
+Mean of Posterior

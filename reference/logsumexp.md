@@ -21,3 +21,9 @@ https://en.wikipedia.org/wiki/LogSumExp#log-sum-exp_trick_for_log-domain_calcula
 ## Value
 
 log(sum(exp(x)))
+
+## Details
+
+An empty vector returns `-Inf` (the sum is empty). A non-finite maximum
+is returned as is: `NA`/`NaN` entries propagate, otherwise any `Inf`
+entry gives `Inf` and all-`-Inf` input gives `-Inf`.

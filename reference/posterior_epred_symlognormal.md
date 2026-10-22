@@ -16,4 +16,4 @@ posterior_epred_symlognormal(prep)
 
 ## Value
 
-warning
+Mean of Posterior

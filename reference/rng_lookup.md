@@ -32,7 +32,7 @@ rng_lookup("gamma")
 #>     }
 #>     return(rgamma(n = n, shape = a, rate = a/mu))
 #> }
-#> <bytecode: 0x559f10b918f8>
+#> <bytecode: 0x55f4c6aad300>
 #> <environment: namespace:bayesfam>
 do.call(rng_lookup("gaussian"), list(n = 100, mean = 0, sd = 1))
 #>   [1] -0.376499785 -0.127296085  0.571290531 -0.249516426  0.802380516
