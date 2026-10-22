@@ -117,3 +117,47 @@ test_that("custom-generalized-normal", {
     aux2_name = "beta"
   )
 })
+
+test_that("Stan generalized_normal_rng matches the R-side distribution", {
+  skip_on_cran()
+  skip_if_not_installed("rstan")
+  # Wrap the injected RNG to draw a vector in a single exposed call
+  code <- paste(
+    "functions {",
+    generalized_normal()$stanvars[[1]]$scode,
+    "vector generalized_normal_n_rng(int n, real mu, real sigma, real beta) {
+       vector[n] y;
+       for (i in 1:n) y[i] = generalized_normal_rng(mu, sigma, beta);
+       return y;
+     }
+    }"
+  )
+  env <- new.env()
+  rstan::expose_stan_functions(rstan::stanc(model_code = code), env = env)
+  p <- c(0.05, 0.25, 0.75, 0.95)
+  for (beta in c(0.5, 1, 2)) {
+    y <- env$generalized_normal_n_rng(
+      20000,
+      1,
+      2,
+      beta,
+      base_rng__ = rstan::get_rng(1)
+    )
+    # P(|y - mu| > sigma) = P(Gamma(1 / beta, 1) > 1)
+    expect_equal(
+      mean(abs(y - 1) > 2),
+      pgamma(1, 1 / beta, lower.tail = FALSE),
+      tolerance = 0.1
+    )
+    expect_equal(
+      quantile(y, p, names = FALSE),
+      qgeneralized_normal(p, mu = 1, sigma = 2, beta = beta),
+      tolerance = 0.05
+    )
+    expect_equal(
+      var(y),
+      2^2 * gamma(3 / beta) / gamma(1 / beta),
+      tolerance = 0.1
+    )
+  }
+})
