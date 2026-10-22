@@ -51,11 +51,19 @@ rng_lookup <- function(family) {
     "simplex" = bayesfam::rsimplex,
     "gaussian" = rnorm,
     "gamma" = bayesfam::rgamma_mean,
-    "weibull" = bayesfam::rweibull_median,
+    # brms weibull/frechet use mu = mean (frechet requires nu > 1)
+    "weibull" = function(n, mu, shape) {
+      rweibull(n, shape, mu / gamma(1 + 1 / shape))
+    },
     "lognormal" = bayesfam::rlognormal,
     "softplusnormal" = bayesfam::rsoftplusnormal,
     "lomax" = bayesfam::rlomax,
-    "frechet" = bayesfam::rfrechet_median,
+    "frechet" = function(n, mu, nu) {
+      if (isTRUE(any(nu <= 1))) {
+        stop("frechet is only defined for nu > 1")
+      }
+      brms::rfrechet(n, scale = mu / gamma(1 - 1 / nu), shape = nu)
+    },
     "inverse.gaussian" = brms::rinv_gaussian,
     "betaprime" = bayesfam::rbetaprime,
     "gompertz" = bayesfam::rgompertz

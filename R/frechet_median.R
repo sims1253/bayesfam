@@ -2,12 +2,12 @@
 #'
 #' @param x x value space, x > 0
 #' @param mu Median
-#' @param nu Shape
+#' @param nu Shape, nu > 0
 #'
 #' @details Define scale parameter sigma as
-#' \deqn{\sigma(\mu, \nu) := \mu / \Gamma(1 - 1 / \nu)}
+#' \deqn{\sigma(\mu, \nu) := \mu \cdot \log(2)^{1 / \nu}}
 #' @details The Frechet distribution has density
-#' \deqn{f(y) = (\nu /\sigma) * (y / \sigma)^{-(1 - \nu)} * exp(-(y / \sigma)^{-\nu}) }
+#' \deqn{f(y) = (\nu /\sigma) * (y / \sigma)^{-(\nu + 1)} * exp(-(y / \sigma)^{-\nu}) }
 #'
 #' @return dfrechet(x | mu, nu)
 #' @export
@@ -19,8 +19,8 @@ dfrechet_median <- function(x, mu, nu) {
   if (isTRUE(any(x <= 0))) {
     stop("frechet is only defined for x > 0")
   }
-  if (isTRUE(nu <= 1)) {
-    stop("frechet is only defined for nu > 1")
+  if (isTRUE(nu <= 0)) {
+    stop("frechet is only defined for nu > 0")
   }
   if (isTRUE(mu <= 0)) {
     stop("frechet is only defined for mu > 0")
@@ -28,7 +28,7 @@ dfrechet_median <- function(x, mu, nu) {
   return(brms::dfrechet(
     x = x,
     loc = 0,
-    scale = mu / gamma(1 - 1 / nu),
+    scale = mu * log(2)^(1 / nu),
     shape = nu
   ))
 }
@@ -37,8 +37,8 @@ dfrechet_median <- function(x, mu, nu) {
 #' Median parameterization of the Fréchet RNG
 #'
 #' @param n Number samples to draw
-#' @param mu Mean
-#' @param nu Shape
+#' @param mu Median
+#' @param nu Shape, nu > 0
 #'
 #' @return n samples in Frechet-Distribution
 #' @export
@@ -46,11 +46,11 @@ dfrechet_median <- function(x, mu, nu) {
 #' @examples hist(rfrechet_median(100, mu = 1, nu = 2))
 rfrechet_median <- function(n, mu = 1, nu = 2) {
   # check the arguments
-  if (isTRUE(nu <= 1)) {
-    stop("frechet is only defined for nu > 1")
+  if (isTRUE(nu <= 0)) {
+    stop("frechet is only defined for nu > 0")
   }
   if (isTRUE(mu <= 0)) {
     stop("frechet is only defined for mu > 0")
   }
-  return(brms::rfrechet(n = n, scale = mu / gamma(1 - 1 / nu), shape = nu))
+  return(brms::rfrechet(n = n, scale = mu * log(2)^(1 / nu), shape = nu))
 }
