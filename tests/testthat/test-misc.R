@@ -246,5 +246,8 @@ test_that("logsumexp", {
   expect_true(is.na(logsumexp(c(1, NA))))
   expect_true(is.na(logsumexp(c(1, NaN))))
   # impossible mixture observation (below the shift, no uniform weight) (#33)
-  expect_equal(dshifted_lognormal_uniform(0.5, mix = 0, shift = 1), -Inf)
+  expect_equal(
+    dshifted_lognormal_uniform(0.5, mix = 0, shift = 1, log = TRUE),
+    -Inf
+  )
 })
