@@ -21,15 +21,7 @@ dlogistic <- function(x, mu, sigma, log = FALSE) {
     stop("logistic is only defined for sigma > 0")
   }
 
-  z <- (x - mu) / sigma
-  lpdf <- -z - log(sigma) - 2 * log1p(exp(-z))
-
-  # return either the log or the pdf itself, given the log-value
-  if (log) {
-    return(lpdf)
-  } else {
-    return(exp(lpdf))
-  }
+  return(dlogis(x, location = mu, scale = sigma, log = log))
 }
 
 #' Quantile function of the logistic distribution

@@ -18,3 +18,8 @@ log(sum(exp(x)))
 \description{
 A more numerically stable equivalent to \code{log(sum(exp(x)))}
 }
+\details{
+An empty vector returns \code{-Inf} (the sum is empty). A non-finite
+maximum is returned as is: \code{NA}/\code{NaN} entries propagate, otherwise any
+\code{Inf} entry gives \code{Inf} and all-\code{-Inf} input gives \code{-Inf}.
+}

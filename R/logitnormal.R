@@ -74,19 +74,51 @@ posterior_predict_logitnormal <- function(i, prep, ...) {
   return(rlogitnormal(prep$ndraws, mu, sigma))
 }
 
+#' Expected response of the logit-normal distribution.
+#'
+#' Computes E[plogis(Z)] for Z ~ N(mu, sigma) (the expectation that
+#' `posterior_epred` promises) with trapezoid sums on fixed nodes, which are
+#' accurate to an absolute error of about 1e-14 for all mu and sigma.
+#'
+#' @param mu Median parameter, unbound
+#' @param sigma Sigma shape parameter, sigma > 0
+#'
+#' @return Expected response E[plogis(Z)], same dimensions as `mu`.
+#' @noRd
+logitnormal_mean <- function(mu, sigma) {
+  sigma <- sigma + 0 * mu
+  mu <- mu + 0 * sigma
+  out <- 0 * mu
+  # sigma <= 1: integrate plogis(mu + sigma * t) over t ~ N(0, 1)
+  narrow <- sigma <= 1
+  m <- mu[narrow]
+  s <- sigma[narrow]
+  total <- 0
+  for (t in seq(-9, 9, by = 0.5)) {
+    total <- total + 0.5 * dnorm(t) * plogis(m + s * t)
+  }
+  out[narrow] <- total
+  # sigma > 1 makes that integrand too steep, so use the dual form: with
+  # L ~ Logistic(0, 1), E[plogis(Z)] = P(L < Z) = E[pnorm((mu + L) / sigma)]
+  m <- mu[!narrow]
+  s <- sigma[!narrow]
+  total <- 0
+  for (l in seq(-36, 36, by = 0.5)) {
+    total <- total + 0.5 * dlogis(l) * pnorm((m + l) / s)
+  }
+  out[!narrow] <- total
+  return(out)
+}
+
 #' Posterior expected value prediction vignette for Logitnormal distribution.
 #'
 #' @param prep brms data
 #'
-#' @return Median of Posterior
+#' @return Mean of Posterior
 posterior_epred_logitnormal <- function(prep) {
-  warning(
-    "posterior_epred promises the mean, however with no analytical mean
-          available for the logit-normal distribution, we provide the median
-          in this case. Proceed with caution."
-  )
   mu <- brms::get_dpar(prep, "mu")
-  return(plogis(mu))
+  sigma <- brms::get_dpar(prep, "sigma")
+  return(logitnormal_mean(mu, sigma))
 }
 
 #' Custom brms family Logit-Normal in median parametrization.

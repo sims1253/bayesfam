@@ -104,3 +104,12 @@ test_that("custom-logistic", {
     aux_name = "sigma"
   )
 })
+
+test_that("dlogistic matches dlogis in both tails (#32)", {
+  x <- 2 + 3 * c(-1e5, -1000, -745, -10, 0, 10, 745, 1000, 1e5)
+  expect_equal(
+    dlogistic(x, mu = 2, sigma = 3, log = TRUE),
+    dlogis(x, location = 2, scale = 3, log = TRUE)
+  )
+  expect_equal(dlogistic(-1000, mu = 0, sigma = 1, log = TRUE), -1000)
+})

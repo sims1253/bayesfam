@@ -58,3 +58,17 @@ test_that("custom-softplusnormal", {
     aux_name = "sigma"
   )
 })
+
+test_that("softplusnormal is stable for large and tiny values (#31)", {
+  expect_equal(
+    dsoftplusnormal(1000, mu = 1000, sigma = 1, log = TRUE),
+    dnorm(0, log = TRUE)
+  )
+  expect_true(is.finite(dsoftplusnormal(1e-20, mu = 0, sigma = 1, log = TRUE)))
+  expect_equal(
+    integrate(dsoftplusnormal, 0, Inf, mu = 2, sigma = 1.5)$value,
+    1,
+    tolerance = 1e-6
+  )
+  expect_true(all(is.finite(rsoftplusnormal(10, mu = 1000, sigma = 1))))
+})

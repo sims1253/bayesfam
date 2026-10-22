@@ -10,7 +10,7 @@ posterior_epred_symlognormal(prep)
 \item{prep}{brms data}
 }
 \value{
-warning
+Mean of Posterior
 }
 \description{
 Posterior epred for symlognormal distribution.

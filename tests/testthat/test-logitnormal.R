@@ -68,3 +68,31 @@ test_that("custom-logitnormal", {
     aux_name = "sigma"
   )
 })
+
+test_that("logitnormal mean matches numerical integration (#34)", {
+  ref <- function(mu, sigma) {
+    f <- function(t) plogis(mu + sigma * t) * dnorm(t)
+    integrate(f, -Inf, 0, rel.tol = 1e-12, abs.tol = 0)$value +
+      integrate(f, 0, Inf, rel.tol = 1e-12, abs.tol = 0)$value
+  }
+  for (mu in c(-20, -2, 0, 1, 5)) {
+    for (sigma in c(0.01, 0.5, 1, 2, 10, 200)) {
+      # absolute error, the mean can be tiny (about 2e-9 at mu = -20)
+      expect_lt(abs(logitnormal_mean(mu, sigma) - ref(mu, sigma)), 1e-13)
+    }
+  }
+  expect_equal(logitnormal_mean(0, c(0.01, 1, 200)), rep(0.5, 3))
+
+  # posterior_epred keeps the draws x observations dimensions, without warning
+  mu <- matrix(c(-2, 0, 1, 3), nrow = 2)
+  sigma <- matrix(c(0.5, 2, 10, 200), nrow = 2)
+  prep <- structure(
+    list(dpars = list(mu = mu, sigma = sigma), ndraws = 2),
+    class = "brmsprep"
+  )
+  expect_equal(
+    expect_silent(posterior_epred_logitnormal(prep)),
+    matrix(mapply(ref, mu, sigma), nrow = 2),
+    tolerance = 1e-10
+  )
+})

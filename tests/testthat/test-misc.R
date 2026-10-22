@@ -219,3 +219,27 @@ test_that("Inverse Symlog link-function", {
   expect_equal(inv_symlog(-1), -inv_symlog(1))
   expect_equal(inv_symlog(symlog(1)), 1)
 })
+
+test_that("Softplus links are stable for large and tiny values (#31)", {
+  expect_equal(softplus(1000), 1000)
+  expect_equal(softplus(1e-20), log(1e-20))
+  expect_equal(inv_softplus(1000), 1000)
+  expect_equal(inv_softplus(-40), exp(-40))
+  u <- c(-700, -40, -1, 0, 1, 40, 700)
+  expect_equal(softplus(inv_softplus(u)), u)
+  y <- c(1e-10, 0.01, 1, 20, 700, 1e10)
+  expect_equal(inv_softplus(softplus(y)), y)
+})
+
+test_that("logsumexp", {
+  expect_equal(logsumexp(c(1, 2, 3)), log(sum(exp(c(1, 2, 3)))))
+  expect_equal(logsumexp(c(1000, 1000)), 1000 + log(2))
+  expect_equal(logsumexp(c(-Inf, 0)), 0)
+  expect_equal(logsumexp(c(-Inf, -Inf)), -Inf)
+  expect_equal(logsumexp(c(-Inf, Inf)), Inf)
+  expect_equal(logsumexp(numeric(0)), -Inf)
+  expect_true(is.na(logsumexp(c(1, NA))))
+  expect_true(is.na(logsumexp(c(1, NaN))))
+  # impossible mixture observation (below the shift, no uniform weight) (#33)
+  expect_equal(dshifted_lognormal_uniform(0.5, mix = 0, shift = 1), -Inf)
+})
