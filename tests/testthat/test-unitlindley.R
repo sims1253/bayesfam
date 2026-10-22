@@ -34,15 +34,12 @@ test_that("unit-lindley", {
     expect_eps(i, mean(s), eps = 0.001)
   }
 
-  data <- list(y = runit_lindley(n = 1000, mu = 0.2))
-  fit <- brms::brm(
-    formula = y ~ 1,
-    data = data,
-    family = unit_lindley(),
-    stanvars = unit_lindley()$stanvars,
-    refresh = 0,
-    silent = 2
+  # recovery fit on seeded data, like the other family tests
+  expect_brms_family(
+    intercept = 0.2,
+    rng_link = identity,
+    parameter_link = logit,
+    family = unit_lindley,
+    rng = runit_lindley
   )
-  qs <- inv_logit(brms::fixef(fit)[c(3, 4)])
-  expect_equal(0.2 > qs[1] && 0.2 < qs[2], TRUE)
 })
