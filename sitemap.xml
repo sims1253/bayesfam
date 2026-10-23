@@ -22,6 +22,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/dgeneralized_normal.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/dgompertz.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/dgumbel_mean.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/dinverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/dkumaraswamy.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/dlogistic.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/dlogitnormal.html</loc></url>
@@ -47,6 +48,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/inv_logit.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/inv_softplus.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/inv_symlog.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/inverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/isInt_len.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/isLogic_len.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/isNat_len.html</loc></url>
@@ -63,6 +65,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/log_lik_generalized_normal.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/log_lik_gompertz.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/log_lik_gumbel_mean.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/log_lik_inverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/log_lik_kumaraswamy.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/log_lik_logistic.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/log_lik_logitnormal.html</loc></url>
@@ -80,6 +83,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/logsumexp.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/lomax.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/normale_difference.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/pinverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/pkumaraswamy.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_betaprime.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_cauchitnormal.html</loc></url>
@@ -88,6 +92,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_generalized_normal.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_gompertz.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_gumbel_mean.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_inverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_kumaraswamy.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_logistic.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_epred_logitnormal.html</loc></url>
@@ -105,6 +110,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_predict_generalized_normal.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_predict_gompertz.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_predict_gumbel_mean.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/posterior_predict_inverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_predict_kumaraswamy.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_predict_logistic.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/posterior_predict_logitnormal.html</loc></url>
@@ -120,6 +126,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/qgeneralized_normal.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/qgompertz.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/qgumbel_mean.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/qinverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/qkumaraswamy.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/qlogistic.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/qlomax.html</loc></url>
@@ -136,6 +143,7 @@
 <url><loc>https://sims1253.github.io/bayesfam/reference/rgeneralized_normal.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/rgompertz.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/rgumbel_mean.html</loc></url>
+<url><loc>https://sims1253.github.io/bayesfam/reference/rinverse_burr.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/rkumaraswamy.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/rlogistic.html</loc></url>
 <url><loc>https://sims1253.github.io/bayesfam/reference/rlogitnormal.html</loc></url>

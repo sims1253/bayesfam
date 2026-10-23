@@ -39,5 +39,4 @@ f(x \| mu, shape, shift)
 ``` r
 x <- seq(from = 0.1, to = 10, length.out = 1000)
 plot(x, dshifted_inv_gaussian(x, 1, 1, 1))
-#> Warning: NaNs produced
 ```

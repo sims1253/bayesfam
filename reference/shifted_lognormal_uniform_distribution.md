@@ -21,7 +21,8 @@ dshifted_lognormal_uniform(
   sdlog = 1,
   mix = 0.1,
   shift = 0,
-  max_uniform = 100
+  max_uniform = 100,
+  log = FALSE
 )
 ```
 
@@ -59,6 +60,10 @@ Some background, discussion and examples at
 - y:
 
   the observed value
+
+- log:
+
+  logical; if TRUE, the log density is returned
 
 ## Details
 

@@ -41,6 +41,9 @@
   Median parametrization.
 - [`dgumbel_mean()`](https://sims1253.github.io/bayesfam/reference/dgumbel_mean.md)
   : Probability density function for the gumbel distribution
+- [`dinverse_burr()`](https://sims1253.github.io/bayesfam/reference/dinverse_burr.md)
+  : Probability density function for the Inverse Burr distribution, with
+  Median parametrization.
 - [`dkumaraswamy()`](https://sims1253.github.io/bayesfam/reference/dkumaraswamy.md)
   : Kumaraswamy density function in median parametrisation.
 - [`dlogistic()`](https://sims1253.github.io/bayesfam/reference/dlogistic.md)
@@ -97,6 +100,8 @@
   : Softplus response function
 - [`inv_symlog()`](https://sims1253.github.io/bayesfam/reference/inv_symlog.md)
   : Symlog response function
+- [`inverse_burr()`](https://sims1253.github.io/bayesfam/reference/inverse_burr.md)
+  : Inverse Burr Stan-implementation in Median parametrization.
 - [`isInt_len()`](https://sims1253.github.io/bayesfam/reference/isInt_len.md)
   : Integer vector check
 - [`isLogic_len()`](https://sims1253.github.io/bayesfam/reference/isLogic_len.md)
@@ -132,6 +137,9 @@
   parametrization.
 - [`log_lik_gumbel_mean()`](https://sims1253.github.io/bayesfam/reference/log_lik_gumbel_mean.md)
   : Log-Likelihood of the gumbel distribution
+- [`log_lik_inverse_burr()`](https://sims1253.github.io/bayesfam/reference/log_lik_inverse_burr.md)
+  : Log-Likelihood vignette for the Inverse Burr distribution, with
+  Median parametrization.
 - [`log_lik_kumaraswamy()`](https://sims1253.github.io/bayesfam/reference/log_lik_kumaraswamy.md)
   : Log-Likelihood vignette for the Kumaraswamy distribution, in Median
   parametrization.
@@ -171,6 +179,9 @@
   Lomax Stan-implementation in Mean parametrization.
 - [`normale_difference()`](https://sims1253.github.io/bayesfam/reference/normale_difference.md)
   : Uses euler metric for denominator
+- [`pinverse_burr()`](https://sims1253.github.io/bayesfam/reference/pinverse_burr.md)
+  : Cumulative distribution function for the Inverse Burr distribution,
+  with Median parametrization.
 - [`pkumaraswamy()`](https://sims1253.github.io/bayesfam/reference/pkumaraswamy.md)
   : Kumaraswamy CDF in median parametrisation
 - [`posterior_epred_betaprime()`](https://sims1253.github.io/bayesfam/reference/posterior_epred_betaprime.md)
@@ -190,6 +201,9 @@
   Median parametrization. Not defined for the Gompertz family.
 - [`posterior_epred_gumbel_mean()`](https://sims1253.github.io/bayesfam/reference/posterior_epred_gumbel_mean.md)
   : posterior_epred for the gumbel distribution
+- [`posterior_epred_inverse_burr()`](https://sims1253.github.io/bayesfam/reference/posterior_epred_inverse_burr.md)
+  : Expectation-Predict vignette for the Inverse Burr distribution, with
+  Median parametrization.
 - [`posterior_epred_kumaraswamy()`](https://sims1253.github.io/bayesfam/reference/posterior_epred_kumaraswamy.md)
   : Posterior expected value prediction of the Kumaraswamy
   implementation.
@@ -232,6 +246,9 @@
   Median parametrization.
 - [`posterior_predict_gumbel_mean()`](https://sims1253.github.io/bayesfam/reference/posterior_predict_gumbel_mean.md)
   : posterior_predict for the gumbel distribution
+- [`posterior_predict_inverse_burr()`](https://sims1253.github.io/bayesfam/reference/posterior_predict_inverse_burr.md)
+  : Posterior-Prediction vignette for the Inverse Burr distribution,
+  with Median parametrization.
 - [`posterior_predict_kumaraswamy()`](https://sims1253.github.io/bayesfam/reference/posterior_predict_kumaraswamy.md)
   : Posterior prediction vignette for the Kumaraswamy distribution, in
   Median parametrization.
@@ -269,6 +286,9 @@
   parametrization.
 - [`qgumbel_mean()`](https://sims1253.github.io/bayesfam/reference/qgumbel_mean.md)
   : Quantile function of the gumbel distribution
+- [`qinverse_burr()`](https://sims1253.github.io/bayesfam/reference/qinverse_burr.md)
+  : Quantile function for the Inverse Burr distribution, with Median
+  parametrization.
 - [`qkumaraswamy()`](https://sims1253.github.io/bayesfam/reference/qkumaraswamy.md)
   : Quantile function of the Kumaraswamy distribution in Median
   parametrisation.
@@ -304,6 +324,9 @@
   parametrization.
 - [`rgumbel_mean()`](https://sims1253.github.io/bayesfam/reference/rgumbel_mean.md)
   : RNG for the gumbel distribution
+- [`rinverse_burr()`](https://sims1253.github.io/bayesfam/reference/rinverse_burr.md)
+  : RNG function for the Inverse Burr distribution, with Median
+  parametrization.
 - [`rkumaraswamy()`](https://sims1253.github.io/bayesfam/reference/rkumaraswamy.md)
   : Kumaraswamy RNG function in Median parametrization.
 - [`rlogistic()`](https://sims1253.github.io/bayesfam/reference/rlogistic.md)
