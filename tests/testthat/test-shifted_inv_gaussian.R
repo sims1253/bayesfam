@@ -59,3 +59,21 @@ test_that("shifted-inverse-gauss", {
     aux2_name = "ndt"
   )
 })
+
+test_that("dshifted_inv_gaussian is 0 below the shift", {
+  expect_no_warning(d <- dshifted_inv_gaussian(c(0.5, 1, 2), 1, 2, 1))
+  expect_equal(d, c(0, 0, brms::dinv_gaussian(1, 1, 2)))
+  expect_equal(
+    dshifted_inv_gaussian(c(0.5, 2), 1, 2, 1, log = TRUE),
+    c(-Inf, brms::dinv_gaussian(1, 1, 2, log = TRUE))
+  )
+  # arguments of different lengths recycle per observation
+  x <- c(0.5, 2)
+  mu <- c(1, 2, 3)
+  expect_equal(
+    dshifted_inv_gaussian(x, mu, rep(2, 6), 1),
+    sapply(1:6, function(i) {
+      dshifted_inv_gaussian(rep_len(x, 6)[i], rep_len(mu, 6)[i], 2, 1)
+    })
+  )
+})

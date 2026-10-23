@@ -24,7 +24,21 @@ dshifted_inv_gaussian <- function(x, mu, shape, shift, log = FALSE) {
   if (isTRUE(any(shift < 0))) {
     stop("Shift has to be >= 0")
   }
-  brms::dinv_gaussian(x - shift, mu, shape, log)
+  # no density at or below the shift (brms::dinv_gaussian gives NaN there)
+  n <- max(length(x), length(mu), length(shape), length(shift))
+  z <- rep_len(x, n) - rep_len(shift, n)
+  lpdf <- brms::dinv_gaussian(
+    ifelse(z > 0, z, 1),
+    rep_len(mu, n),
+    rep_len(shape, n),
+    log = TRUE
+  )
+  lpdf[z <= 0] <- -Inf
+  if (log) {
+    return(lpdf)
+  } else {
+    return(exp(lpdf))
+  }
 }
 
 #' Shifted inverse Gaussian RNG function
