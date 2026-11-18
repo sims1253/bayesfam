@@ -52,6 +52,19 @@ jobs:
             any::RcppEigen
           needs: check
 
+      # rstan 2.32.7 on CRAN appends -std=c++1y to every Stan compile on
+      # Windows, but StanHeaders >= 2.39 needs C++17 (stan-dev/rstan#1197).
+      # CXX17FLAGS comes after that flag on the compiler line, so this puts
+      # C++17 back. Remove once CRAN has an rstan release without -std=c++1y.
+      - name: Compile Stan models as C++17 on Windows
+        if: runner.os == 'Windows'
+        shell: Rscript {0}
+        run: |
+          makevars <- file.path(Sys.getenv("RUNNER_TEMP"), "Makevars.win")
+          writeLines("CXX17FLAGS += -std=gnu++17", makevars)
+          cat("R_MAKEVARS_USER=", normalizePath(makevars, "/"), "\n",
+              sep = "", file = Sys.getenv("GITHUB_ENV"), append = TRUE)
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
