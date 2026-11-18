@@ -17,7 +17,7 @@ dlomax <- function(x, mu, alpha, log = FALSE) {
   if (isTRUE(any(x < 0))) {
     stop("The Lomax PDF is defined only on the positive scale")
   }
-  if (isTRUE(alpha <= 1)) {
+  if (isTRUE(any(alpha <= 1))) {
     stop("The Lomax PDF is defined only for alpha > 1")
   }
   if (isTRUE(mu <= 0)) {
@@ -51,7 +51,7 @@ qlomax <- function(p, mu, alpha) {
   if (isTRUE(any(p < 0))) {
     stop("The Lomax quantile function is defined only on the positive scale")
   }
-  if (isTRUE(alpha <= 1)) {
+  if (isTRUE(any(alpha <= 1))) {
     stop("The Lomax quantile function is defined only for alpha > 1")
   }
   if (isTRUE(mu <= 0)) {

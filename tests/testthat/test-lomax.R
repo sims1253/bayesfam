@@ -157,3 +157,8 @@ test_that("lomax includes brms' logm1 chunk only for a logm1 link", {
   expect_equal(includes(lomax(link_alpha = "log")), 0)
   expect_equal(includes(lomax(link = "identity", link_alpha = "softplus")), 0)
 })
+
+test_that("dlomax and qlomax reject a vector alpha with any element at or below 1", {
+  expect_error(dlomax(1, 1, c(0.5, 2)), "alpha > 1")
+  expect_error(qlomax(0.5, 1, c(0.5, 2)), "alpha > 1")
+})
