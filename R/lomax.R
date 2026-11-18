@@ -123,7 +123,9 @@ posterior_epred_lomax <- function(prep) {
 #'
 #' @param link Link function for function
 #' @param link_alpha Link function for the alpha argument. The default
-#'   `"logm1"` (inverse `exp(eta) + 1`) keeps alpha above 1.
+#'   `"logm1"` (inverse `exp(eta) + 1`) maps the linear predictor above 1,
+#'   but in double precision `exp(eta) + 1` rounds to exactly 1 for a linear
+#'   predictor below about -36.7, where the density is undefined.
 #'
 #' @details With a `"logm1"` link the Stan code includes brms' overloaded
 #'   `expp1` and `logm1` functions, which `rstan::expose_stan_functions()`

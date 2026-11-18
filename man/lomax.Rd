@@ -10,7 +10,9 @@ lomax(link = "log", link_alpha = "logm1")
 \item{link}{Link function for function}
 
 \item{link_alpha}{Link function for the alpha argument. The default
-\code{"logm1"} (inverse \code{exp(eta) + 1}) keeps alpha above 1.}
+\code{"logm1"} (inverse \code{exp(eta) + 1}) maps the linear predictor above 1,
+but in double precision \code{exp(eta) + 1} rounds to exactly 1 for a linear
+predictor below about -36.7, where the density is undefined.}
 }
 \value{
 brms Lomax distribution family
