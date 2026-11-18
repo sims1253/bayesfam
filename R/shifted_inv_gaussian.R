@@ -64,6 +64,8 @@ rshifted_inv_gaussian <- function(n, mu = 1, shape = 1, shift = 1) {
   }
   # the draw of brms::rinv_gaussian, but with the smaller root as mu^2 over
   # the larger: the roots multiply to mu^2, and their difference cancels
+  mu <- rep_len(mu, n)
+  shape <- rep_len(shape, n)
   v <- rnorm(n)^2
   x2 <- mu + mu^2 * v / (2 * shape) +
     mu / (2 * shape) * sqrt(4 * mu * shape * v + mu^2 * v^2)
