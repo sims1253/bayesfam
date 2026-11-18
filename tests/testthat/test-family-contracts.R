@@ -13,11 +13,11 @@ test_that("every custom family has a fixture", {
   }
 })
 
-# The range of each default inverse link must lie inside the declared bounds
-# of its distributional parameter: otherwise the sampler can reach parameter
-# values the family's own density rejects.
-test_that("default inverse links map into each dpar's declared bounds", {
-  # data-dependent bounds ("min_Y") count as unbounded here
+# The range of each default inverse link must lie inside the fixed numeric
+# bounds of its distributional parameter: otherwise the sampler can reach
+# parameter values the family's own density rejects. Data-dependent bounds
+# (such as "min_Y") are outside this test; they count as unbounded here.
+test_that("default inverse links map into each dpar's fixed numeric bounds", {
   bound <- function(b, default) {
     b <- suppressWarnings(as.numeric(unlist(b)))
     replace(b, is.na(b), default)
