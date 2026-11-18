@@ -77,8 +77,8 @@ rlomax <- function(n, mu = 1, alpha = 10) {
   if (isTRUE(mu <= 0)) {
     stop("The Lomax RNG is only defined for mu > 0")
   }
-  if (isTRUE(alpha <= 0)) {
-    stop("The Lomax RNG is only defined for eta > 0")
+  if (isTRUE(any(alpha <= 1))) {
+    stop("The Lomax RNG is only defined for alpha > 1")
   }
   return(qlomax(runif(n, min = 0, max = 1), mu = mu, alpha = alpha))
 }
@@ -122,7 +122,8 @@ posterior_epred_lomax <- function(prep) {
 #' Lomax Stan-implementation in Mean parametrization.
 #'
 #' @param link Link function for function
-#' @param link_alpha Link function for eta argument
+#' @param link_alpha Link function for the alpha argument. The default
+#'   `"logm1"` (inverse `exp(eta) + 1`) keeps alpha above 1.
 #'
 #' @return brms Lomax distribution family
 #' @export
@@ -135,7 +136,7 @@ posterior_epred_lomax <- function(prep) {
 #'   refresh = 0
 #' )
 #' plot(fit)
-lomax <- function(link = "log", link_alpha = "log1p") {
+lomax <- function(link = "log", link_alpha = "logm1") {
   family <- brms::custom_family(
     "lomax",
     dpars = c("mu", "alpha"),
@@ -147,7 +148,12 @@ lomax <- function(link = "log", link_alpha = "log1p") {
     posterior_predict = posterior_predict_lomax,
     posterior_epred = posterior_epred_lomax
   )
+  # brms declares expp1, the inverse of the logm1 link, only for its own
+  # families; it merges this include with its own if it has one
   family$stanvars <- brms::stanvar(
+    scode = "#include 'fun_logm1.stan'",
+    block = "functions"
+  ) + brms::stanvar(
     scode = "
       real lomax_lpdf(real y, real mu, real alpha) {
         return(log(alpha) +

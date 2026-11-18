@@ -4,12 +4,13 @@
 \alias{lomax}
 \title{Lomax Stan-implementation in Mean parametrization.}
 \usage{
-lomax(link = "log", link_alpha = "log1p")
+lomax(link = "log", link_alpha = "logm1")
 }
 \arguments{
 \item{link}{Link function for function}
 
-\item{link_alpha}{Link function for eta argument}
+\item{link_alpha}{Link function for the alpha argument. The default
+\code{"logm1"} (inverse \code{exp(eta) + 1}) keeps alpha above 1.}
 }
 \value{
 brms Lomax distribution family

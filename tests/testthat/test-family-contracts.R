@@ -100,6 +100,9 @@ test_that("Stan lpdfs match the R log densities", {
   scode <- unlist(lapply(fxs, function(fx) {
     lapply(fx$fam$stanvars, `[[`, "scode")
   }))
+  # leave out includes of brms' own function chunks: they declare overloads,
+  # which expose_stan_functions() cannot export to R
+  scode <- grep("^#include", scode, value = TRUE, invert = TRUE)
   model <- rstan::stanc(
     model_code = paste("functions {", paste(scode, collapse = "\n"), "}")
   )

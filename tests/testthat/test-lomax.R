@@ -126,3 +126,23 @@ test_that("posterior_predict_lomax draws from rlomax (#22)", {
   set.seed(101)
   expect_equal(actual, rlomax(1000, mu = 1, alpha = 2))
 })
+
+test_that("rlomax rejects alpha <= 1 like dlomax and qlomax", {
+  expect_error(rlomax(10, mu = 1, alpha = 1), "RNG is only defined for alpha > 1")
+  expect_error(rlomax(10, mu = 1, alpha = 0.5), "RNG is only defined for alpha > 1")
+  expect_error(rlomax(2, mu = 1, alpha = c(2, 0.5)), "alpha > 1")
+})
+
+test_that("lomax with a predicted alpha gives valid Stan code", {
+  skip_if_not_installed("rstan")
+  # the default logm1 link needs brms' expp1, which brms only declares for
+  # its own families
+  data <- data.frame(y = rlomax(20, mu = 2, alpha = 3))
+  scode <- brms::stancode(
+    brms::bf(y ~ 1, alpha ~ 1),
+    data = data,
+    family = lomax(),
+    stanvars = lomax()$stanvars
+  )
+  expect_true(rstan::stanc(model_code = scode)$status)
+})
