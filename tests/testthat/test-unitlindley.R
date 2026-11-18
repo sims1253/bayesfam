@@ -55,3 +55,14 @@ test_that("posterior_predict reads mu through brms::get_dpar", {
   set.seed(1)
   expect_equal(yrep, runit_lindley(3, c(0.2, 0.5, 0.8)))
 })
+
+test_that("runit_lindley draws from the density for small mu", {
+  # exp(-1 / mu) underflows to zero for mu below about 0.00134
+  mu <- 0.001
+  n <- 1e5
+  set.seed(1)
+  y <- runit_lindley(n, mu)
+  expect_true(all(is.finite(y) & y > 0 & y < 1))
+  # the mean of this parameterisation is mu; allow five standard errors
+  expect_lt(abs(mean(y) - mu), 5 * sd(y) / sqrt(n))
+})

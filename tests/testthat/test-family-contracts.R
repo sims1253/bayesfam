@@ -290,3 +290,17 @@ test_that("Stan RNGs draw from the same distribution as the R RNGs", {
     }
   }
 })
+
+test_that("the unit Lindley Stan RNG draws from the density for small mu", {
+  skip_on_cran()
+  skip_if_not_installed("rstan")
+  # exp(-1 / mu) underflows to zero for mu below about 0.00134, where the
+  # inverse CDF gave NaN
+  stan <- stan_functions()
+  mu <- 0.001
+  n <- 1e5
+  y <- stan$draws_unit_lindley_rng(n, mu, base_rng__ = rstan::get_rng(1L))
+  expect_true(all(is.finite(y) & y > 0 & y < 1))
+  # the mean of this parameterisation is mu; allow five standard errors
+  expect_lt(abs(mean(y) - mu), 5 * sd(y) / sqrt(n))
+})
