@@ -23,6 +23,38 @@ test_that("every custom family has a fixture", {
   }
 })
 
+# The range of each default inverse link must lie inside the declared bounds
+# of its distributional parameter: otherwise the sampler can reach parameter
+# values the family's own density rejects.
+test_that("default inverse links map into each dpar's declared bounds", {
+  # data-dependent bounds ("min_Y") count as unbounded here
+  bound <- function(b, default) {
+    b <- suppressWarnings(as.numeric(unlist(b)))
+    replace(b, is.na(b), default)
+  }
+  # the linear predictor is unbounded, so probe far into both tails
+  eta <- seq(-37, 37, by = 0.1)
+  for (f in families) {
+    fam <- family_fixture(f)$fam
+    lb <- bound(fam$lb, -Inf)
+    ub <- bound(fam$ub, Inf)
+    for (i in seq_along(fam$dpars)) {
+      dp <- fam$dpars[i]
+      link <- if (dp == "mu") fam$link else fam[[paste0("link_", dp)]]
+      # brms' own response functions, as used in the fitted model
+      range <- brms:::inv_link(eta, link)
+      expect_true(
+        all(range >= lb[i] & range <= ub[i]),
+        label = sprintf(
+          "%s: inverse '%s' link of '%s' reaches [%s, %s] outside bounds [%s, %s]",
+          f, link, dp, format(min(range)), format(max(range)),
+          format(lb[i]), format(ub[i])
+        )
+      )
+    }
+  }
+})
+
 # A brmsprep as the callbacks receive it: S draws of an S x N mu matrix and
 # length-S vectors for the other dpars, cycling through the fixture values.
 S <- 7
