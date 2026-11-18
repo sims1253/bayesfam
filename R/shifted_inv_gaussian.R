@@ -154,6 +154,17 @@ shifted_inv_gaussian <- function(
       real shifted_inv_gaussian_lpdf(real y, real mu, real shape, real ndt) {
           return 0.5 * log(shape / (2 * pi())) - 1.5 * log(y - ndt)
                - 0.5 * shape * square(((y - ndt) - mu) / (mu * sqrt(y - ndt)));
+      }
+
+      real shifted_inv_gaussian_rng(real mu, real shape, real ndt) {
+        // Michael, Schucany and Haas (1976), as brms::rinv_gaussian
+        real v = chi_square_rng(1);
+        real x = mu + mu^2 * v / (2 * shape)
+                 - mu / (2 * shape) * sqrt(4 * mu * shape * v + mu^2 * v^2);
+        if (uniform_rng(0, 1) > mu / (mu + x)) {
+          x = mu^2 / x;
+        }
+        return x + ndt;
       }",
     block = "functions"
   )

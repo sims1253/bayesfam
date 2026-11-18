@@ -220,6 +220,22 @@ simplex <- function(link = "logit", link_sigma = "log") {
                         (y * (1-y) * mu^2 * (1-mu)^2)
                      )
                   );
+        }
+
+        real simplex_rng(real mu, real sigma) {
+          // the inverse-gaussian mixture of rsimplex, rMIG and rIG
+          real epsilon = mu / (1 - mu);
+          real tau = sigma^2 * (1 - mu)^2;
+          real z = chi_square_rng(1);
+          real ss = sqrt(4 * epsilon * z / tau + (epsilon * z)^2);
+          real x = epsilon + epsilon^2 * tau * z / 2 - (epsilon * tau / 2) * ss;
+          if (uniform_rng(0, 1) > epsilon / (epsilon + x)) {
+            x = epsilon^2 / x;
+          }
+          if (uniform_rng(0, 1) < mu) {
+            x += chi_square_rng(1) * tau * epsilon^2;
+          }
+          return x / (1 + x);
         }",
     block = "functions"
   )

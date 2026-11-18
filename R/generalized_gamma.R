@@ -234,6 +234,20 @@ generalized_gamma <- function(
       } else {
         return lognormal_lpdf(y| mu, sigma);
       }
+  }
+
+    real generalized_gamma_rng(real mu, real sigma, real Q) {
+      real y;
+      if (Q != 0) {
+        y = exp(mu + sigma * log(Q * Q * gamma_rng(1 / (Q * Q), 1)) / Q);
+      } else {
+        y = lognormal_rng(mu, sigma);
+      }
+      // as rgeneralized_gamma, replace draws that underflow to zero
+      if (y == 0) {
+        y = 2.2250738585072014e-300;
+      }
+      return y;
   }",
     block = "functions"
   )

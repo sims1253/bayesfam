@@ -134,6 +134,12 @@ unit_lindley <- function(link = "logit") {
       real unit_lindley_lpdf(real y, real mu) {
         return 2*log1m(mu)-log(mu)-3*log1m(y)-y*(1-mu)/(mu*(1-y));
       }
+
+      real unit_lindley_rng(real mu) {
+        // inverse CDF, as in qunit_lindley
+        real w = lambert_wm1((1 / mu) * (uniform_rng(0, 1) - 1) * exp(-1 / mu));
+        return (1 / mu + w) / (1 + w);
+      }
     ",
     block = "functions"
   )

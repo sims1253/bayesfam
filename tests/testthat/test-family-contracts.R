@@ -185,21 +185,81 @@ test_that("generalized_gamma posterior_epred is Inf where the mean diverges", {
   )
 })
 
+# The Stan code of family `f`, without includes of brms' own function chunks:
+# they declare overloads, which expose_stan_functions() cannot export to R
+family_scode <- function(f) {
+  scode <- unlist(lapply(family_fixture(f)$fam$stanvars, `[[`, "scode"))
+  paste(grep("^#include", scode, value = TRUE, invert = TRUE), collapse = "\n")
+}
+
+# The name of the one RNG in the Stan code of family `f`
+stan_rng_name <- function(f) {
+  names <- regmatches(
+    family_scode(f),
+    gregexpr("real\\s+\\w+_rng(?=\\s*\\()", family_scode(f), perl = TRUE)
+  )[[1]]
+  sub("^real\\s+", "", names)
+}
+
+test_that("every family has an RNG in its Stan code", {
+  for (f in families) {
+    expect_equal(length(stan_rng_name(f)), 1, label = paste(f, "Stan RNG count"))
+  }
+})
+
+# Whether R can compile C++, which exposing Stan functions needs
+has_cxx <- function() {
+  cxx <- tryCatch(
+    system2(file.path(R.home("bin"), "R"), c("CMD", "config", "CXX17"),
+      stdout = TRUE, stderr = FALSE
+    ),
+    error = function(e) "",
+    warning = function(w) ""
+  )
+  cxx <- strsplit(trimws(paste(cxx, collapse = " ")), "\\s+")[[1]][1]
+  isTRUE(nzchar(cxx)) && nzchar(Sys.which(cxx))
+}
+
+# All family functions in one compiled model, exposed to R once. Each RNG
+# gets a wrapper that returns n draws, so one call with one seed gives an
+# independent sample.
+stan_functions <- local({
+  stan <- NULL
+  function() {
+    if (is.null(stan)) {
+      wrappers <- vapply(families, function(f) {
+        rng <- stan_rng_name(f)
+        k <- length(family_fixture(f)$pars) + length(family_fixture(f)$vreal)
+        args <- paste0("a", seq_len(k))
+        sprintf(
+          "vector draws_%s(int n, %s) {
+            vector[n] y;
+            for (i in 1:n) y[i] = %s(%s);
+            return y;
+          }",
+          rng, paste("real", args, collapse = ", "), rng,
+          paste(args, collapse = ", ")
+        )
+      }, character(1))
+      model <- rstan::stanc(model_code = paste(
+        "functions {",
+        paste(vapply(families, family_scode, character(1)), collapse = "\n"),
+        paste(wrappers, collapse = "\n"),
+        "}"
+      ))
+      stan <<- new.env()
+      rstan::expose_stan_functions(model, env = stan)
+    }
+    stan
+  }
+})
+
 test_that("Stan lpdfs match the R log densities", {
   skip_on_cran()
   skip_if_not_installed("rstan")
+  skip_if_not(has_cxx(), "no C++ toolchain")
   fxs <- lapply(families, family_fixture)
-  scode <- unlist(lapply(fxs, function(fx) {
-    lapply(fx$fam$stanvars, `[[`, "scode")
-  }))
-  # leave out includes of brms' own function chunks: they declare overloads,
-  # which expose_stan_functions() cannot export to R
-  scode <- grep("^#include", scode, value = TRUE, invert = TRUE)
-  model <- rstan::stanc(
-    model_code = paste("functions {", paste(scode, collapse = "\n"), "}")
-  )
-  stan <- new.env()
-  rstan::expose_stan_functions(model, env = stan)
+  stan <- stan_functions()
   for (fx in fxs) {
     for (j in 1:2) {
       args <- unname(c(lapply(fx$pars, `[`, j), fx$vreal))
@@ -210,6 +270,38 @@ test_that("Stan lpdfs match the R log densities", {
           label = paste0(fx$fam$name, "_lpdf(", y, ")")
         )
       }
+    }
+  }
+})
+
+test_that("Stan RNGs draw from the same distribution as the R RNGs", {
+  skip_on_cran()
+  skip_if_not_installed("rstan")
+  skip_if_not(has_cxx(), "no C++ toolchain")
+  stan <- stan_functions()
+  n <- 20000
+  ns <- asNamespace("bayesfam")
+  for (f in families) {
+    fx <- family_fixture(f)
+    cdf <- paste0("p", fx$fam$name)
+    for (j in 1:2) {
+      args <- unname(c(lapply(fx$pars, `[`, j), fx$vreal))
+      draws <- do.call(
+        stan[[paste0("draws_", stan_rng_name(f))]],
+        c(list(n), args, list(base_rng__ = rstan::get_rng(j)))
+      )
+      expect_length(draws, n)
+      # against the R CDF where there is one, else against the R RNG
+      test <- if (exists(cdf, ns, inherits = FALSE)) {
+        do.call(ks.test, c(list(draws, get(cdf, ns)), args))
+      } else {
+        set.seed(j)
+        ks.test(draws, do.call(fx$rng, c(list(n), args)))
+      }
+      expect_gt(
+        test$p.value, 0.001,
+        label = sprintf("%s KS p-value (parameter set %d)", f, j)
+      )
     }
   }
 })
