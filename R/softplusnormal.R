@@ -110,7 +110,7 @@ softplusnormal <- function(link = "identity", link_sigma = "log") {
     "softplusnormal",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
-    lb = c(0, 0),
+    lb = c(NA, 0),
     ub = c(NA, NA),
     type = "real",
     log_lik = log_lik_softplusnormal,
