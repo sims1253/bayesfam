@@ -256,3 +256,10 @@ test_that("the cloglog and cauchit links name themselves in their errors", {
   expect_error(cloglog(2), "The cloglog link is only defined between 0 and 1")
   expect_error(cauchit(2), "The cauchit link is only defined between 0 and 1")
 })
+
+test_that("inv_cloglog keeps its relative accuracy far in the left tail", {
+  # 1 - exp(-exp(x)) rounds to 0 once exp(x) is below half the machine epsilon
+  x <- c(-40, -100, -700)
+  # compare ratios: all.equal turns absolute when the target is near 0
+  expect_equal(inv_cloglog(x) / exp(x), rep(1, 3), tolerance = 1e-14)
+})

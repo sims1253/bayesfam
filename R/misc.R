@@ -54,7 +54,8 @@ cloglog <- function(x) {
 #' @examples x <- seq(from = -3, to = 1, length.out = 100)
 #' plot(x, inv_cloglog(x), type = "l")
 inv_cloglog <- function(x) {
-  return(1 - exp(-exp(x)))
+  # expm1 keeps the left tail, where 1 - exp(-exp(x)) rounds to 0
+  return(-expm1(-exp(x)))
 }
 
 
