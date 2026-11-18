@@ -4,7 +4,7 @@
 \alias{dfrechet_median}
 \title{Median parameterization of the Fréchet pdf.}
 \usage{
-dfrechet_median(x, mu, nu)
+dfrechet_median(x, mu, nu, log = FALSE)
 }
 \arguments{
 \item{x}{x value space, x > 0}
@@ -12,6 +12,8 @@ dfrechet_median(x, mu, nu)
 \item{mu}{Median}
 
 \item{nu}{Shape, nu > 0}
+
+\item{log}{Optional argument. If TRUE, returns log(pdf).}
 }
 \value{
 dfrechet(x | mu, nu)

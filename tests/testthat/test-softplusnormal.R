@@ -72,3 +72,8 @@ test_that("softplusnormal is stable for large and tiny values (#31)", {
   )
   expect_true(all(is.finite(rsoftplusnormal(10, mu = 1000, sigma = 1))))
 })
+
+test_that("softplusnormal checks every element of sigma", {
+  expect_error(dsoftplusnormal(c(1, 2), mu = 0, sigma = c(1, -1)), "sigma > 0")
+  expect_error(rsoftplusnormal(2, mu = 0, sigma = c(1, -1)), "sigma > 0")
+})

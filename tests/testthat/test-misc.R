@@ -251,3 +251,8 @@ test_that("logsumexp", {
     -Inf
   )
 })
+
+test_that("the cloglog and cauchit links name themselves in their errors", {
+  expect_error(cloglog(2), "The cloglog link is only defined between 0 and 1")
+  expect_error(cauchit(2), "The cauchit link is only defined between 0 and 1")
+})

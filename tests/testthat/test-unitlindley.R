@@ -43,3 +43,15 @@ test_that("unit-lindley", {
     rng = runit_lindley
   )
 })
+
+test_that("posterior_predict reads mu through brms::get_dpar", {
+  # get_dpar also accepts mu as one value per draw, which [, i] does not
+  prep <- structure(
+    list(ndraws = 3, nobs = 2, dpars = list(mu = c(0.2, 0.5, 0.8))),
+    class = "brmsprep"
+  )
+  set.seed(1)
+  yrep <- unit_lindley()$posterior_predict(2, prep)
+  set.seed(1)
+  expect_equal(yrep, runit_lindley(3, c(0.2, 0.5, 0.8)))
+})

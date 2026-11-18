@@ -119,3 +119,17 @@ test_that("custom-gompertz", {
     aux_name = "beta"
   )
 })
+
+test_that("gompertz checks every element of mu and beta", {
+  x <- c(1, 2)
+  expect_error(dgompertz(x, mu = c(1, -1), beta = 1), "mu > 0")
+  expect_error(dgompertz(x, mu = 1, beta = c(1, -1)), "beta > 0")
+  expect_error(qgompertz(c(0.2, 0.5), mu = c(1, -1), beta = 1), "mu > 0")
+  expect_error(qgompertz(c(0.2, 0.5), mu = 1, beta = c(1, -1)), "beta > 0")
+})
+
+test_that("dgompertz keeps the median at mu when mu * beta is tiny", {
+  # exp(t) - 1 loses about half the digits for t near 1e-12
+  mass <- integrate(dgompertz, 0, 1, mu = 1, beta = 1e-12, rel.tol = 1e-12)
+  expect_equal(mass$value, 0.5, tolerance = 1e-9)
+})

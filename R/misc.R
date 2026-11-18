@@ -38,7 +38,7 @@ inv_logit <- function(x) {
 #' plot(x, cloglog(x), type = "l")
 cloglog <- function(x) {
   if (any(x < 0 | x > 1)) {
-    stop("The logit link is only defined between 0 and 1!")
+    stop("The cloglog link is only defined between 0 and 1!")
   }
   log(-log1p(-x))
 }
@@ -69,7 +69,7 @@ inv_cloglog <- function(x) {
 #' plot(x, cauchit(x), type = "l")
 cauchit <- function(x) {
   if (any(x < 0 | x > 1)) {
-    stop("The logit link is only defined between 0 and 1!")
+    stop("The cauchit link is only defined between 0 and 1!")
   }
   return(qcauchy(x))
 }

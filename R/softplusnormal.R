@@ -15,7 +15,7 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
   if (isTRUE(any(x <= 0))) {
     stop("softplusnormal is only defined for x > 0")
   }
-  if (isTRUE(sigma <= 0)) {
+  if (isTRUE(any(sigma <= 0))) {
     stop("softplusnormal is only defined for sigma > 0")
   }
   # normal density of the softplus link z, plus its log Jacobian
@@ -42,7 +42,7 @@ dsoftplusnormal <- function(x, mu, sigma, log = FALSE) {
 #' @examples hist(rsoftplusnormal(100, 1, 2))
 rsoftplusnormal <- function(n, mu = 1, sigma = 1) {
   # check the arguments
-  if (isTRUE(sigma <= 0)) {
+  if (isTRUE(any(sigma <= 0))) {
     stop("softplusnormal is only defined for sigma > 0")
   }
   return(

@@ -88,7 +88,7 @@ log_lik_unitlindley <- function(i, prep) {
 #'
 #' @return Draws from the posterior predictive distribution
 posterior_predict_unitlindley <- function(i, prep, ...) {
-  mu <- prep$dpars$mu[, i]
+  mu <- brms::get_dpar(prep, "mu", i = i)
   return(runit_lindley(prep$ndraws, mu))
 }
 

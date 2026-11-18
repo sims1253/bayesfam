@@ -3,6 +3,7 @@
 #' @param x x value space, x > 0
 #' @param mu Median
 #' @param nu Shape, nu > 0
+#' @param log Optional argument. If TRUE, returns log(pdf).
 #'
 #' @details Define scale parameter sigma as
 #' \deqn{\sigma(\mu, \nu) := \mu \cdot \log(2)^{1 / \nu}}
@@ -14,7 +15,7 @@
 #'
 #' @examples x <- seq(from = 0.1, to = 20, length.out = 1000)
 #' plot(x, dfrechet_median(x, mu = 6, nu = 4), type = "l")
-dfrechet_median <- function(x, mu, nu) {
+dfrechet_median <- function(x, mu, nu, log = FALSE) {
   # check the arguments
   if (isTRUE(any(x <= 0))) {
     stop("frechet is only defined for x > 0")
@@ -29,7 +30,8 @@ dfrechet_median <- function(x, mu, nu) {
     x = x,
     loc = 0,
     scale = mu * log(2)^(1 / nu),
-    shape = nu
+    shape = nu,
+    log = log
   ))
 }
 

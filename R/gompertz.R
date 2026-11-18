@@ -19,16 +19,16 @@ dgompertz <- function(x, mu, beta, log = FALSE) {
   if (isTRUE(any(x <= 0))) {
     stop("dgompertz is only defined for x > 0")
   }
-  if (isTRUE(mu <= 0)) {
+  if (isTRUE(any(mu <= 0))) {
     stop("dgompertz is only defined for mu > 0")
   }
-  if (isTRUE(beta <= 0)) {
+  if (isTRUE(any(beta <= 0))) {
     stop("dgompertz is only defined for beta > 0")
   }
 
   lpdf <- log(-beta * log(0.5)) -
-    log(exp(mu * beta) - 1) +
-    (beta * x + (log(0.5) / (exp(mu * beta) - 1)) * (exp(beta * x) - 1))
+    log(expm1(mu * beta)) +
+    (beta * x + (log(0.5) / expm1(mu * beta)) * expm1(beta * x))
 
   if (log) {
     return(lpdf)
@@ -53,10 +53,10 @@ qgompertz <- function(p, mu, beta) {
   if (isTRUE(any(p <= 0 | p >= 1))) {
     stop("qgompertz is only defined for 0 < p < 1")
   }
-  if (isTRUE(mu <= 0)) {
+  if (isTRUE(any(mu <= 0))) {
     stop("qgompertz is only defined for mu > 0")
   }
-  if (isTRUE(beta <= 0)) {
+  if (isTRUE(any(beta <= 0))) {
     stop("qgompertz is only defined for beta > 0")
   }
   return(
