@@ -18,6 +18,12 @@ brms Lomax distribution family
 \description{
 Lomax Stan-implementation in Mean parametrization.
 }
+\details{
+With a \code{"logm1"} link the Stan code includes brms' overloaded
+\code{expp1} and \code{logm1} functions, which \code{rstan::expose_stan_functions()}
+cannot export, so expose \code{lomax_lpdf} and \code{lomax_rng} from a family with
+other links.
+}
 \examples{
 a <- rnorm(1000)
 data <- list(a = a, y = rlomax(1000, exp(0.5 * a + 1), 2))

@@ -146,3 +146,14 @@ test_that("lomax with a predicted alpha gives valid Stan code", {
   )
   expect_true(rstan::stanc(model_code = scode)$status)
 })
+
+test_that("lomax includes brms' logm1 chunk only for a logm1 link", {
+  includes <- function(fam) {
+    scode <- unlist(lapply(fam$stanvars, `[[`, "scode"))
+    sum(scode == "#include 'fun_logm1.stan'")
+  }
+  expect_equal(includes(lomax()), 1)
+  expect_equal(includes(lomax(link = "logm1", link_alpha = "log")), 1)
+  expect_equal(includes(lomax(link_alpha = "log")), 0)
+  expect_equal(includes(lomax(link = "identity", link_alpha = "softplus")), 0)
+})

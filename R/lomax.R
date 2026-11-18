@@ -125,6 +125,11 @@ posterior_epred_lomax <- function(prep) {
 #' @param link_alpha Link function for the alpha argument. The default
 #'   `"logm1"` (inverse `exp(eta) + 1`) keeps alpha above 1.
 #'
+#' @details With a `"logm1"` link the Stan code includes brms' overloaded
+#'   `expp1` and `logm1` functions, which `rstan::expose_stan_functions()`
+#'   cannot export, so expose `lomax_lpdf` and `lomax_rng` from a family with
+#'   other links.
+#'
 #' @return brms Lomax distribution family
 #' @export
 #'
@@ -148,12 +153,7 @@ lomax <- function(link = "log", link_alpha = "logm1") {
     posterior_predict = posterior_predict_lomax,
     posterior_epred = posterior_epred_lomax
   )
-  # brms declares expp1, the inverse of the logm1 link, only for its own
-  # families; it merges this include with its own if it has one
   family$stanvars <- brms::stanvar(
-    scode = "#include 'fun_logm1.stan'",
-    block = "functions"
-  ) + brms::stanvar(
     scode = "
       real lomax_lpdf(real y, real mu, real alpha) {
         return(log(alpha) +
@@ -166,5 +166,13 @@ lomax <- function(link = "log", link_alpha = "logm1") {
       }",
     block = "functions"
   )
+  # brms declares expp1, the inverse of the logm1 link, only for its own
+  # families; it merges this include with its own if it has one
+  if ("logm1" %in% c(link, link_alpha)) {
+    family$stanvars <- brms::stanvar(
+      scode = "#include 'fun_logm1.stan'",
+      block = "functions"
+    ) + family$stanvars
+  }
   return(family)
 }

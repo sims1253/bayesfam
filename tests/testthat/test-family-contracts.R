@@ -186,10 +186,19 @@ test_that("generalized_gamma posterior_epred is Inf where the mean diverges", {
 })
 
 # The Stan code of family `f`, without includes of brms' own function chunks:
-# they declare overloads, which expose_stan_functions() cannot export to R
+# they declare overloads, which expose_stan_functions() cannot export to R.
+# The only one is fun_logm1.stan, which lomax includes for expp1, the inverse
+# of its default logm1 link. The model block calls expp1; the lpdf and RNG do
+# not, so they expose complete without it. Stop if that stops being true.
 family_scode <- function(f) {
   scode <- unlist(lapply(family_fixture(f)$fam$stanvars, `[[`, "scode"))
-  paste(grep("^#include", scode, value = TRUE, invert = TRUE), collapse = "\n")
+  include <- grepl("^#include", scode)
+  own <- paste(scode[!include], collapse = "\n")
+  stopifnot(
+    all(scode[include] == "#include 'fun_logm1.stan'"),
+    !any(include) || !grepl("\\b(expp1|logm1)\\s*\\(", own)
+  )
+  own
 }
 
 # The name of the one RNG in the Stan code of family `f`
