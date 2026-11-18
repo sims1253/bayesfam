@@ -152,6 +152,7 @@ test_that("gompertz_mean stays finite where expm1(mu * beta) overflows", {
   expect_equal(gompertz_mean(mu, 1), mu - 0.5772156649015329 - log(log(2)),
     tolerance = 1e-14
   )
-  # small mu * beta is unaffected
-  expect_equal(gompertz_mean(1e-16, 1), 1e-16 / log(2), tolerance = 1e-15)
+  # small mu * beta is unaffected; compare the ratio, as all.equal turns
+  # absolute when the target is near 0 and would accept 0
+  expect_equal(gompertz_mean(1e-16, 1) / (1e-16 / log(2)), 1, tolerance = 1e-14)
 })
