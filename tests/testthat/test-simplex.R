@@ -95,3 +95,10 @@ test_that("simplex mu policy: strict (0, 1) in d/r, no clamping", {
     relative = TRUE
   )
 })
+
+test_that("rsimplex keeps every draw inside (0, 1) for a large sigma", {
+  # the smaller root of the inverse Gaussian draw in rIG cancelled to 0
+  set.seed(1)
+  y <- rsimplex(2e4, mu = 0.5, sigma = 1e4)
+  expect_true(all(is.finite(y) & y > 0 & y < 1))
+})

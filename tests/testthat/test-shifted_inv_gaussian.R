@@ -77,3 +77,10 @@ test_that("dshifted_inv_gaussian is 0 below the shift", {
     })
   )
 })
+
+test_that("rshifted_inv_gaussian keeps every draw above the shift for a tiny shape", {
+  # the smaller root of the Michael-Schucany-Haas draw cancelled to 0 or below
+  set.seed(1)
+  y <- rshifted_inv_gaussian(1e5, mu = 1, shape = 1e-8, shift = 1)
+  expect_true(all(is.finite(y) & y > 1))
+})

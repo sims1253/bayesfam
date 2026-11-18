@@ -55,11 +55,14 @@ rIG <-
     ## generating random number from inverse-gaussian dist'n
     z <- rchisq(1, 1)
     ss <- sqrt(4 * epsilon * z / Tau + (epsilon * z)^2)
-    z1 <- epsilon + (epsilon^2) * Tau * z / 2 - (epsilon * Tau / 2) * ss
+    # the smaller root as epsilon^2 over the larger: the roots multiply to
+    # epsilon^2, and their difference cancels
+    z2 <- epsilon + (epsilon^2) * Tau * z / 2 + (epsilon * Tau / 2) * ss
+    z1 <- (epsilon^2) / z2
     u1 <- runif(1, 0, 1)
     xxx <- z1
     if (u1 > (epsilon / (epsilon + z1))) {
-      xxx <- (epsilon^2) / z1
+      xxx <- z2
     }
     return(as.numeric(xxx))
   }
@@ -228,9 +231,11 @@ simplex <- function(link = "logit", link_sigma = "log") {
           real tau = sigma^2 * (1 - mu)^2;
           real z = chi_square_rng(1);
           real ss = sqrt(4 * epsilon * z / tau + (epsilon * z)^2);
-          real x = epsilon + epsilon^2 * tau * z / 2 - (epsilon * tau / 2) * ss;
+          // the smaller root as epsilon^2 over the larger, which does not cancel
+          real x2 = epsilon + epsilon^2 * tau * z / 2 + (epsilon * tau / 2) * ss;
+          real x = epsilon^2 / x2;
           if (uniform_rng(0, 1) > epsilon / (epsilon + x)) {
-            x = epsilon^2 / x;
+            x = x2;
           }
           if (uniform_rng(0, 1) < mu) {
             x += chi_square_rng(1) * tau * epsilon^2;
