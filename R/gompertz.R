@@ -60,7 +60,7 @@ qgompertz <- function(p, mu, beta) {
     stop("qgompertz is only defined for beta > 0")
   }
   return(
-    log1p(((exp(mu * beta) - 1) / (log(0.5))) * log1p(-p)) / beta
+    log1p((expm1(mu * beta) / (log(0.5))) * log1p(-p)) / beta
   )
 }
 
@@ -82,7 +82,7 @@ rgompertz <- function(n, mu = 1, beta = 0.5) {
     stop("rgompertz is only defined for beta > 0")
   }
   return(
-    log1p(((exp(mu * beta) - 1) / (log(0.5))) * log(runif(n))) / beta
+    log1p((expm1(mu * beta) / (log(0.5))) * log(runif(n))) / beta
   )
 }
 
@@ -205,13 +205,13 @@ gompertz <- function(link = "log", link_b = "log") {
       real gompertz_lpdf(real y, real mu, real beta) {
         return(
           log(-beta * log(0.5)) -
-          log(exp(mu * beta) - 1) +
-          (beta * y + (log(0.5) / (exp(mu * beta) - 1)) * (exp(beta * y) - 1))
+          log(expm1(mu * beta)) +
+          (beta * y + (log(0.5) / expm1(mu * beta)) * expm1(beta * y))
         );
       }
       real gompertz_rng(real mu, real beta) {
       return(
-        log1p(((exp(mu * beta) - 1) / (log(0.5))) * log(uniform_rng(0,1))) / beta
+        log1p((expm1(mu * beta) / (log(0.5))) * log(uniform_rng(0,1))) / beta
       );
       }",
     block = "functions"

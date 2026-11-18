@@ -133,3 +133,8 @@ test_that("dgompertz keeps the median at mu when mu * beta is tiny", {
   mass <- integrate(dgompertz, 0, 1, mu = 1, beta = 1e-12, rel.tol = 1e-12)
   expect_equal(mass$value, 0.5, tolerance = 1e-9)
 })
+
+test_that("qgompertz keeps the median at mu when mu * beta is tiny", {
+  # exp(mu * beta) - 1 rounds to 0 at mu * beta = 1e-16
+  expect_equal(qgompertz(0.5, 1, 1e-16), 1)
+})
