@@ -285,6 +285,15 @@ test_that("Stan RNGs draw from the same distribution as the R RNGs", {
         c(list(n), args, list(base_rng__ = rstan::get_rng(j)))
       )
       expect_length(draws, n)
+      # the KS test cannot see a few draws outside the support
+      support <- fx$support
+      expect_true(
+        all(is.finite(draws) & draws > support[1] & draws < support[2]),
+        label = sprintf(
+          "%s Stan draws inside (%s, %s) (parameter set %d)",
+          f, format(support[1]), format(support[2]), j
+        )
+      )
       # against the R CDF where there is one, else against the R RNG
       test <- if (exists(cdf, ns, inherits = FALSE)) {
         do.call(ks.test, c(list(draws, get(cdf, ns)), args))
