@@ -138,3 +138,20 @@ test_that("qgompertz keeps the median at mu when mu * beta is tiny", {
   # exp(mu * beta) - 1 rounds to 0 at mu * beta = 1e-16
   expect_equal(qgompertz(0.5, 1, 1e-16), 1)
 })
+
+test_that("gompertz_mean stays finite where expm1(mu * beta) overflows", {
+  # exp(z) E1(z) = -gamma - log(z) + O(z log z), with
+  # z = log(2) / expm1(mu * beta) below the smallest double here
+  expect_equal(
+    gompertz_mean(800, 1),
+    -0.5772156649015329 - (log(log(2)) - 800),
+    tolerance = 1e-14
+  )
+  # and agrees across the point where z leaves the double range
+  mu <- c(700, 705, 710, 720)
+  expect_equal(gompertz_mean(mu, 1), mu - 0.5772156649015329 - log(log(2)),
+    tolerance = 1e-14
+  )
+  # small mu * beta is unaffected
+  expect_equal(gompertz_mean(1e-16, 1), 1e-16 / log(2), tolerance = 1e-15)
+})

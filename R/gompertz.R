@@ -156,7 +156,14 @@ exp_E1 <- function(x) {
 #' @return Mean, same dimensions as `mu`.
 #' @noRd
 gompertz_mean <- function(mu, beta) {
-  return(exp_E1(log(2) / expm1(mu * beta)) / beta)
+  x <- mu * beta
+  out <- exp_E1(log(2) / expm1(x))
+  # where z = log(2) / expm1(x) underflows, exp(z) E1(z) is
+  # -gamma - log(z) + O(z log(z)), with log(z) finite even if expm1(x) is not
+  lz <- log(log(2)) - x - log(-expm1(-x))
+  tiny <- lz < log(.Machine$double.xmin)
+  out[tiny] <- -0.5772156649015329 - lz[tiny]
+  return(out / beta)
 }
 
 #' Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.
