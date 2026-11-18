@@ -207,19 +207,6 @@ test_that("every family has an RNG in its Stan code", {
   }
 })
 
-# Whether R can compile C++, which exposing Stan functions needs
-has_cxx <- function() {
-  cxx <- tryCatch(
-    system2(file.path(R.home("bin"), "R"), c("CMD", "config", "CXX17"),
-      stdout = TRUE, stderr = FALSE
-    ),
-    error = function(e) "",
-    warning = function(w) ""
-  )
-  cxx <- strsplit(trimws(paste(cxx, collapse = " ")), "\\s+")[[1]][1]
-  isTRUE(nzchar(cxx)) && nzchar(Sys.which(cxx))
-}
-
 # All family functions in one compiled model, exposed to R once. Each RNG
 # gets a wrapper that returns n draws, so one call with one seed gives an
 # independent sample.
@@ -257,7 +244,6 @@ stan_functions <- local({
 test_that("Stan lpdfs match the R log densities", {
   skip_on_cran()
   skip_if_not_installed("rstan")
-  skip_if_not(has_cxx(), "no C++ toolchain")
   fxs <- lapply(families, family_fixture)
   stan <- stan_functions()
   for (fx in fxs) {
@@ -277,7 +263,6 @@ test_that("Stan lpdfs match the R log densities", {
 test_that("Stan RNGs draw from the same distribution as the R RNGs", {
   skip_on_cran()
   skip_if_not_installed("rstan")
-  skip_if_not(has_cxx(), "no C++ toolchain")
   stan <- stan_functions()
   n <- 20000
   ns <- asNamespace("bayesfam")
