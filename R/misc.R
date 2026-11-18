@@ -197,10 +197,17 @@ logsumexp <- function(x) {
 
 #' Mean of a transformed normal variable.
 #'
-#' Computes E[inv_link(Z)] for Z ~ N(mu, sigma) with trapezoid sums on fixed
-#' nodes, vectorized over `mu` and `sigma`. This is the expectation that
-#' `posterior_epred` promises for the families that transform a normal
-#' variable (cauchitnormal, cloglognormal, softplusnormal).
+#' Computes E[inv_link(Z)] for Z ~ N(mu, sigma) on fixed nodes, vectorized
+#' over `mu` and `sigma`. This is the expectation that `posterior_epred`
+#' promises for the families that transform a normal variable (cauchitnormal,
+#' cloglognormal, softplusnormal).
+#'
+#' The sums give every node, the two end nodes included, the full step `h`.
+#' That differs from the trapezoid rule only by half the weight of the two end
+#' nodes, which is negligible: `h * dnorm(9)` is about 3e-19, and the `dual`
+#' weights end near 1e-18 (cloglog-normal) and 1e-16 (softplus-normal). The
+#' integrand and its derivatives vanish at both ends, so the Euler-Maclaurin
+#' boundary terms do too, and the error falls exponentially as `h` shrinks.
 #'
 #' For sigma <= 1 it integrates inv_link(mu + sigma * t) over t ~ N(0, 1) with
 #' step 0.25. A larger sigma makes that integrand steep, so then it uses
