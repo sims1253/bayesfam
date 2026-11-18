@@ -17,8 +17,18 @@
 * `dgompertz()`, `qgompertz()`, `dsoftplusnormal()` and `rsoftplusnormal()`
   now reject a vector argument when any element of it is invalid, not only
   when all elements are.
-* `dgompertz()` uses `expm1()`, so it stays accurate when `mu * beta` is
-  small.
+* `dgompertz()`, `qgompertz()`, `rgompertz()` and the Gompertz Stan code use
+  `expm1()`, so they stay accurate when `mu * beta` is small; before,
+  `qgompertz(0.5, 1, 1e-16)` gave 0 instead of the median 1.
+* `runit_lindley()` and the unit Lindley Stan RNG draw from a gamma
+  mixture; for `mu` below about 0.0013 every draw was `NaN`.
+* `rshifted_inv_gaussian()`, `rsimplex()` and their Stan RNGs compute the
+  smaller inverse Gaussian root without cancellation; for small shapes or
+  large `sigma`, draws landed at or below the shift, or at 0.
+* `inv_cloglog()` uses `expm1()`, so it no longer rounds to 0 below
+  `x` of about -37.
+* `lomax()` includes brms' `logm1` Stan functions only when `link` or
+  `link_alpha` is `"logm1"`.
 * `cloglog()` and `cauchit()` give their own name in their error messages;
   before, both said "logit link".
 * The unit Lindley `posterior_predict` reads `mu` through `brms::get_dpar()`.
@@ -28,7 +38,8 @@
 * `posterior_epred` is now implemented for `gompertz()`,
   `generalized_gamma()`, `cauchitnormal()`, `cloglognormal()` and
   `softplusnormal()`. The generalized gamma mean is `Inf` where it does not
-  exist, for `Q <= -1 / sigma`.
+  exist, for `Q * sigma <= -1`, and stays accurate as `Q` approaches 0. The
+  Gompertz mean stays finite where `expm1(mu * beta)` overflows.
 * `unit_lindley()`, `generalized_gamma()`, `simplex()`,
   `shifted_inv_gaussian()` and `shifted_lognormal_uniform()` now define a
   Stan `_rng` function.
