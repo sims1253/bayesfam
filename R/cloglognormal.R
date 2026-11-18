@@ -73,17 +73,25 @@ posterior_predict_cloglognormal <- function(i, prep, ...) {
   return(rcloglognormal(prep$ndraws, mu, sigma))
 }
 
-#' Posterior expected value prediction. Mean undefined for Cloglog-Normal
+#' Posterior expected value prediction vignette for Cloglog-Normal distribution.
+#'
+#' The mean has no closed form, so it is computed by quadrature.
 #'
 #' @param prep brms data
 #'
-#' @return Nothing
+#' @return Mean of Posterior
 posterior_epred_cloglognormal <- function(prep) {
-  # https://doi.org/10.1080/03610926.2020.1752723 might solve this
-  stop(
-    "Due to the mean not having an analytical solution for the cloglog-normal
-        distribution, posterior_epred is currently not supported."
+  mu <- brms::get_dpar(prep, "mu")
+  sigma <- brms::get_dpar(prep, "sigma")
+  # inv_cloglog is the CDF of L with density exp(l - exp(l)) (a reflected
+  # Gumbel), so E[inv_cloglog(Z)] = E[pnorm((mu - L) / sigma)]
+  l <- seq(-40, 4, by = 0.25)
+  dual <- list(
+    nodes = l,
+    weights = 0.25 * exp(l - exp(l)),
+    kernel = function(m, s, l) pnorm((m - l) / s)
   )
+  return(latent_normal_mean(mu, sigma, inv_cloglog, dual))
 }
 
 #' Custom brms family Cloglog-Normal in median parametrization.

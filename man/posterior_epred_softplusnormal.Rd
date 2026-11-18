@@ -13,5 +13,5 @@ posterior_epred_softplusnormal(prep)
 Mean of Posterior
 }
 \description{
-Posterior expected value prediction vignette for Softplus distribution.
+The mean has no closed form, so it is computed by quadrature.
 }

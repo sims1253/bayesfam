@@ -78,14 +78,27 @@ posterior_predict_softplusnormal <- function(i, prep, ...) {
 
 #' Posterior expected value prediction vignette for Softplus distribution.
 #'
+#' The mean has no closed form, so it is computed by quadrature.
+#'
 #' @param prep brms data
 #'
 #' @return Mean of Posterior
 posterior_epred_softplusnormal <- function(prep) {
-  stop(
-    "No implementation of posterior_epred for the softplus-normal
-       available!"
+  mu <- brms::get_dpar(prep, "mu")
+  sigma <- brms::get_dpar(prep, "sigma")
+  # inv_softplus(z) = E[(z - L)+] for L ~ Logistic(0, 1), so
+  # E[inv_softplus(Z)] = E[sigma * dnorm(d) + (mu - L) * pnorm(d)] with
+  # d = (mu - L) / sigma, the normal partial expectation
+  l <- seq(-36, 36, by = 0.5)
+  dual <- list(
+    nodes = l,
+    weights = 0.5 * dlogis(l),
+    kernel = function(m, s, l) {
+      d <- (m - l) / s
+      s * dnorm(d) + (m - l) * pnorm(d)
+    }
   )
+  return(latent_normal_mean(mu, sigma, inv_softplus, dual))
 }
 
 #' Custom brms family Softplus in median parametrization.

@@ -5,16 +5,6 @@ families <- sub(
   ls(asNamespace("bayesfam"), pattern = "^log_lik_")
 )
 
-# posterior_epred callbacks that do not return the mean, and the condition
-# they signal instead
-epred_exceptions <- c(
-  cauchitnormal = "error", # no closed-form mean
-  cloglognormal = "error", # no closed-form mean
-  generalized_gamma = "error", # not implemented
-  gompertz = "error", # not implemented
-  softplusnormal = "error" # no closed-form mean
-)
-
 test_that("every custom family has a fixture", {
   expect_identical(sort(names(family_fixtures)), sort(families))
   for (f in families) {
@@ -109,13 +99,6 @@ for (f in families) {
       expect_equal(yrep, do.call(fx$rng, c(list(S), unname(args))))
     }
 
-    if (f %in% names(epred_exceptions)) {
-      expect_condition(
-        fx$fam$posterior_epred(prep),
-        class = epred_exceptions[[f]]
-      )
-      return()
-    }
     epred <- fx$fam$posterior_epred(prep)
     expect_equal(dim(epred), c(S, N))
     expect_true(all(is.finite(epred)))
@@ -124,6 +107,83 @@ for (f in families) {
     expect_equal(epred[1, 1], expectation(fx, args, identity), tolerance = 1e-4)
   })
 }
+
+# Means without a textbook closed form, checked tighter and over more
+# parameter sets than the fixtures. The unit-interval sets keep the mass
+# that rounds to 1 in double precision negligible, so the reference
+# integral over y can resolve them.
+epred_cases <- list(
+  gompertz = list(
+    c(mu = 1, beta = 0.5), c(mu = 2, beta = 1), c(mu = 0.3, beta = 4),
+    c(mu = 5, beta = 2)
+  ),
+  generalized_gamma = list(
+    c(mu = 0, sigma = 0.5, Q = -0.5), c(mu = 0.5, sigma = 1, Q = 1.5),
+    c(mu = 1, sigma = 0.3, Q = 0), c(mu = -1, sigma = 0.8, Q = 0.01),
+    c(mu = 0, sigma = 2, Q = -0.4)
+  ),
+  cauchitnormal = list(
+    c(mu = -0.5, sigma = 0.5), c(mu = 0.5, sigma = 1), c(mu = 2, sigma = 3),
+    c(mu = 0, sigma = 10)
+  ),
+  cloglognormal = list(
+    c(mu = -1, sigma = 0.3), c(mu = -0.5, sigma = 0.5),
+    c(mu = -4, sigma = 1.2), c(mu = -6, sigma = 1.5)
+  ),
+  softplusnormal = list(
+    c(mu = 0.5, sigma = 0.5), c(mu = 1, sigma = 1), c(mu = -2, sigma = 3),
+    c(mu = 5, sigma = 0.1)
+  )
+)
+
+for (f in names(epred_cases)) {
+  test_that(paste(f, "posterior_epred is the mean of the density"), {
+    fx <- family_fixture(f)
+    support <- fx$support
+    for (p in epred_cases[[f]]) {
+      N <- 3
+      dpars <- lapply(as.list(p), rep, S)
+      dpars$mu <- matrix(p[["mu"]], S, N)
+      prep <- structure(
+        list(ndraws = S, nobs = N, dpars = dpars),
+        class = "brmsprep"
+      )
+      epred <- fx$fam$posterior_epred(prep)
+      expect_equal(dim(epred), c(S, N))
+      integrand <- function(y) {
+        inside <- y > support[1] & y < support[2]
+        out <- 0 * y
+        out[inside] <- y[inside] *
+          exp(do.call(fx$lpdf, c(list(y[inside]), unname(as.list(p)))))
+        out
+      }
+      # split near the median, where the mass sits
+      set.seed(1)
+      split <- median(do.call(fx$rng, c(list(1e4), unname(as.list(p)))))
+      mean <- integrate(integrand, support[1], split,
+        rel.tol = 1e-10, subdivisions = 2000L
+      )$value + integrate(integrand, split, support[2],
+        rel.tol = 1e-10, subdivisions = 2000L
+      )$value
+      expect_equal(
+        epred, matrix(mean, S, N),
+        tolerance = 1e-6,
+        label = paste(f, paste(names(p), p, sep = "=", collapse = ", "))
+      )
+    }
+  })
+}
+
+test_that("generalized_gamma posterior_epred is Inf where the mean diverges", {
+  # E[y] exists only for Q > -1/sigma; the third draw is just inside
+  prep <- structure(list(ndraws = 3, nobs = 2, dpars = list(
+    mu = matrix(0, 3, 2), sigma = c(1, 2, 0.5), Q = c(-1, -0.6, -0.5)
+  )), class = "brmsprep")
+  expect_equal(
+    generalized_gamma()$posterior_epred(prep),
+    matrix(c(Inf, Inf, 4 / 3), 3, 2)
+  )
+})
 
 test_that("Stan lpdfs match the R log densities", {
   skip_on_cran()

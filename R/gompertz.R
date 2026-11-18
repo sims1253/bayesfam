@@ -113,14 +113,61 @@ posterior_predict_gompertz <- function(i, prep, ...) {
   return(rgompertz(prep$ndraws, mu, beta))
 }
 
+#' Scaled exponential integral exp(x) * E1(x) for x > 0.
+#'
+#' Series for x <= 1, continued fraction for x > 1; relative error about
+#' 1e-12.
+#'
+#' @param x Positive values
+#'
+#' @return exp(x) * E1(x), same dimensions as `x`.
+#' @noRd
+exp_E1 <- function(x) {
+  out <- x
+  small <- x <= 1
+  # E1(x) = -gamma - log(x) - sum_k (-x)^k / (k * k!)
+  xs <- x[small]
+  total <- 0
+  term <- 1
+  for (k in 1:30) {
+    term <- -term * xs / k
+    total <- total + term / k
+  }
+  out[small] <- exp(xs) * (-0.5772156649015329 - log(xs) - total)
+  # exp(x) E1(x) = 1 / (x + 1 - 1 / (x + 3 - 4 / (x + 5 - ...)))
+  xl <- x[!small]
+  f <- xl + 201
+  for (k in 100:1) {
+    f <- xl + 2 * k - 1 - k^2 / f
+  }
+  out[!small] <- 1 / f
+  return(out)
+}
+
+#' Mean of the Gompertz distribution, with Median parametrization.
+#'
+#' With eta = log(2) / expm1(mu * beta), the survival function is
+#' S(x) = exp(-eta * (exp(beta * x) - 1)), so the mean is
+#' integral S(x) dx = exp(eta) * E1(eta) / beta.
+#'
+#' @param mu Median parameter
+#' @param beta Scale parameter
+#'
+#' @return Mean, same dimensions as `mu`.
+#' @noRd
+gompertz_mean <- function(mu, beta) {
+  return(exp_E1(log(2) / expm1(mu * beta)) / beta)
+}
+
 #' Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.
-#' Not defined for the Gompertz family.
 #'
 #' @param prep brms data
 #'
-#' @return Nothing
+#' @return Mean of the posterior predictive distribution, draws x observations
 posterior_epred_gompertz <- function(prep) {
-  stop("posterior_epred is not defined for the gompertz family")
+  mu <- brms::get_dpar(prep, "mu")
+  beta <- brms::get_dpar(prep, "beta")
+  return(gompertz_mean(mu, beta))
 }
 
 

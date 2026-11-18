@@ -159,13 +159,48 @@ posterior_predict_generalized_gamma <- function(i, prep, ...) {
   return(rgeneralized_gamma(n = prep$ndraws, mu = mu, sigma = sigma, Q = Q))
 }
 
+#' Mean of the generalized gamma distribution (Prentice parametrization)
+#'
+#' For Q != 0, Y = exp(mu) * (Q^2 * G)^(sigma / Q) with G ~ Gamma(1 / Q^2, 1),
+#' so E[Y] = exp(mu) * (Q^2)^(sigma / Q) * gamma(1 / Q^2 + sigma / Q) /
+#' gamma(1 / Q^2). For Q = 0 (lognormal) it is exp(mu + sigma^2 / 2).
+#' The mean is infinite for Q <= -1 / sigma, and `Inf` is returned there.
+#'
+#' @param mu Location parameter
+#' @param sigma Scale parameter, sigma > 0
+#' @param Q Shape parameter
+#'
+#' @return Mean, with the dimensions of the recycled arguments.
+#' @noRd
+generalized_gamma_mean <- function(mu, sigma, Q) {
+  zero <- 0 * mu + 0 * sigma + 0 * Q
+  mu <- mu + zero
+  sigma <- sigma + zero
+  Q <- Q + zero
+  out <- exp(mu + sigma^2 / 2)
+  nonzero <- Q != 0
+  k <- 1 / Q[nonzero]^2
+  a <- sigma[nonzero] / Q[nonzero]
+  out[nonzero] <- ifelse(
+    k + a > 0,
+    exp(mu[nonzero] + a * log(1 / k) + lgamma(k + a) - lgamma(k)),
+    Inf
+  )
+  return(out)
+}
+
 #' posterior_epred for the generalized gamma distribution
+#'
+#' The mean does not exist for Q <= -1 / sigma, those draws are `Inf`.
 #'
 #' @param prep brms data
 #'
 #' @return Expected Values of the Posterior Predictive Distribution
 posterior_epred_generalized_gamma <- function(prep) {
-  stop("There is no implementation of posterior_epred!")
+  mu <- brms::get_dpar(prep, "mu")
+  sigma <- brms::get_dpar(prep, "sigma")
+  Q <- brms::get_dpar(prep, "Q")
+  return(generalized_gamma_mean(mu, sigma, Q))
 }
 
 
