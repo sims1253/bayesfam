@@ -243,8 +243,11 @@ stan_functions <- local({
         paste(wrappers, collapse = "\n"),
         "}"
       ))
-      stan <<- new.env()
-      rstan::expose_stan_functions(model, env = stan)
+      # cache the environment only once exposing succeeded, so a failed
+      # setup is retried by the next test instead of leaving it empty
+      env <- new.env()
+      rstan::expose_stan_functions(model, env = env)
+      stan <<- env
     }
     stan
   }
