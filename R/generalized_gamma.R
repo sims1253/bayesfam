@@ -164,7 +164,13 @@ posterior_predict_generalized_gamma <- function(i, prep, ...) {
 #' For Q != 0, Y = exp(mu) * (Q^2 * G)^(sigma / Q) with G ~ Gamma(1 / Q^2, 1),
 #' so E[Y] = exp(mu) * (Q^2)^(sigma / Q) * gamma(1 / Q^2 + sigma / Q) /
 #' gamma(1 / Q^2). For Q = 0 (lognormal) it is exp(mu + sigma^2 / 2).
-#' The mean is infinite for Q <= -1 / sigma, and `Inf` is returned there.
+#' The mean is infinite for Q * sigma <= -1, and `Inf` is returned there.
+#'
+#' For k = 1 / Q^2 >= 10, lgamma(k + a) - lgamma(k) - a * log(k) with
+#' a = sigma / Q cancels, so it is evaluated through Stirling's series as
+#' sigma^2 g(t) + (a - 1/2) log1p(t) + B(k + a) - B(k), with t = sigma * Q,
+#' g(t) = (log1p(t) - t) / t^2 and B the series' correction terms. The
+#' truncation error of B is below 2e-14 for arguments >= 10.
 #'
 #' @param mu Location parameter
 #' @param sigma Scale parameter, sigma > 0
@@ -177,15 +183,31 @@ generalized_gamma_mean <- function(mu, sigma, Q) {
   mu <- mu + zero
   sigma <- sigma + zero
   Q <- Q + zero
-  out <- exp(mu + sigma^2 / 2)
-  nonzero <- Q != 0
-  k <- 1 / Q[nonzero]^2
-  a <- sigma[nonzero] / Q[nonzero]
-  out[nonzero] <- ifelse(
-    k + a > 0,
-    exp(mu[nonzero] + a * log(1 / k) + lgamma(k + a) - lgamma(k)),
-    Inf
-  )
+  t <- sigma * Q
+  k <- 1 / Q^2
+  a <- sigma / Q
+  # log(E[Y]) - mu; the lognormal limit at Q = 0
+  d <- sigma^2 / 2
+  direct <- Q != 0 & t > -1 & (k < 10 | k + a < 10)
+  d[direct] <- lgamma(k[direct] + a[direct]) - lgamma(k[direct]) -
+    a[direct] * log(k[direct])
+  series <- Q != 0 & t > -1 & !direct
+  ts <- t[series]
+  g <- (log1p(ts) - ts) / ts^2
+  small <- abs(ts) < 0.2
+  # g(t) = sum_j (-1)^(j + 1) t^j / (j + 2)
+  g[small] <- 0
+  for (j in 24:0) {
+    g[small] <- g[small] * ts[small] + (-1)^(j + 1) / (j + 2)
+  }
+  stirling <- function(z) {
+    z2 <- 1 / z^2
+    (1 / 12 - z2 * (1 / 360 - z2 * (1 / 1260 - z2 * (1 / 1680 - z2 / 1188)))) / z
+  }
+  d[series] <- sigma[series]^2 * g + (a[series] - 0.5) * log1p(ts) +
+    stirling(k[series] + a[series]) - stirling(k[series])
+  out <- exp(mu + d)
+  out[Q != 0 & t <= -1] <- Inf
   return(out)
 }
 
