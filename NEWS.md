@@ -16,7 +16,7 @@
   variable before the transform, so it can take any real value.
 * `dgompertz()`, `qgompertz()`, `dsoftplusnormal()` and `rsoftplusnormal()`
   now reject a vector argument when any element of it is invalid, not only
-  when all elements are.
+  when all elements are; so do `dlomax()` and `qlomax()` for `alpha`.
 * `dgompertz()`, `qgompertz()`, `rgompertz()` and the Gompertz Stan code use
   `expm1()`, so they stay accurate when `mu * beta` is small; before,
   `qgompertz(0.5, 1, 1e-16)` gave 0 instead of the median 1.
