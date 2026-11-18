@@ -38,8 +38,10 @@
 * `posterior_epred` is now implemented for `gompertz()`,
   `generalized_gamma()`, `cauchitnormal()`, `cloglognormal()` and
   `softplusnormal()`. The generalized gamma mean is `Inf` where it does not
-  exist, for `Q * sigma <= -1`, and stays accurate as `Q` approaches 0. The
-  Gompertz mean stays finite where `expm1(mu * beta)` overflows.
+  exist, for `Q * sigma <= -1`, and stays accurate as `Q` approaches 0, down
+  to the smallest normal double; for subnormal `Q` it overflows to `Inf`. The
+  Gompertz mean stays finite where `expm1(mu * beta)` overflows, as long as
+  the product `mu * beta` is itself finite.
 * `unit_lindley()`, `generalized_gamma()`, `simplex()`,
   `shifted_inv_gaussian()` and `shifted_lognormal_uniform()` now define a
   Stan `_rng` function.
