@@ -33,7 +33,11 @@
   and
   [`rsoftplusnormal()`](https://sims1253.github.io/bayesfam/pr/56/reference/rsoftplusnormal.md)
   now reject a vector argument when any element of it is invalid, not
-  only when all elements are.
+  only when all elements are; so do
+  [`dlomax()`](https://sims1253.github.io/bayesfam/pr/56/reference/dlomax.md)
+  and
+  [`qlomax()`](https://sims1253.github.io/bayesfam/pr/56/reference/qlomax.md)
+  for `alpha`.
 - [`dgompertz()`](https://sims1253.github.io/bayesfam/pr/56/reference/dgompertz.md),
   [`qgompertz()`](https://sims1253.github.io/bayesfam/pr/56/reference/qgompertz.md),
   [`rgompertz()`](https://sims1253.github.io/bayesfam/pr/56/reference/rgompertz.md)
@@ -73,8 +77,10 @@
   and
   [`softplusnormal()`](https://sims1253.github.io/bayesfam/pr/56/reference/softplusnormal.md).
   The generalized gamma mean is `Inf` where it does not exist, for
-  `Q * sigma <= -1`, and stays accurate as `Q` approaches 0. The
-  Gompertz mean stays finite where `expm1(mu * beta)` overflows.
+  `Q * sigma <= -1`, and stays accurate as `Q` approaches 0, down to the
+  smallest normal double; for subnormal `Q` it overflows to `Inf`. The
+  Gompertz mean stays finite where `expm1(mu * beta)` overflows, as long
+  as the product `mu * beta` is itself finite.
 - [`unit_lindley()`](https://sims1253.github.io/bayesfam/pr/56/reference/unit_lindley.md),
   [`generalized_gamma()`](https://sims1253.github.io/bayesfam/pr/56/reference/generalized_gamma.md),
   [`simplex()`](https://sims1253.github.io/bayesfam/pr/56/reference/simplex.md),

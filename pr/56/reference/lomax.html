@@ -52,7 +52,9 @@
 
 <dt id="arg-link-alpha">link_alpha<a class="anchor" aria-label="anchor" href="#arg-link-alpha"></a></dt>
 <dd><p>Link function for the alpha argument. The default
-<code>"logm1"</code> (inverse <code>exp(eta) + 1</code>) keeps alpha above 1.</p></dd>
+<code>"logm1"</code> (inverse <code>exp(eta) + 1</code>) maps the linear predictor above 1,
+but in double precision <code>exp(eta) + 1</code> rounds to exactly 1 for a linear
+predictor below about -36.7, where the density is undefined.</p></dd>
 
 </dl></div>
     <div class="section level2">
