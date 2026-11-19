@@ -75,17 +75,17 @@ posterior_predict_cauchitnormal <- function(i, prep, ...) {
   return(rcauchitnormal(prep$ndraws, mu, sigma))
 }
 
-#' Posterior expected value prediction. Mean undefined for Cauchitnormal.
+#' Posterior expected value prediction vignette for Cauchitnormal distribution.
+#'
+#' The mean has no closed form, so it is computed by quadrature.
 #'
 #' @param prep brms data
 #'
-#' @return Nothing
+#' @return Mean of Posterior
 posterior_epred_cauchitnormal <- function(prep) {
-  # https://doi.org/10.1080/03610926.2020.1752723 might solve this
-  stop(
-    "Due to the mean not having an analytical solution for the cauchit-normal
-        distribution, posterior_epred is currently not supported."
-  )
+  mu <- brms::get_dpar(prep, "mu")
+  sigma <- brms::get_dpar(prep, "sigma")
+  return(latent_normal_mean(mu, sigma, inv_cauchit))
 }
 
 #' Custom brms family Cauchitnormal
@@ -110,8 +110,8 @@ cauchitnormal <- function(link = "identity", link_sigma = "log") {
     "cauchitnormal",
     dpars = c("mu", "sigma"),
     links = c(link, link_sigma),
-    lb = c(0, 0),
-    ub = c(1, NA),
+    lb = c(NA, 0),
+    ub = c(NA, NA),
     type = "real",
     log_lik = log_lik_cauchitnormal,
     posterior_predict = posterior_predict_cauchitnormal,

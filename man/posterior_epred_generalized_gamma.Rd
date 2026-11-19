@@ -13,5 +13,5 @@ posterior_epred_generalized_gamma(prep)
 Expected Values of the Posterior Predictive Distribution
 }
 \description{
-posterior_epred for the generalized gamma distribution
+The mean does not exist for Q <= -1 / sigma, those draws are \code{Inf}.
 }

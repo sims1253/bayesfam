@@ -61,7 +61,14 @@ qunit_lindley <- function(p, mu) {
 #'
 #' @examples hist(runit_lindley(100, 0.5))
 runit_lindley <- function(n, mu) {
-  return(qunit_lindley(runif(n), mu))
+  if (isTRUE(any(mu <= 0 | mu >= 1))) {
+    stop("The mu argument has to be in the interval (0, 1)")
+  }
+  # y = x / (1 + x) with x Lindley(theta = (1 - mu) / mu), a mixture of
+  # Gamma(1, theta) with weight 1 - mu and Gamma(2, theta) with weight mu;
+  # the inverse CDF fails for small mu, where exp(-1 / mu) underflows
+  x <- rgamma(n, shape = 1 + (runif(n) < mu), rate = (1 - mu) / mu)
+  return(x / (1 + x))
 }
 
 #' Log-likelihood of the Unit Lindley family
@@ -88,7 +95,7 @@ log_lik_unitlindley <- function(i, prep) {
 #'
 #' @return Draws from the posterior predictive distribution
 posterior_predict_unitlindley <- function(i, prep, ...) {
-  mu <- prep$dpars$mu[, i]
+  mu <- brms::get_dpar(prep, "mu", i = i)
   return(runit_lindley(prep$ndraws, mu))
 }
 
@@ -133,6 +140,12 @@ unit_lindley <- function(link = "logit") {
     scode = "
       real unit_lindley_lpdf(real y, real mu) {
         return 2*log1m(mu)-log(mu)-3*log1m(y)-y*(1-mu)/(mu*(1-y));
+      }
+
+      real unit_lindley_rng(real mu) {
+        // the gamma mixture of runit_lindley
+        real x = gamma_rng(1 + bernoulli_rng(mu), (1 - mu) / mu);
+        return x / (1 + x);
       }
     ",
     block = "functions"

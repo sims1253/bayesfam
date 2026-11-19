@@ -85,3 +85,50 @@ test_that("dgeneralized_gamma is vectorized in Q (#23)", {
     mapply(dgeneralized_gamma, 2.5, 0.3, 1.2, Q, log = TRUE)
   )
 })
+
+# Reference mean without gamma functions: with G ~ Gamma(1 / Q^2, 1) and
+# v = log(Q^2 G) / Q, Y = exp(mu + sigma v), and v has a density
+# proportional to exp(-v^2 h(Q v)), h(x) = (exp(x) - 1 - x) / x^2.
+generalized_gamma_reference_mean <- function(mu, sigma, Q) {
+  h <- function(x) {
+    out <- (expm1(x) - x) / x^2
+    small <- abs(x) < 0.1
+    # series sum_j x^j / (j + 2)!
+    term <- 1 / 2
+    total <- 0
+    for (j in 0:14) {
+      total <- total + term
+      term <- term * x[small] / (j + 3)
+    }
+    out[small] <- total
+    out
+  }
+  both_sides <- function(f, at) {
+    integrate(f, -Inf, at, rel.tol = 1e-13, subdivisions = 5000L)$value +
+      integrate(f, at, Inf, rel.tol = 1e-13, subdivisions = 5000L)$value
+  }
+  exp(mu) *
+    both_sides(function(v) exp(sigma * v - v^2 * h(Q * v)), sigma) /
+    both_sides(function(v) exp(-v^2 * h(Q * v)), 0)
+}
+
+test_that("the generalized gamma mean stays accurate as Q approaches 0", {
+  Q <- c(1e-200, 1e-9, 1e-7, 1e-5, 1e-3, 0.05, 0.3, 0.32, 0.8)
+  Q <- c(Q, -Q)
+  for (p in list(c(mu = 0, sigma = 1), c(mu = 0.3, sigma = 0.5))) {
+    for (q in Q) {
+      expect_equal(
+        generalized_gamma_mean(p[["mu"]], p[["sigma"]], q),
+        generalized_gamma_reference_mean(p[["mu"]], p[["sigma"]], q),
+        tolerance = 1e-12,
+        label = sprintf("mean at mu = %g, sigma = %g, Q = %g", p[["mu"]], p[["sigma"]], q)
+      )
+    }
+  }
+})
+
+test_that("the generalized gamma mean is Inf exactly where Q * sigma <= -1", {
+  # Q * sigma is exactly -1 here; 1 / Q^2 + sigma / Q rounds to 4e-16
+  expect_identical(generalized_gamma_mean(0, 1 / 0.7, -0.7), Inf)
+  expect_true(is.finite(generalized_gamma_mean(0, 1.4285, -0.7)))
+})

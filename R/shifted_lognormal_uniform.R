@@ -321,6 +321,14 @@ shifted_lognormal_uniform <- function(
     }
 
   }
+
+  real shifted_lognormal_uniform_rng(real mu, real sigma, real mix,
+                      real shiftprop, real max_shift, real max_uniform) {
+    if (uniform_rng(0, 1) < mix) {
+      return uniform_rng(0, max_uniform);
+    }
+    return shiftprop * max_shift + lognormal_rng(mu, sigma);
+  }
 "
   )
   return(fam)

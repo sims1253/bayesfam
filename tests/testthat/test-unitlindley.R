@@ -43,3 +43,26 @@ test_that("unit-lindley", {
     rng = runit_lindley
   )
 })
+
+test_that("posterior_predict reads mu through brms::get_dpar", {
+  # get_dpar also accepts mu as one value per draw, which [, i] does not
+  prep <- structure(
+    list(ndraws = 3, nobs = 2, dpars = list(mu = c(0.2, 0.5, 0.8))),
+    class = "brmsprep"
+  )
+  set.seed(1)
+  yrep <- unit_lindley()$posterior_predict(2, prep)
+  set.seed(1)
+  expect_equal(yrep, runit_lindley(3, c(0.2, 0.5, 0.8)))
+})
+
+test_that("runit_lindley draws from the density for small mu", {
+  # exp(-1 / mu) underflows to zero for mu below about 0.00134
+  mu <- 0.001
+  n <- 1e5
+  set.seed(1)
+  y <- runit_lindley(n, mu)
+  expect_true(all(is.finite(y) & y > 0 & y < 1))
+  # the mean of this parameterisation is mu; allow five standard errors
+  expect_lt(abs(mean(y) - mu), 5 * sd(y) / sqrt(n))
+})

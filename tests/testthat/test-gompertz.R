@@ -119,3 +119,40 @@ test_that("custom-gompertz", {
     aux_name = "beta"
   )
 })
+
+test_that("gompertz checks every element of mu and beta", {
+  x <- c(1, 2)
+  expect_error(dgompertz(x, mu = c(1, -1), beta = 1), "mu > 0")
+  expect_error(dgompertz(x, mu = 1, beta = c(1, -1)), "beta > 0")
+  expect_error(qgompertz(c(0.2, 0.5), mu = c(1, -1), beta = 1), "mu > 0")
+  expect_error(qgompertz(c(0.2, 0.5), mu = 1, beta = c(1, -1)), "beta > 0")
+})
+
+test_that("dgompertz keeps the median at mu when mu * beta is tiny", {
+  # exp(t) - 1 loses about half the digits for t near 1e-12
+  mass <- integrate(dgompertz, 0, 1, mu = 1, beta = 1e-12, rel.tol = 1e-12)
+  expect_equal(mass$value, 0.5, tolerance = 1e-9)
+})
+
+test_that("qgompertz keeps the median at mu when mu * beta is tiny", {
+  # exp(mu * beta) - 1 rounds to 0 at mu * beta = 1e-16
+  expect_equal(qgompertz(0.5, 1, 1e-16), 1)
+})
+
+test_that("gompertz_mean stays finite where expm1(mu * beta) overflows", {
+  # exp(z) E1(z) = -gamma - log(z) + O(z log z), with
+  # z = log(2) / expm1(mu * beta) below the smallest double here
+  expect_equal(
+    gompertz_mean(800, 1),
+    -0.5772156649015329 - (log(log(2)) - 800),
+    tolerance = 1e-14
+  )
+  # and agrees across the point where z leaves the double range
+  mu <- c(700, 705, 710, 720)
+  expect_equal(gompertz_mean(mu, 1), mu - 0.5772156649015329 - log(log(2)),
+    tolerance = 1e-14
+  )
+  # small mu * beta is unaffected; compare the ratio, as all.equal turns
+  # absolute when the target is near 0 and would accept 0
+  expect_equal(gompertz_mean(1e-16, 1) / (1e-16 / log(2)), 1, tolerance = 1e-14)
+})

@@ -24,3 +24,11 @@ test_that("rng_lookup('frechet') matches brms's mean parameterization", {
   expect_eps(mean(draws), 2, eps = 0.02, relative = TRUE)
   expect_error(rng_lookup("frechet")(10, mu = 2, nu = 1))
 })
+
+test_that("dfrechet_median returns the log density with log = TRUE", {
+  x <- c(0.5, 2, 7)
+  expect_equal(
+    dfrechet_median(x, mu = 2, nu = 3, log = TRUE),
+    log(dfrechet_median(x, mu = 2, nu = 3))
+  )
+})

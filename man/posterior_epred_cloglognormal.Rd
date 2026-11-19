@@ -2,7 +2,7 @@
 % Please edit documentation in R/cloglognormal.R
 \name{posterior_epred_cloglognormal}
 \alias{posterior_epred_cloglognormal}
-\title{Posterior expected value prediction. Mean undefined for Cloglog-Normal}
+\title{Posterior expected value prediction vignette for Cloglog-Normal distribution.}
 \usage{
 posterior_epred_cloglognormal(prep)
 }
@@ -10,8 +10,8 @@ posterior_epred_cloglognormal(prep)
 \item{prep}{brms data}
 }
 \value{
-Nothing
+Mean of Posterior
 }
 \description{
-Posterior expected value prediction. Mean undefined for Cloglog-Normal
+The mean has no closed form, so it is computed by quadrature.
 }

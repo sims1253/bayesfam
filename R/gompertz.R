@@ -19,16 +19,16 @@ dgompertz <- function(x, mu, beta, log = FALSE) {
   if (isTRUE(any(x <= 0))) {
     stop("dgompertz is only defined for x > 0")
   }
-  if (isTRUE(mu <= 0)) {
+  if (isTRUE(any(mu <= 0))) {
     stop("dgompertz is only defined for mu > 0")
   }
-  if (isTRUE(beta <= 0)) {
+  if (isTRUE(any(beta <= 0))) {
     stop("dgompertz is only defined for beta > 0")
   }
 
   lpdf <- log(-beta * log(0.5)) -
-    log(exp(mu * beta) - 1) +
-    (beta * x + (log(0.5) / (exp(mu * beta) - 1)) * (exp(beta * x) - 1))
+    log(expm1(mu * beta)) +
+    (beta * x + (log(0.5) / expm1(mu * beta)) * expm1(beta * x))
 
   if (log) {
     return(lpdf)
@@ -53,14 +53,14 @@ qgompertz <- function(p, mu, beta) {
   if (isTRUE(any(p <= 0 | p >= 1))) {
     stop("qgompertz is only defined for 0 < p < 1")
   }
-  if (isTRUE(mu <= 0)) {
+  if (isTRUE(any(mu <= 0))) {
     stop("qgompertz is only defined for mu > 0")
   }
-  if (isTRUE(beta <= 0)) {
+  if (isTRUE(any(beta <= 0))) {
     stop("qgompertz is only defined for beta > 0")
   }
   return(
-    log1p(((exp(mu * beta) - 1) / (log(0.5))) * log1p(-p)) / beta
+    log1p((expm1(mu * beta) / (log(0.5))) * log1p(-p)) / beta
   )
 }
 
@@ -82,7 +82,7 @@ rgompertz <- function(n, mu = 1, beta = 0.5) {
     stop("rgompertz is only defined for beta > 0")
   }
   return(
-    log1p(((exp(mu * beta) - 1) / (log(0.5))) * log(runif(n))) / beta
+    log1p((expm1(mu * beta) / (log(0.5))) * log(runif(n))) / beta
   )
 }
 
@@ -113,14 +113,68 @@ posterior_predict_gompertz <- function(i, prep, ...) {
   return(rgompertz(prep$ndraws, mu, beta))
 }
 
+#' Scaled exponential integral exp(x) * E1(x) for x > 0.
+#'
+#' Series for x <= 1, continued fraction for x > 1; relative error about
+#' 1e-12.
+#'
+#' @param x Positive values
+#'
+#' @return exp(x) * E1(x), same dimensions as `x`.
+#' @noRd
+exp_E1 <- function(x) {
+  out <- x
+  small <- x <= 1
+  # E1(x) = -gamma - log(x) - sum_k (-x)^k / (k * k!)
+  xs <- x[small]
+  total <- 0
+  term <- 1
+  for (k in 1:30) {
+    term <- -term * xs / k
+    total <- total + term / k
+  }
+  out[small] <- exp(xs) * (-0.5772156649015329 - log(xs) - total)
+  # exp(x) E1(x) = 1 / (x + 1 - 1 / (x + 3 - 4 / (x + 5 - ...)))
+  xl <- x[!small]
+  f <- xl + 201
+  for (k in 100:1) {
+    f <- xl + 2 * k - 1 - k^2 / f
+  }
+  out[!small] <- 1 / f
+  return(out)
+}
+
+#' Mean of the Gompertz distribution, with Median parametrization.
+#'
+#' With eta = log(2) / expm1(mu * beta), the survival function is
+#' S(x) = exp(-eta * (exp(beta * x) - 1)), so the mean is
+#' integral S(x) dx = exp(eta) * E1(eta) / beta.
+#'
+#' @param mu Median parameter
+#' @param beta Scale parameter
+#'
+#' @return Mean, same dimensions as `mu`.
+#' @noRd
+gompertz_mean <- function(mu, beta) {
+  x <- mu * beta
+  out <- exp_E1(log(2) / expm1(x))
+  # where z = log(2) / expm1(x) underflows, exp(z) E1(z) is
+  # -gamma - log(z) + O(z log(z)), with log(z) finite even if expm1(x) is not
+  lz <- log(log(2)) - x - log(-expm1(-x))
+  tiny <- lz < log(.Machine$double.xmin)
+  out[tiny] <- -0.5772156649015329 - lz[tiny]
+  return(out / beta)
+}
+
 #' Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.
-#' Not defined for the Gompertz family.
 #'
 #' @param prep brms data
 #'
-#' @return Nothing
+#' @return Mean of the posterior predictive distribution, draws x observations
 posterior_epred_gompertz <- function(prep) {
-  stop("posterior_epred is not defined for the gompertz family")
+  mu <- brms::get_dpar(prep, "mu")
+  beta <- brms::get_dpar(prep, "beta")
+  return(gompertz_mean(mu, beta))
 }
 
 
@@ -158,13 +212,13 @@ gompertz <- function(link = "log", link_b = "log") {
       real gompertz_lpdf(real y, real mu, real beta) {
         return(
           log(-beta * log(0.5)) -
-          log(exp(mu * beta) - 1) +
-          (beta * y + (log(0.5) / (exp(mu * beta) - 1)) * (exp(beta * y) - 1))
+          log(expm1(mu * beta)) +
+          (beta * y + (log(0.5) / expm1(mu * beta)) * expm1(beta * y))
         );
       }
       real gompertz_rng(real mu, real beta) {
       return(
-        log1p(((exp(mu * beta) - 1) / (log(0.5))) * log(uniform_rng(0,1))) / beta
+        log1p((expm1(mu * beta) / (log(0.5))) * log(uniform_rng(0,1))) / beta
       );
       }",
     block = "functions"

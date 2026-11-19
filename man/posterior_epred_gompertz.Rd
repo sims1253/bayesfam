@@ -2,8 +2,7 @@
 % Please edit documentation in R/gompertz.R
 \name{posterior_epred_gompertz}
 \alias{posterior_epred_gompertz}
-\title{Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.
-Not defined for the Gompertz family.}
+\title{Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.}
 \usage{
 posterior_epred_gompertz(prep)
 }
@@ -11,9 +10,8 @@ posterior_epred_gompertz(prep)
 \item{prep}{brms data}
 }
 \value{
-Nothing
+Mean of the posterior predictive distribution, draws x observations
 }
 \description{
 Expectation-Predict vignette for the Gompertz distribution, with Median parametrization.
-Not defined for the Gompertz family.
 }

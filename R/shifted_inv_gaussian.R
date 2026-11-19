@@ -62,7 +62,15 @@ rshifted_inv_gaussian <- function(n, mu = 1, shape = 1, shift = 1) {
   if (isTRUE(any(shift < 0))) {
     stop("Shift has to be >= 0")
   }
-  brms::rinv_gaussian(n, mu, shape) + shift
+  # the draw of brms::rinv_gaussian, but with the smaller root as mu^2 over
+  # the larger: the roots multiply to mu^2, and their difference cancels
+  mu <- rep_len(mu, n)
+  shape <- rep_len(shape, n)
+  v <- rnorm(n)^2
+  x2 <- mu + mu^2 * v / (2 * shape) +
+    mu / (2 * shape) * sqrt(4 * mu * shape * v + mu^2 * v^2)
+  x1 <- mu^2 / x2
+  ifelse(runif(n) <= mu / (mu + x1), x1, x2) + shift
 }
 
 #' Log-Likelihood of the shifted inverse Gaussian family
@@ -154,6 +162,19 @@ shifted_inv_gaussian <- function(
       real shifted_inv_gaussian_lpdf(real y, real mu, real shape, real ndt) {
           return 0.5 * log(shape / (2 * pi())) - 1.5 * log(y - ndt)
                - 0.5 * shape * square(((y - ndt) - mu) / (mu * sqrt(y - ndt)));
+      }
+
+      real shifted_inv_gaussian_rng(real mu, real shape, real ndt) {
+        // Michael, Schucany and Haas (1976), as brms::rinv_gaussian
+        real v = chi_square_rng(1);
+        // the smaller root as mu^2 over the larger, which does not cancel
+        real x2 = mu + mu^2 * v / (2 * shape)
+                  + mu / (2 * shape) * sqrt(4 * mu * shape * v + mu^2 * v^2);
+        real x = mu^2 / x2;
+        if (uniform_rng(0, 1) > mu / (mu + x)) {
+          x = x2;
+        }
+        return x + ndt;
       }",
     block = "functions"
   )

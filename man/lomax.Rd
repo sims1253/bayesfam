@@ -4,18 +4,27 @@
 \alias{lomax}
 \title{Lomax Stan-implementation in Mean parametrization.}
 \usage{
-lomax(link = "log", link_alpha = "log1p")
+lomax(link = "log", link_alpha = "logm1")
 }
 \arguments{
 \item{link}{Link function for function}
 
-\item{link_alpha}{Link function for eta argument}
+\item{link_alpha}{Link function for the alpha argument. The default
+\code{"logm1"} (inverse \code{exp(eta) + 1}) maps the linear predictor above 1,
+but in double precision \code{exp(eta) + 1} rounds to exactly 1 for a linear
+predictor below about -36.7, where the density is undefined.}
 }
 \value{
 brms Lomax distribution family
 }
 \description{
 Lomax Stan-implementation in Mean parametrization.
+}
+\details{
+With a \code{"logm1"} link the Stan code includes brms' overloaded
+\code{expp1} and \code{logm1} functions, which \code{rstan::expose_stan_functions()}
+cannot export, so expose \code{lomax_lpdf} and \code{lomax_rng} from a family with
+other links.
 }
 \examples{
 a <- rnorm(1000)

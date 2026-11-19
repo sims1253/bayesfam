@@ -38,7 +38,7 @@ inv_logit <- function(x) {
 #' plot(x, cloglog(x), type = "l")
 cloglog <- function(x) {
   if (any(x < 0 | x > 1)) {
-    stop("The logit link is only defined between 0 and 1!")
+    stop("The cloglog link is only defined between 0 and 1!")
   }
   log(-log1p(-x))
 }
@@ -54,7 +54,8 @@ cloglog <- function(x) {
 #' @examples x <- seq(from = -3, to = 1, length.out = 100)
 #' plot(x, inv_cloglog(x), type = "l")
 inv_cloglog <- function(x) {
-  return(1 - exp(-exp(x)))
+  # expm1 keeps the left tail, where 1 - exp(-exp(x)) rounds to 0
+  return(-expm1(-exp(x)))
 }
 
 
@@ -69,7 +70,7 @@ inv_cloglog <- function(x) {
 #' plot(x, cauchit(x), type = "l")
 cauchit <- function(x) {
   if (any(x < 0 | x > 1)) {
-    stop("The logit link is only defined between 0 and 1!")
+    stop("The cauchit link is only defined between 0 and 1!")
   }
   return(qcauchy(x))
 }
@@ -192,4 +193,62 @@ logsumexp <- function(x) {
     return(y)
   }
   return(y + log(sum(exp(x - y))))
+}
+
+#' Mean of a transformed normal variable.
+#'
+#' Computes E[inv_link(Z)] for Z ~ N(mu, sigma) on fixed nodes, vectorized
+#' over `mu` and `sigma`. This is the expectation that `posterior_epred`
+#' promises for the families that transform a normal variable (cauchitnormal,
+#' cloglognormal, softplusnormal).
+#'
+#' The sums give every node, the two end nodes included, the full step `h`.
+#' That differs from the trapezoid rule only by half the weight of the two end
+#' nodes, which is negligible: `h * dnorm(9)` is about 3e-19, and the `dual`
+#' weights end near 1e-18 (cloglog-normal) and 1e-16 (softplus-normal). The
+#' integrand and its derivatives vanish at both ends, so the Euler-Maclaurin
+#' boundary terms do too, and the error falls exponentially as `h` shrinks.
+#'
+#' For sigma <= 1 it integrates inv_link(mu + sigma * t) over t ~ N(0, 1) with
+#' step 0.25. A larger sigma makes that integrand steep, so then it uses
+#' `dual` if given and otherwise halves the step for every doubling of sigma.
+#' `dual` describes the same expectation as a sum over nodes `l` with
+#' `weights` of `kernel(mu, sigma, l)`: if inv_link is the CDF F of some L,
+#' E[F(Z)] = P(L < Z) = E[pnorm((mu - L) / sigma)], which is smooth in L.
+#'
+#' @param mu Location of the normal variable, unbound
+#' @param sigma Scale of the normal variable, sigma >= 0
+#' @param inv_link Vectorized response function
+#' @param dual NULL or a list of `nodes`, `weights` and `kernel`
+#'
+#' @return E[inv_link(Z)], same dimensions as `mu`.
+#' @noRd
+latent_normal_mean <- function(mu, sigma, inv_link, dual = NULL) {
+  sigma <- sigma + 0 * mu
+  mu <- mu + 0 * sigma
+  out <- 0 * mu
+  wide <- !is.null(dual) & sigma > 1
+  if (any(wide)) {
+    m <- mu[wide]
+    s <- sigma[wide]
+    total <- 0
+    for (j in seq_along(dual$nodes)) {
+      total <- total + dual$weights[j] * dual$kernel(m, s, dual$nodes[j])
+    }
+    out[wide] <- total
+  }
+  # sum the narrow draws separately for each step size
+  level <- pmax(0, ceiling(log2(sigma)))
+  for (k in unique(level[!wide])) {
+    narrow <- !wide & level == k
+    h <- 0.25 / 2^k
+    m <- mu[narrow]
+    s <- sigma[narrow]
+    total <- 0
+    for (t in seq(-9, 9, by = h)) {
+      total <- total + h * dnorm(t) * inv_link(m + s * t)
+    }
+    out[narrow] <- total
+  }
+  return(out)
 }

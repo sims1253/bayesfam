@@ -77,3 +77,22 @@ test_that("dshifted_inv_gaussian is 0 below the shift", {
     })
   )
 })
+
+test_that("rshifted_inv_gaussian keeps every draw above the shift for a tiny shape", {
+  # the smaller root of the Michael-Schucany-Haas draw cancelled to 0 or below
+  set.seed(1)
+  y <- rshifted_inv_gaussian(1e5, mu = 1, shape = 1e-8, shift = 1)
+  expect_true(all(is.finite(y) & y > 1))
+})
+
+test_that("rshifted_inv_gaussian recycles mu and shape each to the number of draws", {
+  mu <- c(1, 5)
+  shape <- c(1, 3, 10)
+  set.seed(1)
+  expect_no_warning(y <- rshifted_inv_gaussian(6, mu, shape, 0))
+  set.seed(1)
+  expect_identical(
+    y,
+    rshifted_inv_gaussian(6, rep_len(mu, 6), rep_len(shape, 6), 0)
+  )
+})
